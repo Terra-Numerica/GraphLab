@@ -6,10 +6,12 @@ export const sleep = (ms: number) => {
 
 export const keepAliveRenderdotCom = async () => {
 
-    const URL = process.env.URL;
+    const backendURL = process.env.BACKEND_URL;
+    const frontendURL = process.env.FRONTEND_URL;
 
     Promise.all([
-        await request(URL),
+        await request(backendURL),
+        await request(frontendURL),
     ])
 };
 
