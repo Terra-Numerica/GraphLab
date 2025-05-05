@@ -1,0 +1,53 @@
+.coloration-container {
+    padding: 2rem;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.explanation-section {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    margin-bottom: 2rem;
+}
+
+.explanation-section h2 {
+    color: #3498db;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+}
+
+.explanation-text {
+    color: #34495e;
+    line-height: 1.6;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.coloration-modes {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.coloration-mode-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+    background: #fff;
+    color: #222;
+    border: 2px solid #3498db;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+    font-weight: 500;
+}
+
+.coloration-mode-btn:hover {
+    background: #3498db;
+    color: #fff;
+} 
