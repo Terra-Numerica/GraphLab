@@ -5,6 +5,7 @@ import ValidationPopup from '../../common/ValidationPopup';
 import RulesPopup from '../../common/RulesPopup';
 import '../../../styles/pages/Coloration/GlobalMode.css';
 import { rgbToHex } from '../../../utils/colorUtils';
+import config from '../../../config';
 
 const Defi = () => {
     // States
@@ -145,7 +146,7 @@ const Defi = () => {
     function fetchGraphs() {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/graph');
+                const response = await fetch(`${config.apiUrl}/graph`);
                 if (!response.ok) {
                     throw new Error('Impossible de récupérer la liste des graphes');
                 }
@@ -211,7 +212,7 @@ const Defi = () => {
 
         const fetchGraph = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/graph/${graphId}`);
+                const response = await fetch(`${config.apiUrl}/graph/${graphId}`);
                 if (!response.ok) {
                     throw new Error('Impossible de récupérer les détails du graphe');
                 }

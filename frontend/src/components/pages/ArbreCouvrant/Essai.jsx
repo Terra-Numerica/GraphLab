@@ -4,6 +4,7 @@ import GraphDisplay from './GraphDisplay';
 import ValidationPopup from '../../common/ValidationPopup';
 import RulesPopup from '../../common/RulesPopup';
 import '../../../styles/pages/ArbreCouvrant/GlobalMode.css';
+import config from '../../../config';
 
 const Essai = () => {
     const [graphs, setGraphs] = useState({
@@ -135,7 +136,7 @@ const Essai = () => {
     function fetchGraphs() {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/graph');
+                const response = await fetch(`${config.apiUrl}/graph`);
                 if (!response.ok) {
                     throw new Error('Impossible de récupérer la liste des graphes');
                 }
@@ -188,7 +189,7 @@ const Essai = () => {
         }
         const fetchGraph = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/graph/${graphId}`);
+                const response = await fetch(`${config.apiUrl}/graph/${graphId}`);
                 if (!response.ok) {
                     throw new Error('Impossible de récupérer les détails du graphe');
                 }
