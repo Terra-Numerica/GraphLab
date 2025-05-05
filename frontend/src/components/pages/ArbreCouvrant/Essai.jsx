@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GraphDisplay from './GraphDisplay';
 import ValidationPopup from '../../common/ValidationPopup';
@@ -6,13 +6,18 @@ import RulesPopup from '../../common/RulesPopup';
 import '../../../styles/pages/ArbreCouvrant/GlobalMode.css';
 import config from '../../../config';
 
+const TimerDisplay = React.memo(({ time, formatTime }) => {
+    return <div className="mode-timer">Temps: {formatTime(time)}</div>;
+});
+
+const GraphDisplayMemo = memo(GraphDisplay);
+
 const Essai = () => {
+
     const [graphs, setGraphs] = useState({
-        tresFacile: [],
-        facile: [],
+        petit: [],
         moyen: [],
-        difficile: [],
-        extreme: []
+        grand: []
     });
     const [selectedGraph, setSelectedGraph] = useState('');
     const [currentGraph, setCurrentGraph] = useState(null);
@@ -40,12 +45,66 @@ const Essai = () => {
     }, [showRules]);
 
     const difficultyLabels = {
-        tresFacile: 'Très Facile',
-        facile: 'Facile',
+        petit: 'Petit',
         moyen: 'Moyen',
-        difficile: 'Difficile',
-        extreme: 'Extrême'
+        grand: 'Grand'
     };
+
+    const handleGraphSelect = useCallback((event) => {
+        const graphId = event.target.value;
+        setSelectedGraph(graphId);
+        if (!graphId) {
+            setCurrentGraph(null);
+            reset();
+            return;
+        }
+        const fetchGraph = async () => {
+            try {
+                const response = await fetch(`${config.apiUrl}/graph/${graphId}`);
+                if (!response.ok) {
+                    throw new Error('Impossible de récupérer les détails du graphe');
+                }
+                const graphConfig = await response.json();
+                if (graphConfig?.data) {
+                    graphConfig.data.nodes.forEach(node => {
+                        if (node.position) {
+                            node.position.y += 80;
+                        }
+                    });
+                    graphConfig.data.edges.forEach(edge => {
+                        if (edge.data) {
+                            edge.data.controlPointDistance = edge.data.controlPointDistance ?? 0;
+                        }
+                    });
+                    setCurrentGraph({
+                        name: graphConfig.name,
+                        data: graphConfig.data,
+                        difficulty: graphConfig.difficulty
+                    });
+                    reset();
+                    start();
+                } else {
+                    throw new Error('Données invalides pour le graphe');
+                }
+            } catch (err) {
+                setError('Impossible de charger le graphe sélectionné');
+                setCurrentGraph(null);
+            }
+        };
+        fetchGraph();
+    }, [reset, start]);
+
+    const handleEdgeSelect = useCallback((edge) => {
+        // TODO: Implement edge selection logic
+    }, []);
+
+    const validateGraph = useCallback(() => {
+        // TODO: Implement validation logic
+    }, []);
+
+    const resetEdges = useCallback(() => {
+        // TODO: Implement reset logic
+    }, []);
 
     return (
         <div className="tree-mode-container">
@@ -74,13 +133,13 @@ const Essai = () => {
                     ))}
                 </select>
                 {error && <div className="tree-mode-error">{error}</div>}
-                {currentGraph && <div className="tree-mode-timer">Temps: {formatTime(time)}</div>}
+                {currentGraph && <TimerDisplay time={time} formatTime={formatTime} />}
             </div>
             {currentGraph && <div className="tree-mode-buttons-row">
                 <button className="tree-mode-btn tree-mode-btn-validate" onClick={validateGraph}>Valider l'arbre couvrant</button>
                 <button className="tree-mode-btn tree-mode-btn-reset" onClick={resetEdges}>Réinitialiser la sélection</button>
             </div>}
-            {currentGraph && <GraphDisplay graphData={currentGraph} cyRef={cyRef} onSelectEdge={handleEdgeSelect} />}
+            {currentGraph && <GraphDisplayMemo graphData={currentGraph} cyRef={cyRef} onSelectEdge={handleEdgeSelect} />}
             {currentGraph && (
                 <div className="tree-mode-algos-solutions-container">
                     <span className="tree-mode-algos-solutions-title">Solutions selon les algorithmes :</span>
@@ -142,31 +201,26 @@ const Essai = () => {
                 }
                 const data = await response.json();
                 const sortedGraphs = {
-                    tresFacile: [],
-                    facile: [],
+                    petit: [],
                     moyen: [],
-                    difficile: [],
-                    extreme: []
+                    grand: []
                 };
                 data.forEach(graph => {
-                    switch (graph.difficulty) {
-                        case 'Très facile':
-                            sortedGraphs.tresFacile.push(graph);
-                            break;
-                        case 'Facile':
-                            sortedGraphs.facile.push(graph);
-                            break;
-                        case 'Moyen':
-                            sortedGraphs.moyen.push(graph);
-                            break;
-                        case 'Difficile':
-                            sortedGraphs.difficile.push(graph);
-                            break;
-                        case 'Extrême':
-                            sortedGraphs.extreme.push(graph);
-                            break;
-                        default:
-                            sortedGraphs.facile.push(graph);
+
+                    graph = {
+                        ...graph,
+                        name: graph.name.replace("Jeu", "Graphe")
+                    }
+
+                    const nodeCount = graph.data.nodes.length;
+                    const edgeCount = graph.data.edges.length;
+
+                    if (nodeCount <= 9 && edgeCount <= 9) {
+                        sortedGraphs.petit.push(graph);
+                    } else if (nodeCount <= 16 && edgeCount <= 16) {
+                        sortedGraphs.moyen.push(graph);
+                    } else {
+                        sortedGraphs.grand.push(graph);
                     }
                 });
                 setGraphs(sortedGraphs);
@@ -177,62 +231,6 @@ const Essai = () => {
             }
         };
         fetchData();
-    }
-
-    function handleGraphSelect(event) {
-        const graphId = event.target.value;
-        setSelectedGraph(graphId);
-        if (!graphId) {
-            setCurrentGraph(null);
-            reset();
-            return;
-        }
-        const fetchGraph = async () => {
-            try {
-                const response = await fetch(`${config.apiUrl}/graph/${graphId}`);
-                if (!response.ok) {
-                    throw new Error('Impossible de récupérer les détails du graphe');
-                }
-                const graphConfig = await response.json();
-                if (graphConfig?.data) {
-                    graphConfig.data.nodes.forEach(node => {
-                        if (node.position) {
-                            node.position.y += 80;
-                        }
-                    });
-                    graphConfig.data.edges.forEach(edge => {
-                        if (edge.data) {
-                            edge.data.controlPointDistance = edge.data.controlPointDistance ?? 0;
-                        }
-                    });
-                    setCurrentGraph({
-                        name: graphConfig.name,
-                        data: graphConfig.data,
-                        difficulty: graphConfig.difficulty
-                    });
-                    reset();
-                    start();
-                } else {
-                    throw new Error('Données invalides pour le graphe');
-                }
-            } catch (err) {
-                setError('Impossible de charger le graphe sélectionné');
-                setCurrentGraph(null);
-            }
-        };
-        fetchGraph();
-    }
-
-    function handleEdgeSelect(edge) {
-        // TODO: Implement edge selection logic
-    }
-
-    function validateGraph() {
-        // TODO: Implement validation logic
-    }
-
-    function resetEdges() {
-        // TODO: Implement reset logic
     }
 
     function handleClosePopup() {

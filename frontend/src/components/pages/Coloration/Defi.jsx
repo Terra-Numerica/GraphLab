@@ -8,6 +8,11 @@ import { rgbToHex } from '../../../utils/colorUtils';
 import config from '../../../config';
 
 const Defi = () => {
+
+    const TimerDisplay = ({ time, formatTime }) => {
+        return <div className="mode-timer">Temps: {formatTime(time)}</div>;
+    };
+    
     // States
     const [graphs, setGraphs] = useState({
         tresFacile: [],
@@ -88,7 +93,7 @@ const Defi = () => {
                     ))}
                 </select>
                 {error && <div className="error-message">{error}</div>}
-                {currentGraph && <div className="mode-timer">Temps: {formatTime(time)}</div>}
+                {currentGraph && <TimerDisplay time={time} formatTime={formatTime} />}
             </div>
             {currentGraph && <div className="mode-buttons-row">
                 <button className="mode-btn mode-btn-validate" onClick={validateGraph}>Valider la coloration</button>

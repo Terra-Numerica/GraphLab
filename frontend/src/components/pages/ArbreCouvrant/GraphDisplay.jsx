@@ -3,6 +3,7 @@ import cytoscape from 'cytoscape';
 import ConfirmationPopup from '../../common/ConfirmationPopup';
 
 const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
+    
     const containerRef = useRef(null);
     const selectedEdgeRef = useRef(null);
     const [deletePopup, setDeletePopup] = useState(null);
