@@ -3,7 +3,7 @@ import Navbar from './components/Navigation/Navbar'
 import Footer from './components/Navigation/Footer'
 import Home from './components/pages/Home'
 import ArbreCouvrantMain from './components/pages/ArbreCouvrant/Main'
-import ArbreCouvrantEssai from './components/pages/ArbreCouvrant/Essai'
+import ArbreCouvrantTry from './components/pages/ArbreCouvrant/Try'
 import ColorationMain from './components/pages/Coloration/Main'
 import Defi from './components/pages/Coloration/Defi'
 import Libre from './components/pages/Coloration/Libre'
@@ -23,7 +23,7 @@ function App() {
 						<Route path="/coloration/libre" element={<Libre />} />
 						<Route path="/coloration/creation" element={<Creation />} />
 						<Route path="/arbre-couvrant" element={<ArbreCouvrantMain />} />
-						<Route path="/arbre-couvrant/essai" element={<ArbreCouvrantEssai />} />
+						<Route path="/arbre-couvrant/try" element={<ArbreCouvrantTry />} />
 					</Routes>
 			</main>
 			<Footer />

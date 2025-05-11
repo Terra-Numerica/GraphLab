@@ -12,7 +12,7 @@ const TimerDisplay = React.memo(({ time, formatTime }) => {
 
 const GraphDisplayMemo = memo(GraphDisplay);
 
-const Essai = () => {
+const Try = () => {
 
     const [graphs, setGraphs] = useState({
         petit: [],
@@ -24,6 +24,7 @@ const Essai = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [validationPopup, setValidationPopup] = useState(null);
+    const [weightType, setWeightType] = useState(''); // 'predefined', 'one', 'random'
     const cyRef = useRef(null);
     const [showRules, setShowRules] = useState(false);
     const { time, start, stop, reset, formatTime, isRunning } = useTimer();
@@ -50,35 +51,78 @@ const Essai = () => {
         grand: 'Grand'
     };
 
-    const handleGraphSelect = useCallback((event) => {
-        const graphId = event.target.value;
-        setSelectedGraph(graphId);
-        if (!graphId) {
+    useEffect(() => {
+        if (!selectedGraph || !weightType) {
             setCurrentGraph(null);
-            reset();
             return;
         }
         const fetchGraph = async () => {
             try {
-                const response = await fetch(`${config.apiUrl}/graph/${graphId}`);
+                const response = await fetch(`${config.apiUrl}/graph/${selectedGraph}`);
                 if (!response.ok) {
                     throw new Error('Impossible de récupérer les détails du graphe');
                 }
                 const graphConfig = await response.json();
                 if (graphConfig?.data) {
-                    graphConfig.data.nodes.forEach(node => {
-                        if (node.position) {
-                            node.position.y += 80;
-                        }
+                    let edges = [...graphConfig.data.edges];
+                    let updated = false;
+
+                    // Build a map of node positions
+                    const nodesMap = {};
+                    (graphConfig.data.nodes || []).forEach(node => {
+                        nodesMap[node.data.id] = node.position;
                     });
-                    graphConfig.data.edges.forEach(edge => {
-                        if (edge.data) {
-                            edge.data.controlPointDistance = edge.data.controlPointDistance ?? 0;
+                    // Detect crossings and set labelOffset
+                    const edgeCount = edges.length;
+                    const labelOffsets = new Array(edgeCount).fill(0);
+                    for (let i = 0; i < edgeCount; i++) {
+                        for (let j = i + 1; j < edgeCount; j++) {
+                            if (edgesCross(edges[i], edges[j], nodesMap)) {
+                                labelOffsets[i] = 12;
+                                labelOffsets[j] = -12;
+                            }
                         }
+                    }
+                    edges = edges.map((edge, i) => {
+                        const newEdge = { ...edge };
+                        if (newEdge.data) {
+                            newEdge.data.controlPointDistance = newEdge.data.controlPointDistance ?? 0;
+                            newEdge.data.labelOffset = labelOffsets[i];
+                            if (weightType === 'predefined') {
+                                if (newEdge.data.weight === undefined || newEdge.data.weight === null || newEdge.data.weight === "") {
+                                    newEdge.data.weight = Math.floor(Math.random() * 10) + 1;
+                                    updated = true;
+                                }
+                            } else if (weightType === 'one') {
+                                newEdge.data.weight = 1;
+                            } else if (weightType === 'random') {
+                                newEdge.data.weight = Math.floor(Math.random() * 10) + 1;
+                            }
+                        }
+                        return newEdge;
                     });
+
+                    if (weightType === 'predefined' && updated) {
+                        await fetch(`${config.apiUrl}/graph/${selectedGraph}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                ...graphConfig,
+                                data: {
+                                    ...graphConfig.data,
+                                    edges: edges
+                                }
+                            })
+                        });
+                    }
                     setCurrentGraph({
                         name: graphConfig.name,
-                        data: graphConfig.data,
+                        data: {
+                            ...graphConfig.data,
+                            edges: edges
+                        },
                         difficulty: graphConfig.difficulty
                     });
                     reset();
@@ -92,7 +136,19 @@ const Essai = () => {
             }
         };
         fetchGraph();
-    }, [reset, start]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedGraph, weightType]);
+
+    const handleGraphSelect = useCallback((event) => {
+        const graphId = event.target.value;
+        setSelectedGraph(graphId);
+        setCurrentGraph(null);
+        reset();
+    }, [reset]);
+
+    const handleWeightTypeSelect = useCallback((event) => {
+        setWeightType(event.target.value);
+    }, []);
 
     const handleEdgeSelect = useCallback((edge) => {
         // TODO: Implement edge selection logic
@@ -109,7 +165,7 @@ const Essai = () => {
     return (
         <div className="tree-mode-container">
             <button className="tree-mode-back-btn" onClick={() => navigate('/arbre-couvrant')}>&larr; Retour</button>
-            <h2 className="tree-mode-title">Mode Essai</h2>
+            <h2 className="tree-mode-title">Trouve l'arbre couvrant de poids minimal</h2>
             <div className="tree-mode-top-bar">
                 <select
                     className="tree-mode-select"
@@ -132,15 +188,26 @@ const Essai = () => {
                         )
                     ))}
                 </select>
+                <select
+                    className="tree-mode-select"
+                    value={weightType}
+                    onChange={handleWeightTypeSelect}
+                    disabled={!selectedGraph}
+                >
+                    <option value="" disabled hidden>Veuillez choisir le type de poids</option>
+                    <option value="predefined">Poids Prédéfinis</option>
+                    <option value="one">Poids à 1</option>
+                    <option value="random">Poids Random</option>
+                </select>
                 {error && <div className="tree-mode-error">{error}</div>}
-                {currentGraph && <TimerDisplay time={time} formatTime={formatTime} />}
+                {currentGraph && weightType && <TimerDisplay time={time} formatTime={formatTime} />}
             </div>
-            {currentGraph && <div className="tree-mode-buttons-row">
+            {currentGraph && weightType && <div className="tree-mode-buttons-row">
                 <button className="tree-mode-btn tree-mode-btn-validate" onClick={validateGraph}>Valider l'arbre couvrant</button>
                 <button className="tree-mode-btn tree-mode-btn-reset" onClick={resetEdges}>Réinitialiser la sélection</button>
             </div>}
-            {currentGraph && <GraphDisplayMemo graphData={currentGraph} cyRef={cyRef} onSelectEdge={handleEdgeSelect} />}
-            {currentGraph && (
+            {currentGraph && weightType && <GraphDisplayMemo graphData={currentGraph} cyRef={cyRef} onSelectEdge={handleEdgeSelect} />}
+            {currentGraph && weightType && (
                 <div className="tree-mode-algos-solutions-container">
                     <span className="tree-mode-algos-solutions-title">Solutions selon les algorithmes :</span>
                     <div className="tree-mode-algos-solutions-btn-row">
@@ -175,7 +242,7 @@ const Essai = () => {
                 />
             )}
             {showRules && (
-                <RulesPopup title="Règles du mode Essai" onClose={() => setShowRules(false)}>
+                <RulesPopup title="Règles" onClose={() => setShowRules(false)}>
                     <h3>🎯 Objectif</h3>
                     <ul>
                     </ul>
@@ -236,6 +303,33 @@ const Essai = () => {
     function handleClosePopup() {
         setValidationPopup(null);
     }
+
+    // Utility: Check if two line segments (edges) cross
+    function edgesCross(e1, e2, nodesMap) {
+        // Get source/target positions
+        const a1 = nodesMap[e1.data.source];
+        const a2 = nodesMap[e1.data.target];
+        const b1 = nodesMap[e2.data.source];
+        const b2 = nodesMap[e2.data.target];
+        if (!a1 || !a2 || !b1 || !b2) return false;
+        // Exclude if they share a node
+        if ([e1.data.source, e1.data.target].some(id => id === e2.data.source || id === e2.data.target)) return false;
+        // Helper: orientation
+        function orientation(p, q, r) {
+            const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+            if (val === 0) return 0;
+            return val > 0 ? 1 : 2;
+        }
+        // Helper: check intersection
+        function doIntersect(p1, q1, p2, q2) {
+            const o1 = orientation(p1, q1, p2);
+            const o2 = orientation(p1, q1, q2);
+            const o3 = orientation(p2, q2, p1);
+            const o4 = orientation(p2, q2, q1);
+            return o1 !== o2 && o3 !== o4;
+        }
+        return doIntersect(a1, a2, b1, b2);
+    }
 };
 
 const useTimer = () => {
@@ -270,4 +364,4 @@ const useTimer = () => {
     return { time, isRunning, start, stop, reset, formatTime };
 };
 
-export default Essai;
+export default Try;

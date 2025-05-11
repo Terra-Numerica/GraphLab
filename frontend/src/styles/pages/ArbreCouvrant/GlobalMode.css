@@ -35,8 +35,9 @@
     transition: border-color 0.3s ease;
 }
 
-.tree-mode-select:hover {
-    border-color: #8e44ad;
+.tree-mode-select:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
 }
 
 .tree-mode-select:focus {

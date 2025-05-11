@@ -31,6 +31,22 @@
   font-weight: bold;
   color: var(--lightBlue);
   letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-img {
+  height: 55px;
+  width: auto;
+  object-fit: contain;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--lightBlue);
+  letter-spacing: 1px;
 }
 
 .nav-link {

@@ -6,7 +6,7 @@ const Main = () => {
     const navigate = useNavigate();
 
     const handleTryGraph = () => {
-        navigate('/arbre-couvrant/essai');
+        navigate('/arbre-couvrant/try');
     };
 
     return (

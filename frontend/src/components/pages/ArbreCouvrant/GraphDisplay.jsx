@@ -61,14 +61,18 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
                         'control-point-distance': 'data(controlPointDistance)',
                         'control-point-weight': 0.5,
                         'label': 'data(weight)',
-                        'text-rotation': 'autorotate',
-                        'text-margin-y': -10,
-                        'color': '#000000',
-                        'font-size': 14,
+                        'text-halign': 'center',
+                        'text-valign': 'center',
+                        'text-margin-y': 'data(labelOffset)',
+                        'color': '#222',
+                        'font-size': 18,
                         'font-weight': 'bold',
-                        'text-background-color': '#FFFFFF',
-                        'text-background-opacity': 0.7,
-                        'text-background-padding': 2
+                        'text-background-color': '#fff',
+                        'text-background-opacity': 0.9,
+                        'text-background-padding': 4,
+                        'text-outline-color': '#fff',
+                        'text-outline-width': 2,
+                        'z-index': 1
                     }
                 },
                 {
@@ -76,6 +80,15 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
                     style: {
                         'line-color': '#2ecc71',
                         'width': 3
+                    }
+                },
+                {
+                    selector: 'edge.hover',
+                    style: {
+                        'font-size': 26,
+                        'text-background-color': '#ffe5b4',
+                        'text-background-opacity': 1,
+                        'z-index': 9999
                     }
                 }
             ],
@@ -86,6 +99,14 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
         });
 
         cyRef.current = cy;
+
+        // Highlight edge and label on hover
+        cy.on('mouseover', 'edge', (evt) => {
+            evt.target.addClass('hover');
+        });
+        cy.on('mouseout', 'edge', (evt) => {
+            evt.target.removeClass('hover');
+        });
 
         return () => {
             if (cyRef.current) {

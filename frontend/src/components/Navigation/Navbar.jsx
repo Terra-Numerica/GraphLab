@@ -54,7 +54,10 @@ const Navbar = () => {
 					</div>
 				</div>
 				<div className="nav-center">
-					<a href="/" className="logo">GraphLab</a>
+					<a href="/" className="logo">
+						<span className="logo-text">GraphLab par </span>
+						<img src="/logo_tn.png" alt="Terra Numerica Logo" className="logo-img" />
+					</a>
 				</div>
 				<div className="nav-right">
 					<button className="admin-btn">Connexion Admin</button>
