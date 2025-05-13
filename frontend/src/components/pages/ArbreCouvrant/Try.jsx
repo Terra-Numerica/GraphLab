@@ -1,17 +1,19 @@
-import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
+import { useState, useEffect, useRef, useCallback, memo } from 'react';
+import { kruskalAlgorithm } from '../../../utils/kruskalUtils';
 import { useNavigate } from 'react-router-dom';
-import GraphDisplay from './GraphDisplay';
+
 import ValidationPopup from '../../common/ValidationPopup';
 import RulesPopup from '../../common/RulesPopup';
-import { kruskalAlgorithm } from '../../../utils/kruskalUtils';
-import '../../../styles/pages/ArbreCouvrant/GlobalMode.css';
+import GraphDisplay from './GraphDisplay';
 import config from '../../../config';
 
-const TimerDisplay = React.memo(({ time, formatTime }) => {
+import '../../../styles/pages/ArbreCouvrant/GlobalMode.css';
+
+const TimerDisplay = memo(({ time, formatTime }) => {
     return <div className="mode-timer">Temps: {formatTime(time)}</div>;
 });
 
-const CostDisplay = React.memo(({ currentCost, optimalCost }) => {
+const CostDisplay = memo(({ currentCost, optimalCost }) => {
     return (
         <div className="mode-cost">
             Coût: {currentCost}/{optimalCost}
@@ -147,7 +149,7 @@ const Try = () => {
 
     const handleEdgeSelect = useCallback((edge) => {
         if (!cyRef.current) return;
-        
+
         const edgeId = edge.id();
         setSelectedEdges(prev => {
             const newSet = new Set(prev);
@@ -162,22 +164,20 @@ const Try = () => {
         });
     }, []);
 
-    // Update current cost whenever selected edges change
     useEffect(() => {
         if (!currentGraph) return;
-        
+
         const selectedEdgeIds = Array.from(selectedEdges);
         const selectedEdgesData = currentGraph.data.edges.filter(edge => selectedEdgeIds.includes(edge.data.id));
         const totalWeight = selectedEdgesData.reduce((sum, edge) => sum + edge.data.weight, 0);
         setCurrentCost(totalWeight);
     }, [selectedEdges, currentGraph]);
 
-    // Calculate optimal cost when graph is loaded
     useEffect(() => {
         if (!currentGraph) return;
-        
+
         const optimalEdges = kruskalAlgorithm(currentGraph.data.nodes, currentGraph.data.edges);
-        const optimalWeight = optimalEdges.reduce((sum, edge) => sum + edge.data.weight, 0);
+        const optimalWeight = optimalEdges.reduce((sum, step) => sum + (step.edge?.data.weight || 0), 0);
         setOptimalCost(optimalWeight);
     }, [currentGraph, kruskalAlgorithm]);
 
@@ -185,7 +185,7 @@ const Try = () => {
         if (!cyRef.current) return;
         cyRef.current.edges().removeClass('selected');
 
-        if(!isRunning) {
+        if (!isRunning) {
             reset();
             start();
         }
@@ -203,7 +203,6 @@ const Try = () => {
         const selectedEdgeIds = Array.from(selectedEdges);
         const selectedEdgesData = edges.filter(edge => selectedEdgeIds.includes(edge.data.id));
 
-        // Check if we have exactly n-1 edges
         if (selectedEdgesData.length !== nodeCount - 1) {
             setValidationPopup({
                 type: 'error',
@@ -213,7 +212,6 @@ const Try = () => {
             return;
         }
 
-        // Check if the graph is connected using BFS
         const adjacencyList = {};
         nodes.forEach(node => {
             adjacencyList[node.data.id] = [];
@@ -247,12 +245,10 @@ const Try = () => {
             return;
         }
 
-        // Calculate total weight
         const totalWeight = selectedEdgesData.reduce((sum, edge) => sum + edge.data.weight, 0);
 
-        // Run Kruskal's algorithm to find the optimal solution
         const optimalEdges = kruskalAlgorithm(nodes, edges);
-        const optimalWeight = optimalEdges.reduce((sum, edge) => sum + edge.data.weight, 0);
+        const optimalWeight = optimalEdges.reduce((sum, step) => sum + (step.edge?.data.weight || 0), 0);
 
         if (totalWeight === optimalWeight) {
             setValidationPopup({
@@ -272,8 +268,8 @@ const Try = () => {
 
     const showKruskalSolution = useCallback(() => {
         if (!currentGraph || !cyRef.current) return;
-        navigate(`/arbre-couvrant/kruskal/${selectedGraph}`, { 
-            state: { 
+        navigate(`/arbre-couvrant/kruskal/${selectedGraph}`, {
+            state: {
                 graph: currentGraph,
                 weightType: weightType
             }
@@ -282,8 +278,8 @@ const Try = () => {
 
     const showPrimSolution = useCallback(() => {
         if (!currentGraph || !cyRef.current) return;
-        navigate(`/arbre-couvrant/prim/${selectedGraph}`, { 
-            state: { 
+        navigate(`/arbre-couvrant/prim/${selectedGraph}`, {
+            state: {
                 graph: currentGraph,
                 weightType: weightType
             }
@@ -292,8 +288,8 @@ const Try = () => {
 
     const showBoruvkaSolution = useCallback(() => {
         if (!currentGraph || !cyRef.current) return;
-        navigate(`/arbre-couvrant/boruvka/${selectedGraph}`, { 
-            state: { 
+        navigate(`/arbre-couvrant/boruvka/${selectedGraph}`, {
+            state: {
                 graph: currentGraph,
                 weightType: weightType
             }

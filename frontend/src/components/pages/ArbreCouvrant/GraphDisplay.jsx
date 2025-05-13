@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
 import cytoscape from 'cytoscape';
 
 const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
@@ -27,13 +28,11 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
             }
         }));
 
-        // Build a map of node positions
         const nodesMap = {};
         nodes.forEach(node => {
             nodesMap[node.data.id] = node.position;
         });
 
-        // Process edges to handle crossings
         let edges = (graphData.data.edges || []).map(edge => ({
             ...edge,
             data: {
@@ -43,7 +42,6 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
             }
         }));
 
-        // Detect crossings and set labelOffset
         const edgeCount = edges.length;
         const labelOffsets = new Array(edgeCount).fill(0);
         for (let i = 0; i < edgeCount; i++) {
@@ -55,7 +53,6 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
             }
         }
 
-        // Apply label offsets to edges
         edges = edges.map((edge, i) => ({
             ...edge,
             data: {
@@ -129,7 +126,6 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
 
         cyRef.current = cy;
 
-        // Highlight edge and label on hover
         cy.on('mouseover', 'edge', (evt) => {
             evt.target.addClass('hover');
         });
@@ -137,7 +133,6 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
             evt.target.removeClass('hover');
         });
 
-        // Add click handler for edges
         cy.on('tap', 'edge', (evt) => {
             if (onSelectEdge) {
                 onSelectEdge(evt.target);
@@ -163,23 +158,21 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
     );
 };
 
-// Helper: Check if two line segments (edges) cross
 const edgesCross = (e1, e2, nodesMap) => {
-    // Get source/target positions
     const a1 = nodesMap[e1.data.source];
     const a2 = nodesMap[e1.data.target];
     const b1 = nodesMap[e2.data.source];
     const b2 = nodesMap[e2.data.target];
     if (!a1 || !a2 || !b1 || !b2) return false;
-    // Exclude if they share a node
+
     if ([e1.data.source, e1.data.target].some(id => id === e2.data.source || id === e2.data.target)) return false;
-    // Helper: orientation
+
     function orientation(p, q, r) {
         const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
         if (val === 0) return 0;
         return val > 0 ? 1 : 2;
     }
-    // Helper: check intersection
+
     function doIntersect(p1, q1, p2, q2) {
         const o1 = orientation(p1, q1, p2);
         const o2 = orientation(p1, q1, q2);

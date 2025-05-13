@@ -31,29 +31,31 @@ export const kruskalAlgorithm = (nodes, edges) => {
     const nodeCount = nodes.length;
     const uf = new UnionFind(nodeCount);
     const nodeToIndex = {};
-    
-    // Create a mapping from node IDs to indices
+
     nodes.forEach((node, index) => {
         nodeToIndex[node.data.id] = index;
     });
 
-    // Sort edges by weight
     const sortedEdges = [...edges].sort((a, b) => a.data.weight - b.data.weight);
-    const mstEdges = [];
+    const steps = [];
 
     for (const edge of sortedEdges) {
         const sourceIndex = nodeToIndex[edge.data.source];
         const targetIndex = nodeToIndex[edge.data.target];
 
         if (uf.find(sourceIndex) !== uf.find(targetIndex)) {
-            mstEdges.push(edge);
+            steps.push({
+                edge,
+                action: 'add',
+                explanation: `Ajout de l'arête ${edge.data.source}-${edge.data.target} (poids: ${edge.data.weight}) car elle relie deux composantes distinctes`
+            });
             uf.union(sourceIndex, targetIndex);
         }
 
-        if (mstEdges.length === nodeCount - 1) {
+        if (steps.length === nodeCount - 1) {
             break;
         }
     }
 
-    return mstEdges;
+    return steps;
 }; 

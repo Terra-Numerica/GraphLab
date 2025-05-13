@@ -1,11 +1,13 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { colors as colorPalette } from '../../../utils/colorPalette';
+import { useState, useRef, useEffect, useMemo } from 'react';
+import { rgbToHex } from '../../../utils/colorUtils';
 import { useNavigate } from 'react-router-dom';
-import GraphDisplay from './GraphDisplay';
+
 import ValidationPopup from '../../common/ValidationPopup';
 import RulesPopup from '../../common/RulesPopup';
+import GraphDisplay from './GraphDisplay';
+
 import '../../../styles/pages/Coloration/GlobalMode.css';
-import { colors as colorPalette } from '../../../utils/colorPalette';
-import { rgbToHex } from '../../../utils/colorUtils';
 
 const TimerDisplay = ({ time, formatTime }) => {
     return <div className="mode-timer">Temps: {formatTime(time)}</div>;
@@ -35,7 +37,6 @@ const Creation = () => {
         };
     }, [showRules]);
 
-    // Graph manipulation functions
     const handleAddNode = (node) => {
         setGraphData(prev => ({
             nodes: [...prev.nodes, node],
@@ -92,7 +93,6 @@ const Creation = () => {
         }
     };
 
-    // Handle color count change
     const handleColorCountChange = (e) => {
         const value = e.target.value;
         if (value === '' || (/^\d+$/.test(value) && parseInt(value) >= 1 && parseInt(value) <= 12)) {
@@ -100,7 +100,6 @@ const Creation = () => {
         }
     };
 
-    // Handle switching to Libre mode
     const tryGraph = () => {
         if (graphData.nodes.length === 0) {
             setValidationPopup({
@@ -113,10 +112,8 @@ const Creation = () => {
         setIsLibreMode(true);
         reset();
         start();
-        // start(); => Problème sur drag and drop des pastilles
     };
 
-    // Handle returning to editor
     const returnToEditor = () => {
         setIsLibreMode(false);
         stop();
@@ -133,7 +130,6 @@ const Creation = () => {
         }
     };
 
-    // Handle reset coloration
     const resetColoration = () => {
         if (cyRef.current) {
             cyRef.current.nodes().forEach(node => {
@@ -142,7 +138,6 @@ const Creation = () => {
                 }
             });
         }
-        // Also reset color in state!
         setGraphData(prev => ({
             ...prev,
             nodes: prev.nodes.map(node =>
@@ -151,30 +146,26 @@ const Creation = () => {
                     : { ...node, data: { ...node.data, color: '#CCCCCC' } }
             )
         }));
-        // Restart timer if it was stopped
         if (!isRunning) {
             reset();
             start();
         }
     };
 
-    // Handle validate coloration (mode Libre logic)
     const validateColoration = () => {
         if (!cyRef.current) return;
         const defaultColor = '#CCCCCC';
         let isCompleted = true;
         let isValid = true;
         const usedColors = new Set();
-        const nodeColors = new Map(); // Store original colors
+        const nodeColors = new Map();
 
-        // First, store all current colors
         cyRef.current.nodes().forEach((node) => {
             if (!node.data('isColorNode')) {
                 nodeColors.set(node.id(), node.style('background-color'));
             }
         });
 
-        // Then validate
         cyRef.current.nodes().forEach((node) => {
             if (node.data('isColorNode')) return;
             const nodeColor = nodeColors.get(node.id());
@@ -219,7 +210,6 @@ const Creation = () => {
         }
     };
 
-    // Prepare color palette
     const getPastilleCounts = () => {
         let count = parseInt(colorCount);
         if (!count || count < 1 || count > colorPalette.length) count = 12;
@@ -230,7 +220,6 @@ const Creation = () => {
         return pastilleCounts;
     };
 
-    // Memoize graphData for GraphDisplay to avoid unnecessary re-renders
     const memoizedGraphData = useMemo(() => {
         if (isLibreMode) {
             return {

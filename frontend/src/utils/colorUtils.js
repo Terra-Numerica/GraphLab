@@ -1,4 +1,3 @@
-// Convertit une couleur RGB en hexadécimal
 export const rgbToHex = (rgb) => {
     const result = rgb.match(/\d+/g);
     if (!result) return rgb;
@@ -15,7 +14,6 @@ export const rgbToHex = (rgb) => {
     );
 };
 
-// Trouve une position X libre pour une pastille
 export const findFreePositionX = (cy) => {
     const y = 50;
     let x = 50;

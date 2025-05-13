@@ -1,5 +1,5 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
+
 import '../../styles/pages/Home.css';
 
 const Home = () => {
@@ -36,7 +36,6 @@ const Home = () => {
                         <div className="workshop-desc-vertical">Trouve l'arbre couvrant de poids minimal d'un graphe !</div>
                         <Link to="/arbre-couvrant" className="workshop-play-btn">Jouer</Link>
                     </div>
-                    {/* D'autres ateliers seront ajoutés ici */}
                 </div>
             </div>
         </div>

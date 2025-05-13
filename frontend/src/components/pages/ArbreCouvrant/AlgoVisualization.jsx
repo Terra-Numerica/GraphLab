@@ -1,29 +1,45 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import { kruskalAlgorithm } from '../../../utils/kruskalUtils';
 import { boruvkaAlgorithm } from '../../../utils/boruvkaUtils';
-import '../../../styles/pages/ArbreCouvrant/BoruvkaVisualization.css';
+import { primAlgorithm } from '../../../utils/primUtils';
+import { useState, useCallback, useEffect } from 'react';
 
-const BoruvkaVisualization = ({ graph, cyRef }) => {
+import '../../../styles/pages/ArbreCouvrant/AlgoVisualization.css';
+
+const algoMap = {
+    prim: {
+        algorithm: primAlgorithm,
+        nodeStartClass: 'algo-node-start algo-prim-start',
+        edgeClass: 'algo-edge-selected algo-prim-selected',
+    },
+    kruskal: {
+        algorithm: kruskalAlgorithm,
+        edgeClass: 'algo-edge-selected algo-kruskal-selected',
+    },
+    boruvka: {
+        algorithm: boruvkaAlgorithm,
+        edgeClass: 'algo-edge-selected algo-boruvka-selected',
+        componentClass: 'algo-boruvka-component',
+        minEdgeClass: 'algo-boruvka-min-edge',
+    }
+};
+
+const AlgoVisualization = ({ algo, graph, cyRef }) => {
     const [isAutomatic, setIsAutomatic] = useState(false);
-    const [speed, setSpeed] = useState(1000); // ms between steps
+    const [speed, setSpeed] = useState(1000);
     const [currentStep, setCurrentStep] = useState(-1);
     const [steps, setSteps] = useState([]);
     const [isPlaying, setIsPlaying] = useState(false);
     const [explanation, setExplanation] = useState('');
 
-    // Initialize steps when component mounts
+    const config = algoMap[algo];
+
     useEffect(() => {
         if (!graph) return;
+        const newSteps = config.algorithm(graph.data.nodes, graph.data.edges);
+        setSteps(newSteps);
+        setExplanation('Cliquez sur "Étape suivante" ou "Démarrer" pour commencer la visualisation');
+    }, [graph, config]);
 
-        const initializeSteps = () => {
-            const newSteps = boruvkaAlgorithm(graph.data.nodes, graph.data.edges);
-            setSteps(newSteps);
-            setExplanation('Cliquez sur "Étape suivante" ou "Démarrer" pour commencer la visualisation');
-        };
-
-        initializeSteps();
-    }, [graph]);
-
-    // Handle automatic mode
     useEffect(() => {
         let interval;
         if (isAutomatic && isPlaying && currentStep < steps.length) {
@@ -40,43 +56,55 @@ const BoruvkaVisualization = ({ graph, cyRef }) => {
         return () => clearInterval(interval);
     }, [isAutomatic, isPlaying, currentStep, steps.length, speed]);
 
-    // Update visualization when step changes
     useEffect(() => {
         if (!cyRef.current || steps.length === 0) return;
-
-        // Reset all edges and nodes
-        cyRef.current.edges().removeClass('selected boruvka-min-edge')
+        cyRef.current.edges().removeClass('algo-edge-selected algo-prim-selected algo-kruskal-selected algo-boruvka-selected algo-boruvka-min-edge')
             .style({
                 'line-color': '#666',
                 'line-width': 1,
                 'opacity': 1
             });
-
-        // Color all edges and nodes up to currentStep
+        cyRef.current.nodes().removeClass('algo-node-start algo-prim-start algo-boruvka-component')
+            .style({
+                'background-color': '#b0b0b0',
+                'border-width': 1,
+                'border-color': '#444'
+            });
         if (currentStep >= 0) {
             for (let i = 0; i <= currentStep; i++) {
                 const step = steps[i];
                 if (step.edge) {
                     const edge = cyRef.current.getElementById(step.edge.data.id);
                     if (edge) {
-                        edge.addClass('selected')
-                            .style({
-                                'line-color': '#2ecc71',
-                                'line-width': 3,
-                                'opacity': 1
-                            });
+                        if (algo === 'boruvka' && step.action === 'min_edge') {
+                            edge.addClass(config.minEdgeClass);
+                        } else {
+                            edge.addClass(config.edgeClass);
+                        }
+                        edge.style({
+                            'line-color': '#2ecc71',
+                            'line-width': 3,
+                            'opacity': 1
+                        });
                     }
+                }
+                if (algo === 'prim' && step.action === 'start' && step.node) {
+                    const node = cyRef.current.getElementById(step.node);
+                    if (node) {
+                        node.addClass(config.nodeStartClass);
+                    }
+                }
+                if (algo === 'boruvka' && step.action === 'start') {
+                    cyRef.current.nodes().addClass(config.componentClass);
                 }
             }
         }
-
-        // Explication de l'étape courante
         if (currentStep >= 0 && steps[currentStep]) {
             setExplanation(steps[currentStep].explanation);
         } else {
             setExplanation('');
         }
-    }, [currentStep, steps, cyRef]);
+    }, [currentStep, steps, cyRef, algo, config]);
 
     const handleNextStep = useCallback(() => {
         if (currentStep < steps.length - 1) {
@@ -134,24 +162,23 @@ const BoruvkaVisualization = ({ graph, cyRef }) => {
                         Mode Automatique
                     </button>
                 </div>
-
                 {!isAutomatic ? (
                     <div className="tree-mode-step-controls">
-                        <button 
+                        <button
                             className="tree-mode-btn"
                             onClick={handlePreviousStep}
                             disabled={currentStep <= 0}
                         >
                             ← Précédent
                         </button>
-                        <button 
+                        <button
                             className="tree-mode-btn"
                             onClick={handleReset}
                             disabled={currentStep === -1}
                         >
                             Réinitialiser
                         </button>
-                        <button 
+                        <button
                             className="tree-mode-btn"
                             onClick={handleNextStep}
                             disabled={currentStep === steps.length - 1}
@@ -161,7 +188,7 @@ const BoruvkaVisualization = ({ graph, cyRef }) => {
                     </div>
                 ) : (
                     <div className="tree-mode-speed-controls">
-                        <button 
+                        <button
                             className={`tree-mode-btn ${isPlaying ? 'pause' : 'play'} tree-mode-btn-playpause`}
                             onClick={handlePlayPause}
                         >
@@ -172,12 +199,10 @@ const BoruvkaVisualization = ({ graph, cyRef }) => {
                         <button className="tree-mode-btn" onClick={() => handleSpeedChange(500)} title="Rapide">⏩</button>
                     </div>
                 )}
-
                 <div className="tree-mode-progress">
                     Étape {currentStep >= 0 ? currentStep + 1 : 0} sur {steps.length}
                 </div>
             </div>
-
             <div className="tree-mode-explanation-box">
                 {currentStep >= 0 && explanation}
             </div>
@@ -185,4 +210,4 @@ const BoruvkaVisualization = ({ graph, cyRef }) => {
     );
 };
 
-export default BoruvkaVisualization; 
+export default AlgoVisualization; 

@@ -1,16 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
-import cytoscape from 'cytoscape';
 import { rgbToHex, findFreePositionX } from '../../../utils/colorUtils';
 import { colors as colorPalette } from '../../../utils/colorPalette';
-import ConfirmationPopup from '../../common/ConfirmationPopup';
+import { useEffect, useRef, useState } from 'react';
 
-const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = false, onAddNode, onAddEdge, onDeleteNode, onDeleteEdge, creationLibreMode = false, onColorNode }) => {
+import ConfirmationPopup from '../../common/ConfirmationPopup';
+import cytoscape from 'cytoscape';
+
+const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = false, onAddEdge, onDeleteNode, onDeleteEdge, creationLibreMode = false, onColorNode }) => {
     const containerRef = useRef(null);
     const draggedColorRef = useRef(null);
     const closestNodeRef = useRef(null);
     const selectedColorNodeRef = useRef(null);
     const selectedNodeRef = useRef(null);
-    const snapDistance = 50; // Distance en pixels pour le snap
+    const snapDistance = 50;
     const defaultColor = "#CCCCCC";
     const [deletePopup, setDeletePopup] = useState(null);
 
@@ -71,7 +72,6 @@ const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = fals
         else if (modeLibre) {
             if (creationLibreMode && graphData.pastilleCounts) {
 
-                // Mode Création -> Essayer le graphe : pastilles strictes
                 const colorsToUse = Object.keys(graphData.pastilleCounts);
                 const nodes = (graphData.nodes || []).map(node => ({
                     ...node,
@@ -110,7 +110,7 @@ const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = fals
                     panningEnabled: false,
                     boxSelectionEnabled: false
                 });
-                // Décalage vertical si besoin
+
                 const minSafeY = 100;
                 let minY = Infinity;
                 let maxY = -Infinity;
@@ -147,7 +147,7 @@ const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = fals
                 });
 
             } else if (graphData.pastilleCounts) {
-                // Mode Libre original : pastilles + couleurs supplémentaires
+
                 const existingColors = Object.keys(graphData.pastilleCounts);
                 const availableColors = colorPalette.filter(c => !existingColors.includes(c));
                 const numRandomColors = Math.min(Math.floor(Math.random() * 3) + 1, availableColors.length);
@@ -201,7 +201,6 @@ const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = fals
         }
         // === MODE DEFI ===
         else {
-            // Mode Défi : pastilles limitées
             const pastilleNodes = [];
             let xOffset = 50;
             const yPosition = 50;
@@ -384,7 +383,6 @@ const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = fals
             }
         });
 
-        // Désélectionner si on clique sur le fond
         cy.on('tap', (evt) => {
             if (evt.target === cy) {
                 if (selectedNodeRef.current) {
@@ -434,7 +432,6 @@ const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = fals
 
         cyRef.current = cy;
 
-        // Lock/unlock nodes according to mode
         if (modeLibre) {
             cy.nodes().forEach(node => {
                 if (!node.data('isColorNode')) {

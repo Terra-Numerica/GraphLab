@@ -263,7 +263,6 @@
     border: 2px solid #e9ecef;
 }
 
-/* Common visualization styles */
 .tree-mode-visualization-panel {
     background: transparent;
     box-shadow: none;
@@ -337,7 +336,6 @@
     margin-right: 2rem;
 }
 
-/* Common visualization container styles */
 .visualization-container {
     position: fixed;
     top: 0;
@@ -351,4 +349,38 @@
     justify-content: center;
     z-index: 1000;
     padding: 2rem;
+}
+
+.algo-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.algo-visualization-infos {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 1.5rem 0 0 0;
+    border-top: 1.5px solid #e9ecef;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.algo-graph-centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: calc(100vh - 300px);
+    min-height: 400px;
+    padding: 1rem;
+}
+
+.graph-info {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
 }

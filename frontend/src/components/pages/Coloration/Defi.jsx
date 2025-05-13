@@ -1,19 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { rgbToHex } from '../../../utils/colorUtils';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import GraphDisplay from './GraphDisplay';
+
 import ValidationPopup from '../../common/ValidationPopup';
 import RulesPopup from '../../common/RulesPopup';
-import '../../../styles/pages/Coloration/GlobalMode.css';
-import { rgbToHex } from '../../../utils/colorUtils';
+import GraphDisplay from './GraphDisplay';
 import config from '../../../config';
+
+import '../../../styles/pages/Coloration/GlobalMode.css';
 
 const Defi = () => {
 
     const TimerDisplay = ({ time, formatTime }) => {
         return <div className="mode-timer">Temps: {formatTime(time)}</div>;
     };
-    
-    // States
+
     const [graphs, setGraphs] = useState({
         tresFacile: [],
         facile: [],
@@ -32,7 +33,6 @@ const Defi = () => {
     const [showRules, setShowRules] = useState(false);
     const navigate = useNavigate();
 
-    // Effects
     useEffect(() => {
         fetchGraphs();
     }, []);
@@ -57,7 +57,6 @@ const Defi = () => {
         };
     }, [showRules]);
 
-    // Constants
     const difficultyLabels = {
         tresFacile: 'Très Facile',
         facile: 'Facile',
@@ -147,7 +146,6 @@ const Defi = () => {
         </div>
     );
 
-    // Functions
     function fetchGraphs() {
         const fetchData = async () => {
             try {

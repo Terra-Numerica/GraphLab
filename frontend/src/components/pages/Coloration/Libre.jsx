@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { rgbToHex } from '../../../utils/colorUtils';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import GraphDisplay from './GraphDisplay';
 import ValidationPopup from '../../common/ValidationPopup';
 import RulesPopup from '../../common/RulesPopup';
-import '../../../styles/pages/Coloration/GlobalMode.css';
-import { rgbToHex } from '../../../utils/colorUtils';
 import config from '../../../config';
+
+import '../../../styles/pages/Coloration/GlobalMode.css';
 
 const Libre = () => {
 

@@ -2,14 +2,12 @@ export const primAlgorithm = (nodes, edges) => {
     const nodeCount = nodes.length;
     const nodeToIndex = {};
     const indexToNode = {};
-    
-    // Create mappings between node IDs and indices
+
     nodes.forEach((node, index) => {
         nodeToIndex[node.data.id] = index;
         indexToNode[index] = node.data.id;
     });
 
-    // Create adjacency matrix
     const G = Array(nodeCount).fill().map(() => Array(nodeCount).fill(Infinity));
     edges.forEach(edge => {
         const i = nodeToIndex[edge.data.source];
@@ -21,7 +19,6 @@ export const primAlgorithm = (nodes, edges) => {
     const visited = Array(nodeCount).fill(false);
     const steps = [];
 
-    // Étape 0 : choix du sommet de départ
     visited[0] = true;
     steps.push({
         action: 'start',
@@ -46,9 +43,8 @@ export const primAlgorithm = (nodes, edges) => {
             }
         }
 
-        if (minI === -1 || minJ === -1) break; // Plus d'arêtes possibles
+        if (minI === -1 || minJ === -1) break;
 
-        // Ajout de l'étape de visualisation
         const sourceId = indexToNode[minI];
         const targetId = indexToNode[minJ];
         const edge = edges.find(e =>

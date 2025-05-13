@@ -1,6 +1,6 @@
-import React from 'react';
-import '../../../styles/pages/Coloration/Main.css';
 import { Link } from 'react-router-dom';
+
+import '../../../styles/pages/Coloration/Main.css';
 
 const Main = () => {
     return (
