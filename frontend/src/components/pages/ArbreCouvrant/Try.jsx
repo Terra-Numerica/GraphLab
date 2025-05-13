@@ -3,11 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import GraphDisplay from './GraphDisplay';
 import ValidationPopup from '../../common/ValidationPopup';
 import RulesPopup from '../../common/RulesPopup';
+import { kruskalAlgorithm } from '../../../utils/kruskalUtils';
 import '../../../styles/pages/ArbreCouvrant/GlobalMode.css';
 import config from '../../../config';
 
 const TimerDisplay = React.memo(({ time, formatTime }) => {
     return <div className="mode-timer">Temps: {formatTime(time)}</div>;
+});
+
+const CostDisplay = React.memo(({ currentCost, optimalCost }) => {
+    return (
+        <div className="mode-cost">
+            Coût: {currentCost}/{optimalCost}
+        </div>
+    );
 });
 
 const GraphDisplayMemo = memo(GraphDisplay);
@@ -25,10 +34,14 @@ const Try = () => {
     const [error, setError] = useState(null);
     const [validationPopup, setValidationPopup] = useState(null);
     const [weightType, setWeightType] = useState(''); // 'predefined', 'one', 'random'
+    const [selectedEdges, setSelectedEdges] = useState(new Set());
+    const [currentCost, setCurrentCost] = useState(0);
+    const [optimalCost, setOptimalCost] = useState(0);
     const cyRef = useRef(null);
     const [showRules, setShowRules] = useState(false);
     const { time, start, stop, reset, formatTime, isRunning } = useTimer();
     const navigate = useNavigate();
+    const [showKruskalViz, setShowKruskalViz] = useState(false);
 
     useEffect(() => {
         fetchGraphs();
@@ -67,27 +80,10 @@ const Try = () => {
                     let edges = [...graphConfig.data.edges];
                     let updated = false;
 
-                    // Build a map of node positions
-                    const nodesMap = {};
-                    (graphConfig.data.nodes || []).forEach(node => {
-                        nodesMap[node.data.id] = node.position;
-                    });
-                    // Detect crossings and set labelOffset
-                    const edgeCount = edges.length;
-                    const labelOffsets = new Array(edgeCount).fill(0);
-                    for (let i = 0; i < edgeCount; i++) {
-                        for (let j = i + 1; j < edgeCount; j++) {
-                            if (edgesCross(edges[i], edges[j], nodesMap)) {
-                                labelOffsets[i] = 12;
-                                labelOffsets[j] = -12;
-                            }
-                        }
-                    }
-                    edges = edges.map((edge, i) => {
+                    edges = edges.map((edge) => {
                         const newEdge = { ...edge };
                         if (newEdge.data) {
                             newEdge.data.controlPointDistance = newEdge.data.controlPointDistance ?? 0;
-                            newEdge.data.labelOffset = labelOffsets[i];
                             if (weightType === 'predefined') {
                                 if (newEdge.data.weight === undefined || newEdge.data.weight === null || newEdge.data.weight === "") {
                                     newEdge.data.weight = Math.floor(Math.random() * 10) + 1;
@@ -136,7 +132,6 @@ const Try = () => {
             }
         };
         fetchGraph();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedGraph, weightType]);
 
     const handleGraphSelect = useCallback((event) => {
@@ -151,16 +146,159 @@ const Try = () => {
     }, []);
 
     const handleEdgeSelect = useCallback((edge) => {
-        // TODO: Implement edge selection logic
+        if (!cyRef.current) return;
+        
+        const edgeId = edge.id();
+        setSelectedEdges(prev => {
+            const newSet = new Set(prev);
+            if (newSet.has(edgeId)) {
+                newSet.delete(edgeId);
+                edge.removeClass('selected');
+            } else {
+                newSet.add(edgeId);
+                edge.addClass('selected');
+            }
+            return newSet;
+        });
+    }, []);
+
+    // Update current cost whenever selected edges change
+    useEffect(() => {
+        if (!currentGraph) return;
+        
+        const selectedEdgeIds = Array.from(selectedEdges);
+        const selectedEdgesData = currentGraph.data.edges.filter(edge => selectedEdgeIds.includes(edge.data.id));
+        const totalWeight = selectedEdgesData.reduce((sum, edge) => sum + edge.data.weight, 0);
+        setCurrentCost(totalWeight);
+    }, [selectedEdges, currentGraph]);
+
+    // Calculate optimal cost when graph is loaded
+    useEffect(() => {
+        if (!currentGraph) return;
+        
+        const optimalEdges = kruskalAlgorithm(currentGraph.data.nodes, currentGraph.data.edges);
+        const optimalWeight = optimalEdges.reduce((sum, edge) => sum + edge.data.weight, 0);
+        setOptimalCost(optimalWeight);
+    }, [currentGraph, kruskalAlgorithm]);
+
+    const resetEdges = useCallback(() => {
+        if (!cyRef.current) return;
+        cyRef.current.edges().removeClass('selected');
+
+        if(!isRunning) {
+            reset();
+            start();
+        }
+
+        setSelectedEdges(new Set());
+        setCurrentCost(0);
     }, []);
 
     const validateGraph = useCallback(() => {
-        // TODO: Implement validation logic
-    }, []);
+        if (!currentGraph || !cyRef.current) return;
 
-    const resetEdges = useCallback(() => {
-        // TODO: Implement reset logic
-    }, []);
+        const nodes = currentGraph.data.nodes;
+        const edges = currentGraph.data.edges;
+        const nodeCount = nodes.length;
+        const selectedEdgeIds = Array.from(selectedEdges);
+        const selectedEdgesData = edges.filter(edge => selectedEdgeIds.includes(edge.data.id));
+
+        // Check if we have exactly n-1 edges
+        if (selectedEdgesData.length !== nodeCount - 1) {
+            setValidationPopup({
+                type: 'error',
+                title: 'Erreur',
+                message: "Tu dois sélectionner exactement le nombre d'arêtes nécessaires pour couvrir tous les sommets."
+            });
+            return;
+        }
+
+        // Check if the graph is connected using BFS
+        const adjacencyList = {};
+        nodes.forEach(node => {
+            adjacencyList[node.data.id] = [];
+        });
+
+        selectedEdgesData.forEach(edge => {
+            adjacencyList[edge.data.source].push(edge.data.target);
+            adjacencyList[edge.data.target].push(edge.data.source);
+        });
+
+        const visited = new Set();
+        const queue = [nodes[0].data.id];
+        visited.add(nodes[0].data.id);
+
+        while (queue.length > 0) {
+            const current = queue.shift();
+            for (const neighbor of adjacencyList[current]) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
+                }
+            }
+        }
+
+        if (visited.size !== nodeCount) {
+            setValidationPopup({
+                type: 'error',
+                title: 'Erreur',
+                message: 'Le graphe n\'est pas connecté. Tous les sommets doivent être accessibles.'
+            });
+            return;
+        }
+
+        // Calculate total weight
+        const totalWeight = selectedEdgesData.reduce((sum, edge) => sum + edge.data.weight, 0);
+
+        // Run Kruskal's algorithm to find the optimal solution
+        const optimalEdges = kruskalAlgorithm(nodes, edges);
+        const optimalWeight = optimalEdges.reduce((sum, edge) => sum + edge.data.weight, 0);
+
+        if (totalWeight === optimalWeight) {
+            setValidationPopup({
+                type: 'success',
+                title: 'Félicitations !',
+                message: `Vous avez trouvé l'arbre couvrant de poids minimal avec un poids total de ${totalWeight}.`
+            });
+            stop();
+        } else {
+            setValidationPopup({
+                type: 'error',
+                title: 'Presque !',
+                message: `Le poids total de votre solution est ${totalWeight}, mais il existe une solution de poids ${optimalWeight}.`
+            });
+        }
+    }, [currentGraph, selectedEdges, stop]);
+
+    const showKruskalSolution = useCallback(() => {
+        if (!currentGraph || !cyRef.current) return;
+        navigate(`/arbre-couvrant/kruskal/${selectedGraph}`, { 
+            state: { 
+                graph: currentGraph,
+                weightType: weightType
+            }
+        });
+    }, [currentGraph, selectedGraph, weightType, navigate]);
+
+    const showPrimSolution = useCallback(() => {
+        if (!currentGraph || !cyRef.current) return;
+        navigate(`/arbre-couvrant/prim/${selectedGraph}`, { 
+            state: { 
+                graph: currentGraph,
+                weightType: weightType
+            }
+        });
+    }, [currentGraph, selectedGraph, weightType, navigate]);
+
+    const showBoruvkaSolution = useCallback(() => {
+        if (!currentGraph || !cyRef.current) return;
+        navigate(`/arbre-couvrant/boruvka/${selectedGraph}`, { 
+            state: { 
+                graph: currentGraph,
+                weightType: weightType
+            }
+        });
+    }, [currentGraph, selectedGraph, weightType, navigate]);
 
     return (
         <div className="tree-mode-container">
@@ -200,7 +338,12 @@ const Try = () => {
                     <option value="random">Poids Random</option>
                 </select>
                 {error && <div className="tree-mode-error">{error}</div>}
-                {currentGraph && weightType && <TimerDisplay time={time} formatTime={formatTime} />}
+                {currentGraph && weightType && (
+                    <div className="mode-info">
+                        <CostDisplay currentCost={currentCost} optimalCost={optimalCost} />
+                        <TimerDisplay time={time} formatTime={formatTime} />
+                    </div>
+                )}
             </div>
             {currentGraph && weightType && <div className="tree-mode-buttons-row">
                 <button className="tree-mode-btn tree-mode-btn-validate" onClick={validateGraph}>Valider l'arbre couvrant</button>
@@ -213,19 +356,19 @@ const Try = () => {
                     <div className="tree-mode-algos-solutions-btn-row">
                         <button
                             className="tree-mode-btn-algo tree-mode-btn-prim"
-                            onClick={() => {/* TODO: Afficher la solution de Prim */ }}
+                            onClick={showPrimSolution}
                         >
                             Solution selon l'algorithme de Prim
                         </button>
                         <button
                             className="tree-mode-btn-algo tree-mode-btn-kruskal"
-                            onClick={() => {/* TODO: Afficher la solution de Kruskal */ }}
+                            onClick={showKruskalSolution}
                         >
                             Solution selon l'algorithme de Kruskal
                         </button>
                         <button
                             className="tree-mode-btn-algo tree-mode-btn-boruvka"
-                            onClick={() => {/* TODO: Afficher la solution de Boruvka */ }}
+                            onClick={showBoruvkaSolution}
                         >
                             Solution selon l'algorithme de Boruvka
                         </button>
@@ -302,33 +445,6 @@ const Try = () => {
 
     function handleClosePopup() {
         setValidationPopup(null);
-    }
-
-    // Utility: Check if two line segments (edges) cross
-    function edgesCross(e1, e2, nodesMap) {
-        // Get source/target positions
-        const a1 = nodesMap[e1.data.source];
-        const a2 = nodesMap[e1.data.target];
-        const b1 = nodesMap[e2.data.source];
-        const b2 = nodesMap[e2.data.target];
-        if (!a1 || !a2 || !b1 || !b2) return false;
-        // Exclude if they share a node
-        if ([e1.data.source, e1.data.target].some(id => id === e2.data.source || id === e2.data.target)) return false;
-        // Helper: orientation
-        function orientation(p, q, r) {
-            const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-            if (val === 0) return 0;
-            return val > 0 ? 1 : 2;
-        }
-        // Helper: check intersection
-        function doIntersect(p1, q1, p2, q2) {
-            const o1 = orientation(p1, q1, p2);
-            const o2 = orientation(p1, q1, q2);
-            const o3 = orientation(p2, q2, p1);
-            const o4 = orientation(p2, q2, q1);
-            return o1 !== o2 && o3 !== o4;
-        }
-        return doIntersect(a1, a2, b1, b2);
     }
 };
 

@@ -29,7 +29,7 @@
     border: 2px solid #9b59b6;
     background: #fff;
     outline: none;
-    min-width: 300px;
+    min-width: 180px;
     cursor: pointer;
     color: #2c3e50;
     transition: border-color 0.3s ease;
@@ -51,7 +51,7 @@
     color: #2c3e50;
     margin-left: auto;
     background: #f8f9fa;
-    padding: 0.8rem 1.5rem;
+    padding: 0.8rem 1rem;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
@@ -68,6 +68,7 @@
     font-size: 1.1rem;
     border-radius: 8px;
     border: none;
+    background-color: #1565c0;
     color: #fff;
     font-weight: 500;
     cursor: pointer;
@@ -86,6 +87,21 @@
     color: #b0b0b0;
     opacity: 1;
     cursor: not-allowed;
+}
+
+.tree-mode-btn.active {
+    background: #003b63;
+    color: #fff;
+}
+
+.tree-mode-btn.play {
+    background: #2ecc71;
+    color: #fff;
+}
+
+.tree-mode-btn.pause {
+    background: #e74c3c;
+    color: #fff;
 }
 
 .tree-mode-btn-validate {
@@ -223,4 +239,116 @@
 
 .tree-mode-btn-boruvka {
     background: #c834db;
+}
+
+.mode-info {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.mode-timer {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.mode-cost {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #2c3e50;
+    padding: 8px 16px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+}
+
+/* Common visualization styles */
+.tree-mode-visualization-panel {
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.tree-mode-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.tree-mode-selector {
+    display: flex;
+    gap: 1rem;
+}
+
+.tree-mode-step-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.tree-mode-speed-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.tree-mode-progress {
+    text-align: center;
+    font-weight: 500;
+    color: #2c3e50;
+    background: #f8f9fa;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.tree-mode-explanation-box {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: #2c3e50;
+    overflow-y: auto;
+    border: 2px solid #e9ecef;
+}
+
+.close-btn {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    background: #e74c3c;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.close-btn:hover {
+    background: #c0392b;
+}
+
+.tree-mode-btn-playpause {
+    margin-right: 2rem;
+}
+
+/* Common visualization container styles */
+.visualization-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 2rem;
 }

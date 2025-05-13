@@ -4,10 +4,13 @@ import Footer from './components/Navigation/Footer'
 import Home from './components/pages/Home'
 import ArbreCouvrantMain from './components/pages/ArbreCouvrant/Main'
 import ArbreCouvrantTry from './components/pages/ArbreCouvrant/Try'
+import KruskalPage from './components/pages/ArbreCouvrant/KruskalPage';
+import PrimPage from './components/pages/ArbreCouvrant/PrimPage';
 import ColorationMain from './components/pages/Coloration/Main'
 import Defi from './components/pages/Coloration/Defi'
 import Libre from './components/pages/Coloration/Libre'
 import Creation from './components/pages/Coloration/Creation'
+import BoruvkaPage from './components/pages/ArbreCouvrant/BoruvkaPage';
 import './styles/global.css'
 
 function App() {
@@ -24,6 +27,9 @@ function App() {
 						<Route path="/coloration/creation" element={<Creation />} />
 						<Route path="/arbre-couvrant" element={<ArbreCouvrantMain />} />
 						<Route path="/arbre-couvrant/try" element={<ArbreCouvrantTry />} />
+						<Route path="/arbre-couvrant/kruskal/:graphId" element={<KruskalPage />} />
+						<Route path="/arbre-couvrant/prim/:graphId" element={<PrimPage />} />
+						<Route path="/arbre-couvrant/boruvka/:graphId" element={<BoruvkaPage />} />
 					</Routes>
 			</main>
 			<Footer />
