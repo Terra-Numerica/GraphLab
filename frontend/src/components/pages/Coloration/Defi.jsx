@@ -77,7 +77,7 @@ const Defi = () => {
                     disabled={loading}
                 >
                     <option value="" disabled hidden>
-                        {loading ? "Chargement des graphes..." : "Veuillez choisir un graphe"}
+                        {loading ? "Chargement des graphes..." : "Choisis un graphe"}
                     </option>
                     {Object.entries(graphs).map(([difficulty, graphList]) => (
                         graphList.length > 0 && (
@@ -122,24 +122,23 @@ const Defi = () => {
             {showRules && (
                 <RulesPopup title="Règles du mode Défi" onClose={() => setShowRules(false)}>
                     <h3>🎯 Objectif</h3>
-
                     <ul>
                         <li>Deux sommets adjacents ne doivent jamais avoir la même couleur.</li>
-                        <li>Vous possédez un nombre limité de pastilles que vous devez placer correctement.</li>
+                        <li>Tu disposes d'un nombre limité de pastilles que tu dois placer correctement.</li>
                     </ul>
 
                     <h3>🛠️ Comment jouer à la <strong>Coloration d'un Graphe</strong></h3>
                     <ul>
-                        <li>Sélectionnez un graphe prédéfini dans le menu déroulant.</li>
-                        <li>Attrapez une pastille de couleur, faites-la glisser vers un sommet et relâchez-la pour lui attribuer cette couleur.</li>
-                        <li>Coloriez entièrement le graphe en respectant les règles de coloration.</li>
-                        <li>Quand vous pensez avoir réussi, cliquez sur le bouton <strong>Valider la Coloration</strong> pour vérifier si le graphe est correctement coloré.</li>
+                        <li>Choisis un graphe prédéfini dans le menu déroulant.</li>
+                        <li>Attrape une pastille de couleur, fais-la glisser vers un sommet et relâche-la pour lui attribuer cette couleur.</li>
+                        <li>Colorie entièrement le graphe en respectant les règles de coloration.</li>
+                        <li>Quand tu penses avoir réussi, clique sur le bouton <strong>Valider la Coloration</strong> pour vérifier si le graphe est correctement coloré.</li>
                     </ul>
 
                     <h3>🔧 Fonctionnalités</h3>
                     <ul>
-                        <li>Si vous pensez avoir fait une erreur, vous pouvez faire un clic droit sur un sommet pour lui retirer sa couleur.</li>
-                        <li>Si vous voulez recommencer, cliquez sur <strong>Réinitialiser la Coloration</strong> pour remettre tous les sommets dans leur état initial.</li>
+                        <li>Si tu penses avoir fait une erreur, tu peux faire un clic droit sur un sommet pour lui retirer sa couleur.</li>
+                        <li>Si tu veux recommencer, clique sur <strong>Réinitialiser la Coloration</strong> pour remettre tous les sommets dans leur état initial.</li>
                     </ul>
                 </RulesPopup>
             )}
@@ -297,20 +296,20 @@ const Defi = () => {
             setValidationPopup({
                 type: 'warning',
                 title: 'Attention !',
-                message: 'Le graphe n\'est pas entièrement coloré.'
+                message: "Le graphe n'est pas entièrement coloré."
             });
         } else if (!isValid) {
             setValidationPopup({
                 type: 'error',
                 title: 'Erreur !',
-                message: 'Deux sommets adjacents ont la même couleur.'
+                message: "Deux sommets adjacents ont la même couleur."
             });
         } else {
             stop();
             setValidationPopup({
                 type: 'success',
                 title: 'Félicitations !',
-                message: `Bravo ! La coloration est valide !\nTemps: ${formatTime(time)}`
+                message: `Bravo ! La coloration est valide ! \n Temps: ${formatTime(time)}`
             });
         }
     }
@@ -386,7 +385,7 @@ const Defi = () => {
             setValidationPopup({
                 type: 'warning',
                 title: 'Attention !',
-                message: 'Vous devez essayer de colorer au moins 15% du graphe avant de déclarer qu\'il est impossible !'
+                message: "Tu dois essayer de colorer au moins 15% du graphe avant de déclarer qu'il est impossible !"
             });
             return;
         }
@@ -430,13 +429,13 @@ const Defi = () => {
             setValidationPopup({
                 type: 'success',
                 title: 'Bonne analyse !',
-                message: `${explanation}\n\nTemps: ${formatTime(time)}`
+                message: `${explanation} \n Temps: ${formatTime(time)}`
             });
         } else {
             setValidationPopup({
                 type: 'error',
                 title: "Non, ce graphe n'est pas impossible.",
-                message: "Ce graphe peut être coloré correctement. Essayez encore !"
+                message: "Ce graphe peut être coloré correctement. Essaie encore !"
             });
         }
     }

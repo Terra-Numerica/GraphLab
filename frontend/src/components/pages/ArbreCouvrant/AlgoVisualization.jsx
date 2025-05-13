@@ -37,7 +37,7 @@ const AlgoVisualization = ({ algo, graph, cyRef }) => {
         if (!graph) return;
         const newSteps = config.algorithm(graph.data.nodes, graph.data.edges);
         setSteps(newSteps);
-        setExplanation('Cliquez sur "Étape suivante" ou "Démarrer" pour commencer la visualisation');
+        setExplanation(`Pour commencer la visualisation, clique sur "Démarrer" (en mode automatique) ou "Étape suivante" (en mode manuel)`);
     }, [graph, config]);
 
     useEffect(() => {

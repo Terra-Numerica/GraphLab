@@ -67,7 +67,7 @@ const Libre = () => {
                     disabled={loading}
                 >
                     <option value="" disabled hidden>
-                        {loading ? "Chargement des graphes..." : "Veuillez choisir un graphe"}
+                        {loading ? "Chargement des graphes..." : "Choisis un graphe"}
                     </option>
                     {Object.entries(graphs).map(([difficulty, graphList]) => (
                         graphList.length > 0 && (
@@ -103,22 +103,22 @@ const Libre = () => {
                     <h3>🎯 Objectif</h3>
                     <ul>
                         <li>Deux sommets adjacents ne doivent jamais avoir la même couleur.</li>
-                        <li>Vous possédez un nombre limité de pastilles que vous devez placer correctement.</li>
+                        <li>Tu disposes d'un nombre illimité de pastilles que tu dois placer correctement.</li>
                     </ul>
 
                     <h3>🛠️ Comment jouer à la <strong>Coloration d'un Graphe</strong></h3>
                     <ul>
-                        <li>Sélectionnez un graphe prédéfini dans le menu déroulant.</li>
-                        <li>Attrapez une pastille de couleur, faites-la glisser vers un sommet et relâchez-la pour lui attribuer cette couleur.</li>
-                        <li>Coloriez entièrement le graphe en respectant les règles de coloration.</li>
-                        <li>Quand vous pensez avoir réussi, cliquez sur le bouton <strong>Valider la Coloration</strong> pour vérifier si le graphe est correctement coloré.</li>
-                        <li>Mettez-vous au défi d'utiliser le moins de couleurs possible pour colorer le graphe !</li>
+                        <li>Choisis un graphe prédéfini dans le menu déroulant.</li>
+                        <li>Attrape une pastille de couleur, fais-la glisser vers un sommet et relâche-la pour lui attribuer cette couleur.</li>
+                        <li>Colorie entièrement le graphe en respectant les règles de coloration.</li>
+                        <li>Quand tu penses avoir réussi, clique sur le bouton <strong>Valider la Coloration</strong> pour vérifier si le graphe est correctement coloré.</li>
+                        <li>Mets-toi au défi d'utiliser le moins de couleurs possible pour colorer le graphe !</li>
                     </ul>
 
                     <h3>🔧 Fonctionnalités</h3>
                     <ul>
-                        <li>Si vous pensez avoir fait une erreur, vous pouvez faire un clic droit sur un sommet pour lui retirer sa couleur.</li>
-                        <li>Si vous voulez recommencer, cliquez sur <strong>Réinitialiser la Coloration</strong> pour remettre tous les sommets dans leur état initial.</li>
+                        <li>Si tu penses avoir fait une erreur, tu peux faire un clic droit sur un sommet pour lui retirer sa couleur.</li>
+                        <li>Si tu veux recommencer, clique sur <strong>Réinitialiser la Coloration</strong> pour remettre tous les sommets dans leur état initial.</li>
                     </ul>
                 </RulesPopup>
             )}
@@ -270,14 +270,14 @@ const Libre = () => {
                 setValidationPopup({
                     type: 'success',
                     title: 'Félicitations !',
-                    message: `Vous avez réussi à colorer le graphe ! Il existe une solution qui utilise moins de couleurs. Allez-vous réussir à la trouver ?`
+                    message: `Tu as réussi à colorer le graphe ! Il existe une solution qui utilise moins de couleurs. Peux-tu la trouver ?`
                 });
             } else {
                 stop();
                 setValidationPopup({
                     type: 'success',
                     title: 'Félicitations !',
-                    message: `Vous avez réussi à colorer le graphe en ${formatTime(time)} ! Vous avez trouvé la solution qui utilise le nombre minimum de couleurs !`
+                    message: `Tu as réussi à colorer le graphe en ${formatTime(time)} ! Tu as trouvé la solution qui utilise le nombre minimum de couleurs !`
                 });
             }
         }

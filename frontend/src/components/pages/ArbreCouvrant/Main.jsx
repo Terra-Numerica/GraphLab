@@ -15,16 +15,16 @@ const Main = () => {
                 <h2>L'Arbre Couvrant de Poids Minimal</h2>
                 <div className="explanation-text">
                     <p>
-                        Un arbre couvrant de poids minimal, c'est un moyen de relier tous les ronds (sommets) d'un graphe avec des traits (arêtes), mais en utilisant le moins de longueur ou de coût possible.
+                        Un arbre couvrant minimal est un sous-ensemble d'arêtes qui connecte tous les sommets d'un graphe en formant un arbre, tout en minimisant la somme des poids des arêtes utilisées.
                     </p>
                     <p>
-                        Par exemple, imagine que tu veux relier plusieurs villes avec des routes : il faut que toutes les villes soient connectées, mais sans gaspiller de matériaux ou d'argent.
+                        Pour illustrer ce concept, prenons l'exemple d'un réseau de villes à connecter. L'objectif est de relier toutes les villes entre elles en utilisant le minimum de routes possible, tout en minimisant le coût total de construction.
                     </p>
                     <p>
-                        Chaque trait a un "poids" (comme le prix de la route). Le but est de trouver la meilleure façon de tout relier sans faire de boucle et en dépensant le moins possible.
+                        Chaque arête du graphe possède un poids qui représente son coût. La solution optimale doit connecter tous les sommets sans former de cycle, tout en minimisant la somme des poids des arêtes sélectionnées.
                     </p>
                     <p>
-                        C'est un vrai défi : comment relier tout le monde de la façon la plus efficace ? C'est ça, trouver l'arbre couvrant de poids minimal !
+                        Ce problème d'optimisation trouve des applications concrètes dans la planification de réseaux, comme la conception de réseaux électriques, de réseaux de communication ou de systèmes de distribution.
                     </p>
                 </div>
                 <button className="try-graph-button" onClick={handleTryGraph}>

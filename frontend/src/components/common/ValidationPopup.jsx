@@ -23,7 +23,9 @@ const ValidationPopup = ({ type, title, message, onClose }) => {
                     <h3>{title}</h3>
                 </div>
                 <div className="validation-popup-content">
-                    <p>{message}</p>
+                    {message.split('\n').map((line, idx) => (
+                        <p key={idx} style={{ margin: 0 }}>{line}</p>
+                    ))}
                 </div>
                 <div className="validation-popup-footer">
                     <button onClick={onClose} className="validation-popup-button">

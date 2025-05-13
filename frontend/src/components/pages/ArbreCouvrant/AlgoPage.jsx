@@ -45,7 +45,7 @@ const AlgoPage = () => {
     return (
       <div className="tree-mode-container">
         <div className="tree-mode-error">
-          Aucun graphe n'a été sélectionné. Veuillez retourner à la page précédente.
+          Aucun graphe n'a été selectionné. Tu peux retourner à la page précédente pour en selectionner un.
         </div>
         <button className="tree-mode-back-btn" onClick={() => navigate('/arbre-couvrant')}>
           Retour

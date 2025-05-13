@@ -105,7 +105,7 @@ const Creation = () => {
             setValidationPopup({
                 type: 'warning',
                 title: 'Attention !',
-                message: 'Le graphe est vide. Ajoutez des sommets avant de l\'essayer.'
+                message: "Tu dois créer un graphe avant de l'essayer."
             });
             return;
         }
@@ -205,7 +205,7 @@ const Creation = () => {
             setValidationPopup({
                 type: 'success',
                 title: 'Félicitations !',
-                message: `Bravo ! La coloration est valide !\nTemps: ${formatTime(time)}`
+                message: `Bravo ! La coloration est valide ! \n Temps: ${formatTime(time)}`
             });
         }
     };
@@ -330,32 +330,32 @@ const Creation = () => {
                 <RulesPopup title="Règles du mode Création" onClose={() => setShowRules(false)}>
                     <h3>🎯 Objectif</h3>
                     <ul>
-                        <li>Créer un graphe et le colorer.</li>
+                        <li>Crée un graphe et colorie-le.</li>
                         <li>Deux sommets adjacents ne doivent jamais avoir la même couleur.</li>
-                        <li>Vous possédez un nombre limité de pastilles que vous devez placer correctement.</li>
+                        <li>Tu disposes d'un nombre limité de pastilles que tu dois placer correctement.</li>
                     </ul>
 
                     <h3>🛠️ Comment créer un <strong>Graphe</strong></h3>
                     <ul>
-                        <li>Cliquez sur le bouton <strong>Ajouter un sommet</strong> pour ajouter un sommet au graphe.</li>
-                        <li>Placez le sommet en le faisant glisser là où vous le souhaitez.</li>
-                        <li>En faisant un clic gauche sur un sommet puis un autre clic gauche sur un autre sommet, vous pouvez ajouter une arête entre les deux sommets.</li>
-                        <li>Dès que vous pensez avoir terminé de créer votre graphe, cliquez sur le bouton <strong>Essayer le Graphe</strong> pour commencer à le colorer.</li>
+                        <li>Clique sur le bouton <strong>Ajouter un sommet</strong> pour ajouter un sommet au graphe.</li>
+                        <li>Place le sommet en le faisant glisser là où tu le souhaites.</li>
+                        <li>En faisant un clic gauche sur un sommet puis un autre clic gauche sur un autre sommet, tu peux ajouter une arête entre les deux sommets.</li>
+                        <li>Dès que tu penses avoir terminé de créer ton graphe, clique sur le bouton <strong>Essayer le Graphe</strong> pour commencer à le colorer.</li>
                     </ul>
 
                     <h3>🛠️ Comment jouer à la <strong>Coloration d'un Graphe</strong></h3>
                     <ul>
-                        <li>Attrapez une pastille de couleur, faites-la glisser vers un sommet et relâchez-la pour lui attribuer cette couleur.</li>
-                        <li>Coloriez entièrement le graphe en respectant les règles de coloration.</li>
-                        <li>Quand vous pensez avoir réussi, cliquez sur le bouton <strong>Valider la Coloration</strong> pour vérifier si le graphe est correctement coloré.</li>
-                        <li>Mettez-vous au défi d'utiliser le moins de couleurs possible pour colorer le graphe !</li>
+                        <li>Attrape une pastille de couleur, fais-la glisser vers un sommet et relâche-la pour lui attribuer cette couleur.</li>
+                        <li>Colorie entièrement le graphe en respectant les règles de coloration.</li>
+                        <li>Quand tu penses avoir réussi, clique sur le bouton <strong>Valider la Coloration</strong> pour vérifier si le graphe est correctement coloré.</li>
+                        <li>Mets-toi au défi d'utiliser le moins de couleurs possible pour colorer le graphe !</li>
                     </ul>
 
                     <h3>🔧 Fonctionnalités</h3>
                     <ul>
-                        <li>Lors de la création, si vous pensez que votre graphe n'est pas bien organisé, vous pouvez le réarranger en cliquant sur <strong>Réarranger le graphe</strong>.</li>
-                        <li>Si vous pensez avoir fait une erreur, vous pouvez faire un clic droit sur un sommet pour lui retirer sa couleur.</li>
-                        <li>Si vous voulez recommencer, cliquez sur <strong>Réinitialiser la Coloration</strong> pour remettre tous les sommets dans leur état initial.</li>
+                        <li>Lors de la création, si tu penses que ton graphe n'est pas bien organisé, tu peux le réarranger en cliquant sur <strong>Réarranger le graphe</strong>.</li>
+                        <li>Si tu penses avoir fait une erreur, tu peux faire un clic droit sur un sommet pour lui retirer sa couleur.</li>
+                        <li>Si tu veux recommencer, clique sur <strong>Réinitialiser la Coloration</strong> pour remettre tous les sommets dans leur état initial.</li>
                     </ul>
                 </RulesPopup>
             )}

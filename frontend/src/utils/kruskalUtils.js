@@ -47,7 +47,7 @@ export const kruskalAlgorithm = (nodes, edges) => {
             steps.push({
                 edge,
                 action: 'add',
-                explanation: `Ajout de l'arête ${edge.data.source}-${edge.data.target} (poids: ${edge.data.weight}) car elle relie deux composantes distinctes`
+                explanation: `Ajout de l'arête ${edge.data.source}-${edge.data.target} (poids : ${edge.data.weight}) car elle relie deux composantes distinctes.`
             });
             uf.union(sourceIndex, targetIndex);
         }

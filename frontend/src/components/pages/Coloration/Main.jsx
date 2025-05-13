@@ -9,10 +9,10 @@ const Main = () => {
                 <h2>Coloration des Sommets</h2>
                 <div className="explanation-text">
                     <p>
-                        Imagine que chaque sommet d'un graphe est une antenne. Si deux antennes sont trop proches (reliées par un trait), elles ne doivent pas utiliser la même couleur pour éviter les interférences !
+                        La coloration de graphe est un problème d'optimisation où chaque sommet doit recevoir une couleur distincte de ses sommets adjacents. Ce problème trouve son application dans l'allocation de ressources, comme la planification de fréquences pour des antennes de communication.
                     </p>
                     <p>
-                        Le but de la coloration des sommets est donc de colorer chaque sommet de façon à ce que deux sommets reliés n'aient jamais la même couleur. On cherche aussi à utiliser le moins de couleurs possible !
+                        L'objectif est double : d'une part, respecter la contrainte d'adjacence en attribuant des couleurs différentes aux sommets reliés, et d'autre part, minimiser le nombre total de couleurs utilisées pour colorer l'ensemble du graphe.
                     </p>
                 </div>
                 <div className="coloration-modes">

@@ -23,7 +23,7 @@ export const primAlgorithm = (nodes, edges) => {
     steps.push({
         action: 'start',
         node: indexToNode[0],
-        explanation: `On commence par le sommet ${indexToNode[0]}`
+        explanation: `On commence par le sommet ${indexToNode[0]}.`
     });
 
     for (let k = 0; k < nodeCount - 1; k++) {
@@ -55,7 +55,7 @@ export const primAlgorithm = (nodes, edges) => {
         steps.push({
             edge,
             action: 'add',
-            explanation: `Ajout de l'arête ${sourceId}-${targetId} (poids: ${edge.data.weight}) car c'est l'arête de poids minimal reliant un sommet visité à un sommet non visité`
+            explanation: `Ajout de l'arête ${sourceId}-${targetId} (poids : ${edge.data.weight}) car c'est l'arête de poids minimal reliant un sommet visité à un sommet non visité.`
         });
 
         visited[minJ] = true;

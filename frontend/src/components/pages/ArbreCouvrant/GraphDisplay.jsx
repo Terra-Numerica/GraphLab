@@ -1,12 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 import cytoscape from 'cytoscape';
 
 const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
-    
+
     const containerRef = useRef(null);
-    const selectedEdgeRef = useRef(null);
-    const [deletePopup, setDeletePopup] = useState(null);
 
     useEffect(() => {
         if (cyRef.current && cyRef.current.container() === containerRef.current) {
@@ -43,15 +41,40 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
         }));
 
         const edgeCount = edges.length;
-        const labelOffsets = new Array(edgeCount).fill(0);
+
+        const crossingGroups = [];
         for (let i = 0; i < edgeCount; i++) {
-            for (let j = i + 1; j < edgeCount; j++) {
-                if (edgesCross(edges[i], edges[j], nodesMap)) {
-                    labelOffsets[i] = 12;
-                    labelOffsets[j] = -12;
+            let foundGroup = null;
+            for (let j = 0; j < crossingGroups.length; j++) {
+                if (crossingGroups[j].includes(i)) {
+                    foundGroup = crossingGroups[j];
+                    break;
                 }
             }
+            if (foundGroup) continue;
+
+            const group = [i];
+            for (let j = 0; j < edgeCount; j++) {
+                if (i !== j && edgesCross(edges[i], edges[j], nodesMap)) {
+                    group.push(j);
+                }
+            }
+
+            if (group.length > 1) {
+                const alreadyGrouped = group.some(idx => crossingGroups.some(g => g.includes(idx)));
+                if (!alreadyGrouped) crossingGroups.push(group);
+            }
         }
+
+        const labelOffsets = new Array(edgeCount).fill(0);
+        crossingGroups.forEach(group => {
+            const n = group.length;
+            const baseOffset = 28;
+            group.sort((a, b) => a - b);
+            group.forEach((edgeIdx, idx) => {
+                labelOffsets[edgeIdx] = baseOffset * (idx - (n - 1) / 2);
+            });
+        });
 
         edges = edges.map((edge, i) => ({
             ...edge,

@@ -474,8 +474,8 @@ const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = fals
     const handleDeleteElement = (element) => {
         if (element.isNode()) {
             setDeletePopup({
-                title: "Supprimer le sommet",
-                message: "Êtes-vous sûr de vouloir supprimer ce sommet ? Toutes les arêtes connectées seront également supprimées.",
+                title: "Suppression d'un sommet",
+                message: "Es-tu sûr de vouloir supprimer ce sommet ? Toutes les arêtes connectées seront également supprimées.",
                 onConfirm: () => {
                     if (onDeleteNode) {
                         onDeleteNode(element.id());
@@ -485,8 +485,8 @@ const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = fals
             });
         } else if (element.isEdge()) {
             setDeletePopup({
-                title: "Supprimer l'arête",
-                message: "Êtes-vous sûr de vouloir supprimer cette arête ?",
+                title: "Suppression d'une arête",
+                message: "Es-tu sûr de vouloir supprimer cette arête ?",
                 onConfirm: () => {
                     if (onDeleteEdge) {
                         onDeleteEdge(element.id());

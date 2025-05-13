@@ -43,7 +43,6 @@ const Try = () => {
     const [showRules, setShowRules] = useState(false);
     const { time, start, stop, reset, formatTime, isRunning } = useTimer();
     const navigate = useNavigate();
-    const [showKruskalViz, setShowKruskalViz] = useState(false);
 
     useEffect(() => {
         fetchGraphs();
@@ -240,7 +239,7 @@ const Try = () => {
             setValidationPopup({
                 type: 'error',
                 title: 'Erreur',
-                message: 'Le graphe n\'est pas connecté. Tous les sommets doivent être accessibles.'
+                message: "Le graphe n'est pas connecté. Tous les sommets doivent être accessibles."
             });
             return;
         }
@@ -254,14 +253,14 @@ const Try = () => {
             setValidationPopup({
                 type: 'success',
                 title: 'Félicitations !',
-                message: `Vous avez trouvé l'arbre couvrant de poids minimal avec un poids total de ${totalWeight}.`
+                message: `Tu as trouvé l'arbre couvrant de poids minimal avec un poids total de ${totalWeight}.`
             });
             stop();
         } else {
             setValidationPopup({
                 type: 'error',
                 title: 'Presque !',
-                message: `Le poids total de votre solution est ${totalWeight}, mais il existe une solution de poids ${optimalWeight}.`
+                message: `Le poids total de ton arbre couvrant est ${totalWeight}, mais il existe une solution de poids ${optimalWeight}.`
             });
         }
     }, [currentGraph, selectedEdges, stop]);
@@ -308,7 +307,7 @@ const Try = () => {
                     disabled={loading}
                 >
                     <option value="" disabled hidden>
-                        {loading ? "Chargement des graphes..." : "Veuillez choisir un graphe"}
+                        {loading ? "Chargement des graphes..." : "Choisis un graphe"}
                     </option>
                     {Object.entries(graphs).map(([difficulty, graphList]) => (
                         graphList.length > 0 && (
@@ -328,10 +327,10 @@ const Try = () => {
                     onChange={handleWeightTypeSelect}
                     disabled={!selectedGraph}
                 >
-                    <option value="" disabled hidden>Veuillez choisir le type de poids</option>
-                    <option value="predefined">Poids Prédéfinis</option>
+                    <option value="" disabled hidden>Choisis le type de poids</option>
+                    <option value="predefined">Poids prédéfinis</option>
                     <option value="one">Poids à 1</option>
-                    <option value="random">Poids Random</option>
+                    <option value="random">Poids aléatoire</option>
                 </select>
                 {error && <div className="tree-mode-error">{error}</div>}
                 {currentGraph && weightType && (
@@ -348,25 +347,25 @@ const Try = () => {
             {currentGraph && weightType && <GraphDisplayMemo graphData={currentGraph} cyRef={cyRef} onSelectEdge={handleEdgeSelect} />}
             {currentGraph && weightType && (
                 <div className="tree-mode-algos-solutions-container">
-                    <span className="tree-mode-algos-solutions-title">Solutions selon les algorithmes :</span>
+                    <span className="tree-mode-algos-solutions-title">Solutions :</span>
                     <div className="tree-mode-algos-solutions-btn-row">
                         <button
                             className="tree-mode-btn-algo tree-mode-btn-prim"
                             onClick={showPrimSolution}
                         >
-                            Solution selon l'algorithme de Prim
+                            Selon l'algorithme de Prim
                         </button>
                         <button
                             className="tree-mode-btn-algo tree-mode-btn-kruskal"
                             onClick={showKruskalSolution}
                         >
-                            Solution selon l'algorithme de Kruskal
+                            Selon l'algorithme de Kruskal
                         </button>
                         <button
                             className="tree-mode-btn-algo tree-mode-btn-boruvka"
                             onClick={showBoruvkaSolution}
                         >
-                            Solution selon l'algorithme de Boruvka
+                            Selon l'algorithme de Boruvka
                         </button>
                     </div>
                 </div>
@@ -384,14 +383,26 @@ const Try = () => {
                 <RulesPopup title="Règles" onClose={() => setShowRules(false)}>
                     <h3>🎯 Objectif</h3>
                     <ul>
+                        <li>Trouve l'arbre couvrant minimal du graphe en sélectionnant les arêtes appropriées.</li>
+                        <li>Minimise la somme des poids des arêtes sélectionnées tout en connectant tous les sommets.</li>
+                        <li>Évite la formation de cycles dans ta solution.</li>
                     </ul>
 
                     <h3>🛠️ Comment jouer à l'arbre couvrant</h3>
                     <ul>
+                        <li>Choisis un graphe prédéfini dans le menu déroulant.</li>
+                        <li>Sélectionne le type de poids des arêtes : prédéfini, tous à 1 ou aléatoire.</li>
+                        <li>Clique sur les arêtes pour les sélectionner ou les désélectionner.</li>
+                        <li>Vérifie que ta solution connecte tous les sommets sans former de cycle.</li>
+                        <li>Valide ta solution pour vérifier si elle est optimale.</li>
                     </ul>
 
                     <h3>🔧 Fonctionnalités</h3>
                     <ul>
+                        <li>Tu peux voir en temps réel le coût total de ta solution.</li>
+                        <li>Compare ta solution avec les solutions optimales des algorithmes classiques.</li>
+                        <li>Tu peux réinitialiser ta solution à tout moment.</li>
+                        <li>Le temps écoulé est affiché pour suivre ta progression.</li>
                     </ul>
                 </RulesPopup>
             )}

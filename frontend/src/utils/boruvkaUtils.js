@@ -32,6 +32,7 @@ const findMinEdgeForComponent = (edges, componentNodes, parent) => {
 
         const sourceInComponent = componentNodes.includes(source);
         const targetInComponent = componentNodes.includes(target);
+
         if ((sourceInComponent && !targetInComponent) || (!sourceInComponent && targetInComponent)) {
             if (find(parent, source) !== find(parent, target) && weight < minWeight) {
                 minWeight = weight;
@@ -55,7 +56,7 @@ export const boruvkaAlgorithm = (nodes, edges) => {
 
     steps.push({
         action: 'start',
-        explanation: "Début de l'algorithme de Boruvka. Chaque nœud forme sa propre composante."
+        explanation: "Début de l'algorithme de Boruvka : chaque sommet forme d'abord sa propre composante. À chaque étape, on va chercher à relier les composantes entre elles en choisissant l'arête de poids minimal qui les connecte."
     });
 
     while (numComponents > 1) {
@@ -87,7 +88,7 @@ export const boruvkaAlgorithm = (nodes, edges) => {
                 steps.push({
                     action: 'select_edge',
                     edge: edge,
-                    explanation: `Sélection de l'arête de poids minimum (${edge.data.weight}) pour la composante ${componentId}`
+                    explanation: `On sélectionne l'arête de poids minimal (${edge.data.weight}) pour relier la composante ${componentId} à une autre. Cette arête est ajoutée à l'arbre couvrant, ce qui fusionne les deux composantes.`
                 });
                 union(parent, rank, source, target);
                 numComponents--;
@@ -102,7 +103,7 @@ export const boruvkaAlgorithm = (nodes, edges) => {
 
     steps.push({
         action: 'end',
-        explanation: "L'algorithme de Boruvka est terminé. L'arbre couvrant minimum a été trouvé."
+        explanation: "Fin de l'algorithme de Boruvka : toutes les composantes sont maintenant connectées. L'arbre couvrant de poids minimal a été construit."
     });
 
     return steps;
