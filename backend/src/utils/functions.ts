@@ -4,8 +4,27 @@ export const sleep = (ms: number) => {
 	return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-export const keepAliveRenderdotCom = async () => {
+export const sendDiscordMessage = async (message: string) => {
+    try {
+        const response = await fetch(process.env.DISCORD_WEBHOOK_URL!, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                content: message
+            })
+        });
 
+        if (!response.ok) {
+            throw new Error(`Discord webhook failed with status ${response.status}`);
+        }
+    } catch (error: any) {
+        Logger.error(`Failed to send Discord message: ${error.message}`);
+    }
+};
+
+export const keepAliveRenderdotCom = async () => {
     const backendURL = process.env.BACKEND_URL;
     const frontendURL = process.env.FRONTEND_URL;
 

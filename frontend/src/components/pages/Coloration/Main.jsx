@@ -1,8 +1,29 @@
+// Imports
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+
+import TutorialPopup from '../../common/TutorialPopup';
 
 import '../../../styles/pages/Coloration/Main.css';
 
 const Main = () => {
+
+    const [showTutorial, setShowTutorial] = useState(false);
+
+    useEffect(() => {
+        const hasSeenTutorial = localStorage.getItem('hasSeenColorationTutorial');
+        if (!hasSeenTutorial) {
+            setShowTutorial(true);
+        }
+    }, []);
+
+    const handleTutorialComplete = (dontShowAgain) => {
+        if (dontShowAgain) {
+            localStorage.setItem('hasSeenMSTTutorial', 'true');
+        }
+        setShowTutorial(false);
+    };
+
     return (
         <div className="coloration-container">
             <div className="explanation-section">
@@ -21,6 +42,36 @@ const Main = () => {
                     <Link to="/coloration/creation" className="coloration-mode-btn">Mode création</Link>
                 </div>
             </div>
+            {showTutorial && (
+                <TutorialPopup
+                    steps={
+                        [
+                            {
+                                title: "Graphe (Coloration)",
+                                description: "Voici un graphe, tu dois le colorer avec le moins de couleurs possible.",
+                                image: "/tutorial/Coloration/graph.png"
+                            },
+                            {
+                                title: "Coloration avec 2 couleurs adjacentes",
+                                description: "Ici, nous avons un graphe coloré avec 2 couleurs adjacentes, cela n'est pas valide.",
+                                image: "/tutorial/Coloration/2-colors.png"
+                            },
+                            {
+                                title: "Coloration valide mais non optimale",
+                                description: "Ici, nous avons un graphe coloré avec 4 couleurs, cela est valide mais non optimale.",
+                                image: "/tutorial/Coloration/3-colors.png"
+                            },
+                            {
+                                title: "Coloration optimale",
+                                description: "Ici, nous avons un graphe coloré avec 3 couleurs, cela est valide et optimal.",
+                                image: "/tutorial/Coloration/optimal-coloring.png"
+                            }
+                        ]
+                    }
+                    onClose={() => setShowTutorial(false)}
+                    onComplete={handleTutorialComplete}
+                />
+            )}
         </div>
     );
 };

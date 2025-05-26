@@ -1,5 +1,5 @@
 // Imports
-import { keepAliveRenderdotCom } from "@/utils/functions";
+import { keepAliveRenderdotCom, sendDiscordMessage } from "@/utils/functions";
 import { connectDatabase } from "@/base/Database";
 import { checkConfig } from "@/utils/config";
 
@@ -48,8 +48,21 @@ try {
 	});
 
 	if(process.env.NODE_ENV === "production") {
+		let isServiceActive = false;
 		setInterval(async () => {
-			await keepAliveRenderdotCom();
+			const currentHour = new Date().getHours();
+			const shouldBeActive = currentHour >= 7 && currentHour < 20;
+			
+			if (shouldBeActive && !isServiceActive) {
+				isServiceActive = true;
+				await keepAliveRenderdotCom();
+				await sendDiscordMessage("🟢 Service activé - Les pings sont maintenant actifs");
+			} else if (!shouldBeActive && isServiceActive) {
+				isServiceActive = false;
+				await sendDiscordMessage("🔴 Service désactivé - Les pings sont maintenant inactifs");
+			} else if (shouldBeActive) {
+				await keepAliveRenderdotCom();
+			}
 		}, 30000);
 	};
 

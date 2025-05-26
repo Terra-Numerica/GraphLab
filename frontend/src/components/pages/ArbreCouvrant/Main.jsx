@@ -1,12 +1,29 @@
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import TutorialPopup from '../../common/TutorialPopup';
 
 import '../../../styles/pages/ArbreCouvrant/Main.css';
 
 const Main = () => {
     const navigate = useNavigate();
+    const [showTutorial, setShowTutorial] = useState(false);
+
+    useEffect(() => {
+        const hasSeenTutorial = localStorage.getItem('hasSeenMSTTutorial');
+        if (!hasSeenTutorial) {
+            setShowTutorial(true);
+        }
+    }, []);
 
     const handleTryGraph = () => {
         navigate('/arbre-couvrant/try');
+    };
+
+    const handleTutorialComplete = (dontShowAgain) => {
+        if (dontShowAgain) {
+            localStorage.setItem('hasSeenMSTTutorial', 'true');
+        }
+        setShowTutorial(false);
     };
 
     return (
@@ -31,6 +48,36 @@ const Main = () => {
                     Essayer un graphe
                 </button>
             </div>
+            {showTutorial && (
+                <TutorialPopup
+                    steps={
+                        [
+                            {
+                                title: "Graphe (Arbre Couvrant)",
+                                description: "Voici un arbre couvrant (vide), il est composé de 5 sommets et 4 arêtes, chaque arrête possède un poids. Tu dois trouver l'arbre couvrant de poids minimal.",
+                                image: "/tutorial/ArbreCouvrant/graph.png"
+                            },
+                            {
+                                title: "Solution avec Cycle",
+                                description: "Ici, nous avons un arbre couvrant valide, mais il contient un cycle. Un arbre ne doit pas contenir de cycles.",
+                                image: "/tutorial/ArbreCouvrant/cycle.png"
+                            },
+                            {
+                                title: "Arbre Couvrant Non Minimal",
+                                description: "Dans ce cas, nous avons un arbre couvrant valide, mais il n'est pas minimal car la somme des poids des arêtes n'est pas minimale.",
+                                image: "/tutorial/ArbreCouvrant/non-minimal.png"
+                            },
+                            {
+                                title: "Arbre Couvrant Minimal",
+                                description: "Et enfin, un arbre couvrant minimal valide. Il connecte tous les sommets sans cycle et avec la somme des poids minimale.",
+                                image: "/tutorial/ArbreCouvrant/minimal.png"
+                            }
+                        ]
+                    }
+                    onClose={() => setShowTutorial(false)}
+                    onComplete={handleTutorialComplete}
+                />
+            )}
         </div>
     );
 };
