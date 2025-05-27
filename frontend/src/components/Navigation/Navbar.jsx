@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/Navigation/Navbar.css';
 
 const Navbar = () => {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const navigate = useNavigate();
 
 	const handleDropdown = (open) => {
 		if (window.innerWidth > 768) {
@@ -21,6 +24,22 @@ const Navbar = () => {
 		window.addEventListener('resize', handleResize);
 		return () => window.removeEventListener('resize', handleResize);
 	}, []);
+
+	useEffect(() => {
+		const checkAuth = () => {
+			const token = localStorage.getItem('jwt');
+			setIsAuthenticated(!!token);
+		};
+		checkAuth();
+		window.addEventListener('authChanged', checkAuth);
+		return () => window.removeEventListener('authChanged', checkAuth);
+	}, []);
+
+	const handleLogout = () => {
+		localStorage.removeItem('jwt');
+		setIsAuthenticated(false);
+		navigate('/');
+	};
 
 	return (
 		<nav className="navbar">
@@ -60,7 +79,11 @@ const Navbar = () => {
 					</a>
 				</div>
 				<div className="nav-right">
-					<button className="admin-btn">Connexion Admin</button>
+					{isAuthenticated ? (
+						<button onClick={handleLogout} className="admin-btn">Déconnexion</button>
+					) : (
+						<a href="/admin" className="admin-btn">Connexion Admin</a>
+					)}
 				</div>
 			</div>
 		</nav>
