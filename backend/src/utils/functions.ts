@@ -6,7 +6,7 @@ export const sleep = (ms: number) => {
 
 export const sendDiscordMessage = async (message: string) => {
     try {
-        const response = await fetch(process.env.DISCORD_WEBHOOK_URL!, {
+        const response = await fetch(process.env.DISCORD_URL!, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
