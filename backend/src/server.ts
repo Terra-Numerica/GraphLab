@@ -51,18 +51,31 @@ try {
 
 	if(process.env.NODE_ENV === "production") {
 		let isServiceActive = false;
+
 		setInterval(async () => {
-			const currentHour = new Date().getHours();
-			const shouldBeActive = currentHour >= 7 && currentHour < 20;
-			
+			const now = new Date();
+			const parisHour = parseInt(
+				new Intl.DateTimeFormat("fr-FR", {
+					timeZone: "Europe/Paris",
+					hour: "numeric",
+					hour12: false
+				}).format(now),
+				10
+			);
+		
+			const shouldBeActive = parisHour >= 7 && parisHour < 20;
+		
 			if (shouldBeActive && !isServiceActive) {
+				console.log("Service activé - Les pings sont maintenant actifs");
 				isServiceActive = true;
 				await keepAliveRenderdotCom();
 				await sendDiscordMessage("🟢 Service activé - Les pings sont maintenant actifs");
 			} else if (!shouldBeActive && isServiceActive) {
+				console.log("Service désactivé - Les pings sont maintenant inactifs");
 				isServiceActive = false;
 				await sendDiscordMessage("🔴 Service désactivé - Les pings sont maintenant inactifs");
 			} else if (shouldBeActive) {
+				console.log("Service actif - Keep alive");
 				await keepAliveRenderdotCom();
 			}
 		}, 30000);
