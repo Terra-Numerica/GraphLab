@@ -34,6 +34,16 @@ export const keepAliveRenderdotCom = async () => {
     ])
 };
 
+export const frontendKeepAlive = async () => {
+    const frontendURL = process.env.FRONTEND_URL;
+    await request(frontendURL);
+};
+
+export const backendKeepAlive = async () => {
+    const backendURL = process.env.BACKEND_URL;
+    await request(backendURL);
+};
+
 const request = async (url: string) => {
     try {
         const response = await fetch(url);

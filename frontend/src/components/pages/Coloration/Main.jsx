@@ -19,7 +19,7 @@ const Main = () => {
 
     const handleTutorialComplete = (dontShowAgain) => {
         if (dontShowAgain) {
-            localStorage.setItem('hasSeenMSTTutorial', 'true');
+            localStorage.setItem('hasSeenColorationTutorial', 'true');
         }
         setShowTutorial(false);
     };
