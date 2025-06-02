@@ -44,11 +44,25 @@ export const backendKeepAlive = async () => {
     await request(backendURL);
 };
 
+export const getCurrentHour = () => {
+    const IntlHour = new Intl.DateTimeFormat("fr-FR", {
+        timeZone: "Europe/Paris",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric"
+    }).format(new Date());
+
+    return IntlHour;
+};
+
 const request = async (url: string) => {
+
+    const IntlHour = getCurrentHour();
+
     try {
         const response = await fetch(url);
-        Logger.success(`Recharged at ${new Date().toISOString()} (${url}): Status Code ${response.status}`);
+        Logger.success(`Recharged at ${IntlHour} (${url}): Status Code ${response.status}`);
     } catch (error: any) {
-        Logger.error(`Error during reload at ${new Date().toISOString()}: ${error.message}`);
+        Logger.error(`Error during reload at ${IntlHour} (${url}): ${error.message}`);
     }
 };

@@ -1,5 +1,5 @@
 // Imports
-import { backendKeepAlive, frontendKeepAlive, keepAliveRenderdotCom, sendDiscordMessage } from "@/utils/functions";
+import { backendKeepAlive, frontendKeepAlive, getCurrentHour, keepAliveRenderdotCom, sendDiscordMessage } from "@/utils/functions";
 import { connectDatabase } from "@/base/Database";
 import { checkConfig } from "@/utils/config";
 
@@ -54,20 +54,11 @@ try {
 
 		setInterval(async () => {
 
-			const now = new Date();
-			const parisHour = parseInt(
-				new Intl.DateTimeFormat("fr-FR", {
-					timeZone: "Europe/Paris",
-					hour: "numeric",
-					hour12: false
-				}).format(now),
-				10
-			);
-
-			await backendKeepAlive();
-		
+			const parisHour = parseInt(getCurrentHour(), 10);
 			const shouldBeActive = parisHour >= 8 && parisHour < 17;
-		
+			
+			await backendKeepAlive();
+
 			if (shouldBeActive && !isServiceActive) {
 				isServiceActive = true;
 				await frontendKeepAlive();
@@ -76,7 +67,6 @@ try {
 				isServiceActive = false;
 				await sendDiscordMessage("🔴 Service désactivé - Les pings sont maintenant inactifs");
 			} else if (shouldBeActive) {
-				console.log("Service actif - Keep alive");
 				await frontendKeepAlive();
 			}
 		}, 30000);
