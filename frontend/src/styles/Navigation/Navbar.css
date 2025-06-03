@@ -153,6 +153,17 @@
   transition: 0.3s;
 }
 
+.desktop-logo {
+  display: flex;
+}
+.nav-mobile-logo {
+  display: none;
+}
+
+.nav-mobile-header {
+  display: none;
+}
+
 @media (max-width: 768px) {
   .navbar {
     flex-direction: row;
@@ -208,5 +219,35 @@
   .admin-btn {
     width: 100%;
     margin-top: 1rem;
+  }
+  .desktop-logo {
+    display: none !important;
+  }
+  .nav-mobile-logo {
+    display: flex;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    align-items: center;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    z-index: 1;
+  }
+  .nav-mobile-logo .logo-img {
+    height: 32px;
+  }
+  .nav-mobile-logo .logo-text {
+    font-size: 1.1rem;
+  }
+  .nav-mobile-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    position: relative;
+    height: 48px;
+    justify-content: flex-start;
   }
 } 

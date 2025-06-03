@@ -43,11 +43,19 @@ const Navbar = () => {
 
 	return (
 		<nav className="navbar">
-			<button className="hamburger" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-				<span className="bar"></span>
-				<span className="bar"></span>
-				<span className="bar"></span>
-			</button>
+			<div className="nav-mobile-header">
+				<button className="hamburger" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+					<span className="bar"></span>
+					<span className="bar"></span>
+					<span className="bar"></span>
+				</button>
+				<div className="nav-mobile-logo">
+					<a href="/" className="logo">
+						<span className="logo-text">GraphLab par </span>
+						<img src="/logo_tn.png" alt="Terra Numerica Logo" className="logo-img" />
+					</a>
+				</div>
+			</div>
 			<div className={`nav-content${isMobileMenuOpen ? ' open' : ''}`}>
 				<div className="nav-left">
 					<a href="/" className="nav-link">Accueil</a>
@@ -72,7 +80,7 @@ const Navbar = () => {
 						)}
 					</div>
 				</div>
-				<div className="nav-center">
+				<div className="nav-center desktop-logo">
 					<a href="/" className="logo">
 						<span className="logo-text">GraphLab par </span>
 						<img src="/logo_tn.png" alt="Terra Numerica Logo" className="logo-img" />
