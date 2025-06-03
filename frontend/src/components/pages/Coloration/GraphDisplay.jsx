@@ -456,6 +456,16 @@ const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = fals
         };
     }, [graphData, modeLibre, modeCreation, creationLibreMode]);
 
+    useEffect(() => {
+        function handleResize() {
+            if (cyRef.current) {
+                cyRef.current.resize();
+            }
+        }
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     const handleEdgeCreation = (sourceNode, targetNode) => {
         if (sourceNode === targetNode) return;
         const newEdge = {

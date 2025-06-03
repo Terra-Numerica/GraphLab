@@ -1,5 +1,5 @@
 // Imports
-import { backendKeepAlive, frontendKeepAlive, getCurrentHour, keepAliveRenderdotCom, sendDiscordMessage } from "@/utils/functions";
+import { backendKeepAlive, frontendKeepAlive, getCurrentHour, sendDiscordMessage } from "@/utils/functions";
 import { connectDatabase } from "@/base/Database";
 import { checkConfig } from "@/utils/config";
 

@@ -50,4 +50,17 @@
 .coloration-mode-btn:hover {
     background: #3498db;
     color: #fff;
+}
+
+@media (max-width: 600px) {
+  .coloration-modes {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  .coloration-mode-btn {
+    width: 100%;
+    font-size: 1rem;
+    padding: 1rem;
+  }
 } 
