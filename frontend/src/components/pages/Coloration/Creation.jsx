@@ -192,7 +192,7 @@ const Creation = () => {
             setValidationPopup({
                 type: 'warning',
                 title: 'Attention !',
-                message: "Le graphe n'est pas entièrement coloré."
+                message: "Tous les sommets ne sont pas colorés"
             });
         } else if (!isValid) {
             setValidationPopup({
