@@ -9,7 +9,8 @@ import Defi from './components/pages/Coloration/Defi'
 import Libre from './components/pages/Coloration/Libre'
 import Creation from './components/pages/Coloration/Creation'
 import AlgoPage from './components/pages/ArbreCouvrant/AlgoPage';
-import RailwayMazeMain from './components/pages/RailwayMaze/Main'
+import RailwayMazeMain from './components/pages/RailwayMaze/Main';
+import Penrose from "./components/pages/RailwayMaze/Penrose";
 import Dashboard from './components/Admin/Dashboard';
 import Login from './components/Admin/Login';
 import './styles/global.css'
@@ -39,6 +40,7 @@ function App() {
 						<Route path="/arbre-couvrant/try" element={<ArbreCouvrantTry />} />
 						<Route path="/arbre-couvrant/:algo/:graphId" element={<AlgoPage />} />
 						<Route path="/railway-maze" element={<RailwayMazeMain />} />
+						<Route path="/railway-maze/penrose" element={<Penrose />} />
 						<Route path="/admin/login" element={<Login />} />
 						<Route path="/admin" element={<RequireAuth><Dashboard /></RequireAuth>} />
 					</Routes>
