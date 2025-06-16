@@ -34,6 +34,12 @@ const Home = () => {
                         <div className="workshop-desc-vertical">Trouve l'arbre couvrant minimal : un sous-graphe qui connecte tous les sommets avec un poids total minimal.</div>
                         <Link to="/arbre-couvrant" className="workshop-play-btn">Jouer</Link>
                     </div>
+                    <div className="workshop-card-vertical">
+                        <div className="workshop-icon-vertical"></div>
+                        <div className="workshop-title-vertical">Le problème du "Railway Maze"</div>
+                        <div className="workshop-desc-vertical">Trouve l'unique chemin menant du point A au point B</div>
+                        <Link to="/railway-maze" className="workshop-play-btn">Jouer</Link>
+                    </div>
                 </div>
             </div>
         </div>
