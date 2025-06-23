@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { kruskalAlgorithm } from '../../../utils/kruskalUtils';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import ValidationPopup from '../../common/ValidationPopup';
 import RulesPopup from '../../common/RulesPopup';
@@ -24,25 +24,26 @@ const CostDisplay = memo(({ currentCost, optimalCost }) => {
 const GraphDisplayMemo = memo(GraphDisplay);
 
 const Try = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const [graphs, setGraphs] = useState({
         petit: [],
         moyen: [],
         grand: []
     });
-    const [selectedGraph, setSelectedGraph] = useState('');
+    const [selectedGraph, setSelectedGraph] = useState(location.state?.selectedGraph || '');
     const [currentGraph, setCurrentGraph] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [validationPopup, setValidationPopup] = useState(null);
-    const [weightType, setWeightType] = useState(''); // 'predefined', 'one', 'random'
+    const [weightType, setWeightType] = useState(location.state?.weightType || '');
     const [selectedEdges, setSelectedEdges] = useState(new Set());
     const [currentCost, setCurrentCost] = useState(0);
     const [optimalCost, setOptimalCost] = useState(0);
     const cyRef = useRef(null);
     const [showRules, setShowRules] = useState(false);
     const { time, start, stop, reset, formatTime, isRunning } = useTimer();
-    const navigate = useNavigate();
 
     useEffect(() => {
         fetchGraphs();
@@ -68,6 +69,7 @@ const Try = () => {
     useEffect(() => {
         if (!selectedGraph || !weightType) {
             setCurrentGraph(null);
+            setSelectedEdges(new Set());
             return;
         }
         const fetchGraph = async () => {
@@ -122,6 +124,7 @@ const Try = () => {
                         },
                         difficulty: graphConfig.difficulty
                     });
+                    setSelectedEdges(new Set());
                     reset();
                     start();
                 } else {
@@ -130,6 +133,7 @@ const Try = () => {
             } catch (err) {
                 setError('Impossible de charger le graphe sélectionné');
                 setCurrentGraph(null);
+                setSelectedEdges(new Set());
             }
         };
         fetchGraph();
@@ -294,6 +298,12 @@ const Try = () => {
             }
         });
     }, [currentGraph, selectedGraph, weightType, navigate]);
+
+    useEffect(() => {
+        if (cyRef.current && selectedEdges.size === 0) {
+            cyRef.current.edges().removeClass('selected');
+        }
+    }, [selectedEdges]);
 
     return (
         <div className="tree-mode-container">

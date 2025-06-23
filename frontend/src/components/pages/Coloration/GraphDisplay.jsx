@@ -1,6 +1,6 @@
 import { rgbToHex, findFreePositionX } from '../../../utils/colorUtils';
 import { colors as colorPalette } from '../../../utils/colorPalette';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useLayoutEffect } from 'react';
 
 import ConfirmationPopup from '../../common/ConfirmationPopup';
 import cytoscape from 'cytoscape';
@@ -14,8 +14,9 @@ const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = fals
     const snapDistance = 50;
     const defaultColor = "#CCCCCC";
     const [deletePopup, setDeletePopup] = useState(null);
+    const initialPositionsRef = useRef(null);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (cyRef.current && cyRef.current.container() === containerRef.current) {
             return;
         }
@@ -28,193 +29,37 @@ const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = fals
         if (!graphData || !containerRef.current) return;
 
         let cy;
-        // === MODE CREATION ===
-        if (modeCreation) {
-            cy = cytoscape({
-                container: containerRef.current,
-                elements: [
-                    ...(graphData.nodes || []).map(node => ({
-                        ...node,
-                        data: {
-                            ...node.data,
-                            color: node.data.color || '#cccccc',
-                        }
-                    })),
-                    ...(graphData.edges || [])
-                ],
-                style: [
-                    {
-                        selector: 'node',
-                        style: {
-                            'background-color': 'data(color)',
-                            'border-width': 2,
-                            'border-color': '#666'
-                        }
-                    },
-                    {
-                        selector: 'edge',
-                        style: {
-                            'line-color': '#666',
-                            'width': 2,
-                            'curve-style': 'unbundled-bezier',
-                            'control-point-distance': 'data(controlPointDistance)',
-                            'control-point-weight': 0.5
-                        }
-                    }
-                ],
-                layout: { name: 'preset' },
-                zoomingEnabled: false,
-                panningEnabled: false,
-                boxSelectionEnabled: false
-            });
-        }
-        // === MODE LIBRE ===
-        else if (modeLibre) {
-            if (creationLibreMode && graphData.pastilleCounts) {
-
-                const colorsToUse = Object.keys(graphData.pastilleCounts);
-                const nodes = (graphData.nodes || []).map(node => ({
-                    ...node,
-                    data: {
-                        ...node.data,
-                        color: node.data.color || '#cccccc',
-                    }
-                }));
-                const edges = graphData.edges || [];
-
-                cy = cytoscape({
-                    container: containerRef.current,
-                    elements: { nodes, edges },
-                    style: [
-                        {
-                            selector: 'node',
-                            style: {
-                                'background-color': 'data(color)',
-                                'border-width': 2,
-                                'border-color': '#666'
-                            }
-                        },
-                        {
-                            selector: 'edge',
-                            style: {
-                                'line-color': '#666',
-                                'width': 2,
-                                'curve-style': 'unbundled-bezier',
-                                'control-point-distance': 'data(controlPointDistance)',
-                                'control-point-weight': 0.5
-                            }
-                        }
-                    ],
-                    layout: { name: 'preset' },
-                    zoomingEnabled: false,
-                    panningEnabled: false,
-                    boxSelectionEnabled: false
-                });
-
-                const minSafeY = 100;
-                let minY = Infinity;
-                let maxY = -Infinity;
-                cy.nodes().forEach(node => {
-                    if (!node.data('isColorNode')) {
-                        const y = node.position('y');
-                        if (y < minY) minY = y;
-                        if (y > maxY) maxY = y;
-                    }
-                });
-                let offsetY = 0;
-                if (minY < minSafeY) {
-                    offsetY = minSafeY - minY;
-                }
-                cy.nodes().forEach(node => {
-                    if (!node.data('isColorNode')) {
-                        node.position({
-                            x: node.position('x'),
-                            y: node.position('y') + offsetY
-                        });
-                    }
-                });
-                const grapheHeight = maxY + offsetY + 100;
-                const container = containerRef.current;
-                if (grapheHeight > container.clientHeight) {
-                    container.style.height = `${grapheHeight}px`;
-                }
-
-                let xOffset = 50;
-                const yPosition = 50;
-                colorsToUse.forEach((color) => {
-                    createInfiniteColorToken(color, xOffset, yPosition, cy, draggedColorRef);
-                    xOffset += 50;
-                });
-
-            } else if (graphData.pastilleCounts) {
-
-                const existingColors = Object.keys(graphData.pastilleCounts);
-                const availableColors = colorPalette.filter(c => !existingColors.includes(c));
-                const numRandomColors = Math.min(Math.floor(Math.random() * 3) + 1, availableColors.length);
-                const shuffled = [...availableColors].sort(() => 0.5 - Math.random());
-                const randomColors = shuffled.slice(0, numRandomColors);
-                const finalColors = existingColors.concat(randomColors);
-                const nodes = (graphData.data.nodes || []).map(node => ({
-                    ...node,
-                    data: {
-                        ...node.data,
-                        color: node.data.color || '#cccccc',
-                    }
-                }));
-                const edges = graphData.data.edges || [];
-
-                cy = cytoscape({
-                    container: containerRef.current,
-                    elements: { nodes, edges },
-                    style: [
-                        {
-                            selector: 'node',
-                            style: {
-                                'background-color': 'data(color)',
-                                'border-width': 2,
-                                'border-color': '#666'
-                            }
-                        },
-                        {
-                            selector: 'edge',
-                            style: {
-                                'line-color': '#666',
-                                'width': 2,
-                                'curve-style': 'unbundled-bezier',
-                                'control-point-distance': 'data(controlPointDistance)',
-                                'control-point-weight': 0.5
-                            }
-                        }
-                    ],
-                    layout: { name: 'preset' },
-                    zoomingEnabled: false,
-                    panningEnabled: false,
-                    boxSelectionEnabled: false
-                });
-                let xOffset = 50;
-                const yPosition = 50;
-                finalColors.forEach((color) => {
-                    createInfiniteColorToken(color, xOffset, yPosition, cy, draggedColorRef);
-                    xOffset += 50;
+        // === MODE DEFI ===
+        if (!modeLibre && !modeCreation) {
+            const pastilleNodes = [];
+            const width = containerRef.current.clientWidth;
+            const maxSpread = 400; // px, largeur maximale d'étalement
+            const pastilleSize = 30;
+            const pastilleMargin = 10;
+            let totalPastilles = 0;
+            if (graphData.pastilleCounts) {
+                Object.values(graphData.pastilleCounts).forEach(count => {
+                    totalPastilles += count;
                 });
             }
-        }
-        // === MODE DEFI ===
-        else {
-            const pastilleNodes = [];
-            let xOffset = 50;
+            const minSpacing = pastilleSize + pastilleMargin;
+            const spreadWidth = Math.min(width, minSpacing * (totalPastilles + 1));
+            const startX = (width - spreadWidth) / 2;
+            const spacing = spreadWidth / (totalPastilles + 1);
+            let idx = 1;
             const yPosition = 50;
             if (graphData.pastilleCounts) {
                 Object.entries(graphData.pastilleCounts).forEach(([color, count]) => {
                     for (let i = 0; i < count; i++) {
+                        const x = startX + spacing * idx;
                         pastilleNodes.push({
                             group: 'nodes',
                             data: { id: `color-${color}-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`, isColorNode: true },
-                            position: { x: xOffset, y: yPosition },
+                            position: { x, y: yPosition },
                             style: {
                                 'background-color': color,
-                                'width': 30,
-                                'height': 30,
+                                'width': pastilleSize,
+                                'height': pastilleSize,
                                 'label': '',
                                 'border-width': 2,
                                 'border-color': '#000',
@@ -222,7 +67,7 @@ const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = fals
                             },
                             locked: false,
                         });
-                        xOffset += 50;
+                        idx++;
                     }
                 });
             }
@@ -267,6 +112,178 @@ const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = fals
                 panningEnabled: false,
                 boxSelectionEnabled: false
             });
+        } else {
+            // === MODE CREATION ===
+            if (modeCreation) {
+                cy = cytoscape({
+                    container: containerRef.current,
+                    elements: [
+                        ...(graphData.nodes || []).map(node => ({
+                            ...node,
+                            data: {
+                                ...node.data,
+                                color: node.data.color || '#cccccc',
+                            }
+                        })),
+                        ...(graphData.edges || [])
+                    ],
+                    style: [
+                        {
+                            selector: 'node',
+                            style: {
+                                'background-color': 'data(color)',
+                                'border-width': 2,
+                                'border-color': '#666'
+                            }
+                        },
+                        {
+                            selector: 'edge',
+                            style: {
+                                'line-color': '#666',
+                                'width': 2,
+                                'curve-style': 'unbundled-bezier',
+                                'control-point-distance': 'data(controlPointDistance)',
+                                'control-point-weight': 0.5
+                            }
+                        }
+                    ],
+                    layout: { name: 'preset' },
+                    zoomingEnabled: false,
+                    panningEnabled: false,
+                    boxSelectionEnabled: false
+                });
+            }
+            // === MODE LIBRE ===
+            else if (modeLibre) {
+                if (creationLibreMode && graphData.pastilleCounts) {
+
+                    const colorsToUse = Object.keys(graphData.pastilleCounts);
+                    const nodes = (graphData.nodes || []).map(node => ({
+                        ...node,
+                        data: {
+                            ...node.data,
+                            color: node.data.color || '#cccccc',
+                        }
+                    }));
+                    const edges = graphData.edges || [];
+
+                    cy = cytoscape({
+                        container: containerRef.current,
+                        elements: { nodes, edges },
+                        style: [
+                            {
+                                selector: 'node',
+                                style: {
+                                    'background-color': 'data(color)',
+                                    'border-width': 2,
+                                    'border-color': '#666'
+                                }
+                            },
+                            {
+                                selector: 'edge',
+                                style: {
+                                    'line-color': '#666',
+                                    'width': 2,
+                                    'curve-style': 'unbundled-bezier',
+                                    'control-point-distance': 'data(controlPointDistance)',
+                                    'control-point-weight': 0.5
+                                }
+                            }
+                        ],
+                        layout: { name: 'preset' },
+                        zoomingEnabled: false,
+                        panningEnabled: false,
+                        boxSelectionEnabled: false
+                    });
+
+                    const minSafeY = 100;
+                    let minY = Infinity;
+                    let maxY = -Infinity;
+                    cy.nodes().forEach(node => {
+                        if (!node.data('isColorNode')) {
+                            const y = node.position('y');
+                            if (y < minY) minY = y;
+                            if (y > maxY) maxY = y;
+                        }
+                    });
+                    let offsetY = 0;
+                    if (minY < minSafeY) {
+                        offsetY = minSafeY - minY;
+                    }
+                    cy.nodes().forEach(node => {
+                        if (!node.data('isColorNode')) {
+                            node.position({
+                                x: node.position('x'),
+                                y: node.position('y') + offsetY
+                            });
+                        }
+                    });
+                    const grapheHeight = maxY + offsetY + 100;
+                    const container = containerRef.current;
+                    if (grapheHeight > container.clientHeight) {
+                        container.style.height = `${grapheHeight}px`;
+                    }
+
+                    let xOffset = 50;
+                    const yPosition = 50;
+                    colorsToUse.forEach((color) => {
+                        createInfiniteColorToken(color, xOffset, yPosition, cy, draggedColorRef);
+                        xOffset += 50;
+                    });
+
+                } else if (graphData.pastilleCounts) {
+
+                    const existingColors = Object.keys(graphData.pastilleCounts);
+                    const availableColors = colorPalette.filter(c => !existingColors.includes(c));
+                    const numRandomColors = Math.min(Math.floor(Math.random() * 3) + 1, availableColors.length);
+                    const shuffled = [...availableColors].sort(() => 0.5 - Math.random());
+                    const randomColors = shuffled.slice(0, numRandomColors);
+                    const finalColors = existingColors.concat(randomColors);
+                    const nodes = (graphData.data.nodes || []).map(node => ({
+                        ...node,
+                        data: {
+                            ...node.data,
+                            color: node.data.color || '#cccccc',
+                        }
+                    }));
+                    const edges = graphData.data.edges || [];
+
+                    cy = cytoscape({
+                        container: containerRef.current,
+                        elements: { nodes, edges },
+                        style: [
+                            {
+                                selector: 'node',
+                                style: {
+                                    'background-color': 'data(color)',
+                                    'border-width': 2,
+                                    'border-color': '#666'
+                                }
+                            },
+                            {
+                                selector: 'edge',
+                                style: {
+                                    'line-color': '#666',
+                                    'width': 2,
+                                    'curve-style': 'unbundled-bezier',
+                                    'control-point-distance': 'data(controlPointDistance)',
+                                    'control-point-weight': 0.5
+                                }
+                            }
+                        ],
+                        layout: { name: 'preset' },
+                        zoomingEnabled: false,
+                        panningEnabled: false,
+                        boxSelectionEnabled: false
+                    });
+                    let xOffset = 50;
+                    const yPosition = 50;
+                    finalColors.forEach((color) => {
+                        createInfiniteColorToken(color, xOffset, yPosition, cy, draggedColorRef);
+                        xOffset += 50;
+                    });
+                }
+            }
         }
 
         // --- DRAG & DROP LOGIC ---
@@ -432,6 +449,20 @@ const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = fals
 
         cyRef.current = cy;
 
+        // Stocke les positions normalisées à l'initialisation du graphe
+        if (cyRef.current && containerRef.current) {
+            const width = containerRef.current.clientWidth;
+            const height = containerRef.current.clientHeight;
+            initialPositionsRef.current = cyRef.current.nodes().map(node => ({
+                id: node.id(),
+                xNorm: node.position('x') / width,
+                yNorm: node.position('y') / height
+            }));
+        }
+
+        // Centre et scale le graphe (hors pastilles) à l'init
+        centerAndScaleGraph();
+
         if (modeLibre) {
             cy.nodes().forEach(node => {
                 if (!node.data('isColorNode')) {
@@ -456,15 +487,82 @@ const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = fals
         };
     }, [graphData, modeLibre, modeCreation, creationLibreMode]);
 
+    // Fonction pour centrer et scaler le graphe (hors pastilles)
+    function centerAndScaleGraph() {
+        if (!cyRef.current || !containerRef.current) return;
+        const cy = cyRef.current;
+        const container = containerRef.current;
+        const nodes = cy.nodes().filter(node => !node.data('isColorNode'));
+        if (nodes.length === 0) return;
+        // Bounding box du graphe
+        let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+        nodes.forEach(node => {
+            const pos = node.position();
+            if (pos.x < minX) minX = pos.x;
+            if (pos.x > maxX) maxX = pos.x;
+            if (pos.y < minY) minY = pos.y;
+            if (pos.y > maxY) maxY = pos.y;
+        });
+        const graphWidth = maxX - minX;
+        const graphHeight = maxY - minY;
+        const margin = 40; // px, marge autour du graphe
+        const availableWidth = container.clientWidth - margin * 2;
+        const availableHeight = container.clientHeight - margin * 2 - 80; // 80px pour laisser la place aux pastilles
+        const scale = Math.min(
+            availableWidth / (graphWidth || 1),
+            availableHeight / (graphHeight || 1),
+            1.5 // ne pas trop agrandir
+        );
+        // Centre cible
+        const centerX = container.clientWidth / 2;
+        const centerY = (container.clientHeight + 80) / 2 + 30; // décale un peu vers le bas
+        // Applique le scale et le centrage
+        nodes.forEach(node => {
+            const pos = node.position();
+            node.position({
+                x: centerX + (pos.x - (minX + graphWidth / 2)) * scale,
+                y: centerY + (pos.y - (minY + graphHeight / 2)) * scale
+            });
+        });
+    }
+
+    // Handler de resize qui recalcule les positions
+    function recalculateNodePositions() {
+        if (cyRef.current && containerRef.current && initialPositionsRef.current) {
+            cyRef.current.resize();
+            const width = containerRef.current.clientWidth;
+            const height = containerRef.current.clientHeight;
+            initialPositionsRef.current.forEach(pos => {
+                const node = cyRef.current.getElementById(pos.id);
+                if (node) {
+                    node.position({
+                        x: pos.xNorm * width,
+                        y: pos.yNorm * height
+                    });
+                }
+            });
+            cyRef.current.fit();
+        }
+        // Centre et scale le graphe (hors pastilles)
+        centerAndScaleGraph();
+    }
+
     useEffect(() => {
         function handleResize() {
-            if (cyRef.current) {
-                cyRef.current.resize();
-            }
+            recalculateNodePositions();
         }
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
+
+    useEffect(() => {
+        if (!containerRef.current || !cyRef.current) return;
+        const observer = new window.ResizeObserver(() => {
+            recalculateNodePositions();
+        });
+        observer.observe(containerRef.current);
+        return () => observer.disconnect();
+    }, [containerRef, cyRef]);
 
     const handleEdgeCreation = (sourceNode, targetNode) => {
         if (sourceNode === targetNode) return;

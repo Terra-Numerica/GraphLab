@@ -112,7 +112,12 @@ const AlgoPage = () => {
 
   return (
     <div className="tree-mode-container">
-      <button className="tree-mode-back-btn" onClick={() => navigate('/arbre-couvrant/try')}>
+      <button className="tree-mode-back-btn" onClick={() => navigate('/arbre-couvrant/try', {
+        state: {
+          selectedGraph: graphId,
+          weightType: weightType
+        }
+      })}>
         &larr; Retour
       </button>
       {showExplanation && (
