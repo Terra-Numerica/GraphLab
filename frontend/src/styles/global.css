@@ -9,10 +9,12 @@
     --yellow: #F9BB12;
     --astro: #2A233E;
     --green: #00A19A;
+    --greenHover: #008080;
     --grey: #EBEBEC;
     --cyan: #00FFFF;
     --blue: #24A1EB;
     --red: #DC143C;
+    --redHover: #B22222;
     
     /* Breakpoints */
     --mobile: 480px;

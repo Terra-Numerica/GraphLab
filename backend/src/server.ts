@@ -1,5 +1,5 @@
 // Imports
-import { backendKeepAlive, frontendKeepAlive, getCurrentHour, sendDiscordMessage } from "@/utils/functions";
+import { backendKeepAlive, frontendKeepAlive, getCurrentHour, isWeekend, sendDiscordMessage } from "@/utils/functions";
 import { connectDatabase } from "@/base/Database";
 import { checkConfig } from "@/utils/config";
 
@@ -55,17 +55,15 @@ try {
 		setInterval(async () => {
 
 			const parisHour = parseInt(getCurrentHour(), 10);
-			const shouldBeActive = parisHour >= 8 && parisHour < 17;
+			const shouldBeActive = (parisHour >= 8 && parisHour < 17) || isWeekend();
 			
 			await backendKeepAlive();
 
 			if (shouldBeActive && !isServiceActive) {
 				isServiceActive = true;
 				await frontendKeepAlive();
-				await sendDiscordMessage("🟢 Service activé - Les pings sont maintenant actifs");
 			} else if (!shouldBeActive && isServiceActive) {
 				isServiceActive = false;
-				await sendDiscordMessage("🔴 Service désactivé - Les pings sont maintenant inactifs");
 			} else if (shouldBeActive) {
 				await frontendKeepAlive();
 			}

@@ -13,9 +13,6 @@ declare global {
 			// Render.com
 			FRONTEND_URL: string;
 			BACKEND_URL: string;
-
-			// Discord
-			DISCORD_WEBHOOK_URL: string;
 		}
 	}
 }

@@ -1,3 +1,8 @@
+/**
+ * @description Convert an RGB color to a hex color
+ * @param {string} rgb - The RGB color
+ * @returns {string} The hex color
+*/
 export const rgbToHex = (rgb) => {
     const result = rgb.match(/\d+/g);
     if (!result) return rgb;
@@ -14,6 +19,11 @@ export const rgbToHex = (rgb) => {
     );
 };
 
+/**
+ * @description Find a free position on the X axis
+ * @param {Object} cy - The cytoscape instance
+ * @returns {number} The free position on the X axis
+*/
 export const findFreePositionX = (cy) => {
     const y = 50;
     let x = 50;

@@ -1,6 +1,10 @@
+// Imports
 import { useState, useEffect } from 'react';
-import '../../styles/Admin/Dashboard.css';
 import config from '../../config';
+import GraphEditor from './GraphEditor';
+
+// Styles
+import '../../styles/Admin/Dashboard.css';
 
 const GRAPHS_PER_PAGE = 12;
 
@@ -10,6 +14,8 @@ const Dashboard = () => {
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+    const [showEditor, setShowEditor] = useState(false);
+    const [editingGraphId, setEditingGraphId] = useState(null);
 
     useEffect(() => {
         fetchGraphs();
@@ -49,6 +55,22 @@ const Dashboard = () => {
                 console.error('Erreur:', err);
             }
         }
+    };
+
+    const handleEdit = (graphId) => {
+        setEditingGraphId(graphId);
+        setShowEditor(true);
+    };
+
+    const handleCreate = () => {
+        setEditingGraphId(null);
+        setShowEditor(true);
+    };
+
+    const handleCloseEditor = () => {
+        setShowEditor(false);
+        setEditingGraphId(null);
+        fetchGraphs();
     };
 
     const filteredGraphs = graphs.filter(graph => 
@@ -92,7 +114,9 @@ const Dashboard = () => {
             <header className="dashboard-header">
                 <h1>Dashboard Administrateur</h1>
                 <div className="header-actions">
-                    <button className="btn-primary">Nouveau Graphe</button>
+                    <button className="btn-primary" onClick={handleCreate}>
+                        Nouveau Graphe
+                    </button>
                 </div>
             </header>
 
@@ -116,15 +140,23 @@ const Dashboard = () => {
                             <div className="no-graphs">Aucun graphe trouvé</div>
                         ) : (
                             paginatedGraphs.map(graph => (
-                                <div key={graph.id} className="graph-card">
+                                <div key={graph._id} className="graph-card">
                                     <div className="graph-info">
                                         <h3>{graph.name}</h3>
+                                        <div className="graph-type">
+                                            Difficulté: {graph.difficulty}
+                                        </div>
                                     </div>
                                     <div className="graph-actions">
-                                        <button className="btn-secondary">Modifier</button>
+                                        <button 
+                                            className="btn-secondary"
+                                            onClick={() => handleEdit(graph._id)}
+                                        >
+                                            Modifier
+                                        </button>
                                         <button 
                                             className="btn-danger"
-                                            onClick={() => handleDelete(graph.id)}
+                                            onClick={() => handleDelete(graph._id)}
                                         >
                                             Supprimer
                                         </button>
@@ -137,15 +169,16 @@ const Dashboard = () => {
                     {totalPages > 1 && (
                         <div className="pagination">
                             <button
+                                key="prev"
                                 className="pagination-btn"
                                 onClick={() => handlePageChange(currentPage - 1)}
                                 disabled={currentPage === 1}
                             >
                                 &lt;
                             </button>
-                            {Array.from({ length: totalPages }, (_, i) => (
+                            {[...Array(totalPages)].map((_, i) => (
                                 <button
-                                    key={i + 1}
+                                    key={`page-${i + 1}`}
                                     className={`pagination-btn${currentPage === i + 1 ? ' active' : ''}`}
                                     onClick={() => handlePageChange(i + 1)}
                                 >
@@ -153,6 +186,7 @@ const Dashboard = () => {
                                 </button>
                             ))}
                             <button
+                                key="next"
                                 className="pagination-btn"
                                 onClick={() => handlePageChange(currentPage + 1)}
                                 disabled={currentPage === totalPages}
@@ -163,6 +197,13 @@ const Dashboard = () => {
                     )}
                 </section>
             </main>
+
+            {showEditor && (
+                <GraphEditor
+                    graphId={editingGraphId}
+                    onClose={handleCloseEditor}
+                />
+            )}
         </div>
     );
 };

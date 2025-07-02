@@ -26,7 +26,6 @@ const Main = () => {
     };
 
     const handleTutorialClose = () => {
-        localStorage.setItem('hasSeenColorationTutorial', 'true');
         sessionStorage.setItem('hasSeenColorationTutorial', 'true');
         setShowTutorial(false);
     };

@@ -1,7 +1,9 @@
-import express from 'express';
-import * as controller from '../controllers/auth.controller';
+// Imports
+import * as controller from '@/controllers/auth.controller';
 
-const router = express.Router();
+import { Router } from 'express';
+
+const router = Router();
 
 router.post('/login', controller.login);
 
