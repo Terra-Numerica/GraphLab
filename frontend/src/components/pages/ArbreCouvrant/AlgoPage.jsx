@@ -85,10 +85,10 @@ const AlgoPage = () => {
         .then(res => res.json())
         .then(data => {
           setGraph(data);
-          setLoading(false);
         })
         .catch(() => {
           setError('Impossible de charger le graphe.');
+        }).finally(() => {
           setLoading(false);
         });
     }

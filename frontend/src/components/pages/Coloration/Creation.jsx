@@ -3,15 +3,12 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import { rgbToHex } from '../../../utils/colorUtils';
 import { useNavigate } from 'react-router-dom';
 
-import ValidationPopup from '../../common/ValidationPopup';
-import RulesPopup from '../../common/RulesPopup';
+import {ValidationPopup} from '../../common/ValidationPopup';
+import {RulesPopup} from '../../common/RulesPopup';
 import GraphDisplay from './GraphDisplay';
+import { TimerDisplay } from '../../common/TimerDisplay';
 
 import '../../../styles/pages/Coloration/GlobalMode.css';
-
-const TimerDisplay = ({ time, formatTime }) => {
-    return <div className="mode-timer">Temps: {formatTime(time)}</div>;
-};
 
 const Creation = () => {
     const navigate = useNavigate();

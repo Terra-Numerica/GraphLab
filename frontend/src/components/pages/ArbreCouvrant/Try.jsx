@@ -2,16 +2,13 @@ import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { kruskalAlgorithm } from '../../../utils/kruskalUtils';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-import ValidationPopup from '../../common/ValidationPopup';
-import RulesPopup from '../../common/RulesPopup';
+import { ValidationPopup } from '../../common/ValidationPopup';
+import { RulesPopup } from '../../common/RulesPopup';
+import { TimerDisplay } from '../../common/TimerDisplay';
 import GraphDisplay from './GraphDisplay';
 import config from '../../../config';
 
 import '../../../styles/pages/ArbreCouvrant/GlobalMode.css';
-
-const TimerDisplay = memo(({ time, formatTime }) => {
-    return <div className="mode-timer">Temps: {formatTime(time)}</div>;
-});
 
 const CostDisplay = memo(({ currentCost, optimalCost }) => {
     return (
@@ -22,6 +19,12 @@ const CostDisplay = memo(({ currentCost, optimalCost }) => {
 });
 
 const GraphDisplayMemo = memo(GraphDisplay);
+
+const difficultyLabels = {
+    petit: 'Petit',
+    moyen: 'Moyen',
+    grand: 'Grand'
+};
 
 const Try = () => {
     const location = useLocation();
@@ -60,11 +63,7 @@ const Try = () => {
         };
     }, [showRules]);
 
-    const difficultyLabels = {
-        petit: 'Petit',
-        moyen: 'Moyen',
-        grand: 'Grand'
-    };
+    
 
     useEffect(() => {
         if (!selectedGraph || !weightType) {
@@ -144,7 +143,7 @@ const Try = () => {
         setSelectedGraph(graphId);
         setCurrentGraph(null);
         reset();
-    }, [reset]);
+    }, []);
 
     const handleWeightTypeSelect = useCallback((event) => {
         setWeightType(event.target.value);
@@ -277,7 +276,7 @@ const Try = () => {
                 weightType: weightType
             }
         });
-    }, [currentGraph, selectedGraph, weightType, navigate]);
+    }, [currentGraph, selectedGraph, weightType]);
 
     const showPrimSolution = useCallback(() => {
         if (!currentGraph || !cyRef.current) return;
@@ -287,7 +286,7 @@ const Try = () => {
                 weightType: weightType
             }
         });
-    }, [currentGraph, selectedGraph, weightType, navigate]);
+    }, [currentGraph, selectedGraph, weightType]);
 
     const showBoruvkaSolution = useCallback(() => {
         if (!currentGraph || !cyRef.current) return;
@@ -297,7 +296,7 @@ const Try = () => {
                 weightType: weightType
             }
         });
-    }, [currentGraph, selectedGraph, weightType, navigate]);
+    }, [currentGraph, selectedGraph, weightType]);
 
     useEffect(() => {
         if (cyRef.current && selectedEdges.size === 0) {
@@ -308,7 +307,7 @@ const Try = () => {
     return (
         <div className="tree-mode-container">
             <button className="tree-mode-back-btn" onClick={() => navigate('/arbre-couvrant')}>&larr; Retour</button>
-            <h2 className="tree-mode-title">Trouve l'arbre couvrant de poids minimal</h2>
+            <h1 className="tree-mode-title">Trouve l'arbre couvrant de poids minimal</h1>
             <div className="tree-mode-top-bar">
                 <select
                     className="tree-mode-select"
@@ -391,14 +390,14 @@ const Try = () => {
             )}
             {showRules && (
                 <RulesPopup title="Règles" onClose={() => setShowRules(false)}>
-                    <h3>🎯 Objectif</h3>
+                    <h2>🎯 Objectif</h2>
                     <ul>
                         <li>Trouve l'arbre couvrant minimal du graphe en sélectionnant les arêtes appropriées.</li>
                         <li>Minimise la somme des poids des arêtes sélectionnées tout en connectant tous les sommets.</li>
                         <li>Évite la formation de cycles dans ta solution.</li>
                     </ul>
 
-                    <h3>🛠️ Comment jouer à l'arbre couvrant</h3>
+                    <h2>🛠️ Comment jouer à l'arbre couvrant</h2>
                     <ul>
                         <li>Choisis un graphe prédéfini dans le menu déroulant.</li>
                         <li>Sélectionne le type de poids des arêtes : prédéfini, tous à 1 ou aléatoire.</li>
@@ -407,7 +406,7 @@ const Try = () => {
                         <li>Valide ta solution pour vérifier si elle est optimale.</li>
                     </ul>
 
-                    <h3>🔧 Fonctionnalités</h3>
+                    <h2>🔧 Fonctionnalités</h2>
                     <ul>
                         <li>Tu peux voir en temps réel le coût total de ta solution.</li>
                         <li>Compare ta solution avec les solutions optimales des algorithmes classiques.</li>

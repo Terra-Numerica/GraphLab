@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import '../../styles/common/TutorialPopup.css';
 
 const TutorialPopup = ({ onClose, onComplete, steps }) => {

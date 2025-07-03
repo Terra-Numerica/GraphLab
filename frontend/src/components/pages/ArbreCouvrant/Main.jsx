@@ -35,7 +35,7 @@ const Main = () => {
     return (
         <div className="minimum-spanning-tree-container">
             <div className="explanation-section">
-                <h2>L'Arbre Couvrant de Poids Minimal</h2>
+                <h1>L'Arbre Couvrant de Poids Minimal</h1>
                 <div className="explanation-text">
                     <p>
                         Un arbre couvrant minimal est un sous-ensemble d'arêtes qui connecte tous les sommets d'un graphe en formant un arbre, tout en minimisant la somme des poids des arêtes utilisées.
