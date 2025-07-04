@@ -29,12 +29,12 @@ export const checkConfig = async (): Promise<void> => {
 			};
 
 			if (process.argv[1].endsWith("index.ts")) {
-				throw new Error("You are running the bot in production mode, please run the bot in development mode.");
+				throw new Error("You are running the server in production mode, please run the server in development mode.");
 			};
 		};
 
 		if (process.env.NODE_ENV === "development" && process.argv[1].endsWith("index.js")) {
-			throw new Error("You are running the bot in development mode, please run the bot in production mode.");
+			throw new Error("You are running the server in development mode, please run the server in production mode.");
 		};
 
 		if (mongoose.connection.readyState === 1) {
