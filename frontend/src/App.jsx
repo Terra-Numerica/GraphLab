@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 // Components => Navigation
 import { Navbar } from './components/Navigation/Navbar'
@@ -28,19 +28,23 @@ import Login from './components/Admin/Login';
 import './styles/global.css'
 
 export const App = () => (
-	<Router>
+	<BrowserRouter>
 		<div className="app">
 			<Navbar />
 			<main className="main-content">
 				<Routes>
 					<Route path="/" element={<Home />} />
-					<Route path="/coloration" element={<ColorationMain />} />
-					<Route path="/coloration/defi" element={<Defi />} />
-					<Route path="/coloration/libre" element={<Libre />} />
-					<Route path="/coloration/creation" element={<Creation />} />
-					<Route path="/arbre-couvrant" element={<ArbreCouvrantMain />} />
-					<Route path="/arbre-couvrant/try" element={<ArbreCouvrantTry />} />
-					<Route path="/arbre-couvrant/:algo/:graphId" element={<AlgoPage />} />
+					<Route path="/coloration">
+						<Route index element={<ColorationMain />} />
+						<Route path="defi" element={<Defi />} />
+						<Route path="libre" element={<Libre />} />
+						<Route path="creation" element={<Creation />} />
+					</Route>
+					<Route path="/arbre-couvrant">
+						<Route index element={<ArbreCouvrantMain />} />
+						<Route path="try" element={<ArbreCouvrantTry />} />
+						<Route path="algo/:algo/:graphId" element={<AlgoPage />} />
+					</Route>
 					<Route path="/admin/login" element={<Login />} />
 					<Route path="/admin" element={<RequireAuth />}>
 						<Route index element={<Dashboard />} />
@@ -49,5 +53,5 @@ export const App = () => (
 			</main>
 			<Footer />
 		</div>
-	</Router>
+	</BrowserRouter>
 )
