@@ -1,45 +1,47 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import '../../styles/Navigation/Navbar.css';
 
-const Navbar = () => {
+export const Navbar = () => {
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const navigate = useNavigate();
 
-	const handleDropdown = (open) => {
+	const handleDropdown = useCallback((open) => {
 		if (window.innerWidth > 768) {
 			setIsDropdownOpen(open);
 		}
-	};
+	}, [])
+
+	const handleResize = useCallback(() => {
+		if (window.innerWidth > 768) {
+			setIsMobileMenuOpen(false);
+			setIsDropdownOpen(false);
+		}
+	}, [])
+
+	const handleLogout = useCallback(() => {
+		localStorage.removeItem('jwt');
+		setIsAuthenticated(false);
+		navigate('/');
+	}, [])
+
+	const handleCheckAuth = useCallback(() => {
+		const token = localStorage.getItem('jwt');
+		setIsAuthenticated(!!token);
+	}, [])
 
 	useEffect(() => {
-		const handleResize = () => {
-			if (window.innerWidth > 768) {
-				setIsMobileMenuOpen(false);
-				setIsDropdownOpen(false);
-			}
-		};
 		window.addEventListener('resize', handleResize);
 		return () => window.removeEventListener('resize', handleResize);
 	}, []);
 
 	useEffect(() => {
-		const checkAuth = () => {
-			const token = sessionStorage.getItem('jwt');
-			setIsAuthenticated(!!token);
-		};
-		checkAuth();
-		window.addEventListener('authChanged', checkAuth);
-		return () => window.removeEventListener('authChanged', checkAuth);
+		handleCheckAuth();
+		window.addEventListener('authChanged', handleCheckAuth);
+		return () => window.removeEventListener('authChanged', handleCheckAuth);
 	}, []);
-
-	const handleLogout = () => {
-		sessionStorage.removeItem('jwt');
-		setIsAuthenticated(false);
-		navigate('/');
-	};
 
 	return (
 		<nav className="navbar">
@@ -90,12 +92,10 @@ const Navbar = () => {
 					{isAuthenticated ? (
 						<button onClick={handleLogout} className="admin-btn">Déconnexion</button>
 					) : (
-						<a href="/admin" className="admin-btn">Connexion Admin</a>
+						<Link href="/admin" className="admin-btn">Connexion Admin</Link>
 					)}
 				</div>
 			</div>
 		</nav>
 	);
 };
-
-export default Navbar; 

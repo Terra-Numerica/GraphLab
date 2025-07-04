@@ -7,7 +7,6 @@ import TutorialPopup from '../../common/TutorialPopup';
 import '../../../styles/pages/Coloration/Main.css';
 
 const Main = () => {
-
     const [showTutorial, setShowTutorial] = useState(false);
 
     useEffect(() => {
@@ -33,7 +32,7 @@ const Main = () => {
     return (
         <div className="coloration-container">
             <div className="explanation-section">
-                <h2>Coloration des Sommets</h2>
+                <h1>Coloration des Sommets</h1>
                 <div className="explanation-text">
                     <p>
                         La coloration de graphe est un problème d'optimisation où chaque sommet doit recevoir une couleur distincte de ses sommets adjacents. Ce problème trouve son application dans l'allocation de ressources, comme la planification de fréquences pour des antennes de communication.

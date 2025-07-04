@@ -1,5 +1,5 @@
 // Imports
-import { backendKeepAlive, frontendKeepAlive, getCurrentHour, isWeekend, sendDiscordMessage } from "@/utils/functions";
+import { backendKeepAlive, frontendKeepAlive, getCurrentHour, isWeekend } from "@/utils/functions";
 import { connectDatabase } from "@/base/Database";
 import { checkConfig } from "@/utils/config";
 
@@ -71,6 +71,6 @@ try {
 	};
 
 } catch (error: any) {
-	console.log(error.stack);
+	Logger.error(error.stack);
 	process.exit(1);
 };

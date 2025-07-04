@@ -3,18 +3,14 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import GraphDisplay from './GraphDisplay';
-import ValidationPopup from '../../common/ValidationPopup';
-import RulesPopup from '../../common/RulesPopup';
+import {ValidationPopup} from '../../common/ValidationPopup';
+import {RulesPopup} from '../../common/RulesPopup';
 import config from '../../../config';
+import { TimerDisplay } from '../../common/TimerDisplay';
 
 import '../../../styles/pages/Coloration/GlobalMode.css';
 
 const Libre = () => {
-
-    const TimerDisplay = ({ time, formatTime }) => {
-        return <div className="mode-timer">Temps: {formatTime(time)}</div>;
-    };
-
     const [graphs, setGraphs] = useState({
         tresFacile: [],
         facile: [],

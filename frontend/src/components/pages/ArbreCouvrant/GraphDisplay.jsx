@@ -172,16 +172,18 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
         };
     }, [graphData, cyRef, onSelectEdge]);
 
-    return (
-        <>
-            <div
-                id="cy-predefined"
-                className="mode-graph-area"
-                ref={containerRef}
-            />
-        </>
-    );
+    return <div
+        id="cy-predefined"
+        className="mode-graph-area"
+        ref={containerRef}
+    />
 };
+
+function orientation(p, q, r) {
+    const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+    if (val === 0) return 0;
+    return val > 0 ? 1 : 2;
+}
 
 const edgesCross = (e1, e2, nodesMap) => {
     const a1 = nodesMap[e1.data.source];
@@ -191,12 +193,6 @@ const edgesCross = (e1, e2, nodesMap) => {
     if (!a1 || !a2 || !b1 || !b2) return false;
 
     if ([e1.data.source, e1.data.target].some(id => id === e2.data.source || id === e2.data.target)) return false;
-
-    function orientation(p, q, r) {
-        const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-        if (val === 0) return 0;
-        return val > 0 ? 1 : 2;
-    }
 
     function doIntersect(p1, q1, p2, q2) {
         const o1 = orientation(p1, q1, p2);
