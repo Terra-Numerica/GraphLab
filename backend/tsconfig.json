@@ -21,6 +21,6 @@
 	"tsc-alias": {
 		"resolveFullPaths": true
 	},
-	"include": ["src","types"],
+	"include": ["src","types", "__tests__", "migrations", "migrations"],
 	"exclude": ["node_modules"]
 }

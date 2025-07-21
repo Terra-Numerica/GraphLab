@@ -55,7 +55,7 @@ const GraphEditor = ({ graphId = null, onClose }) => {
             elements: {
                 nodes: graphData.data.nodes.map(node => ({
                     group: 'nodes',
-                    data: { 
+                    data: {
                         id: node.data.id,
                         color: node.data.color || '#cccccc'
                     },
@@ -135,7 +135,7 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                     ...prev,
                     data: {
                         nodes: prev.data.nodes.filter(node => node.data.id !== element.id()),
-                        edges: prev.data.edges.filter(edge => 
+                        edges: prev.data.edges.filter(edge =>
                             edge.data.source !== element.id() && edge.data.target !== element.id()
                         )
                     }
@@ -175,7 +175,7 @@ const GraphEditor = ({ graphId = null, onClose }) => {
         const newNodeId = `node-${Date.now()}`;
         const newNode = {
             group: 'nodes',
-            data: { 
+            data: {
                 id: newNodeId,
                 label: String(graphData.data.nodes.length + 1),
                 color: '#cccccc'
@@ -185,7 +185,6 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                 y: Math.random() * 300 + 100
             }
         };
-        
         setGraphData(prev => ({
             ...prev,
             data: {
@@ -215,14 +214,12 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                 spacingFactor: 1.5
             };
             cyRef.current.layout(layoutOptions).run();
-            
             // Mettre à jour les positions dans l'état
             const nodes = cyRef.current.nodes().map(node => ({
                 group: 'nodes',
                 data: node.data(),
                 position: node.position()
             }));
-            
             setGraphData(prev => ({
                 ...prev,
                 data: {
@@ -237,12 +234,12 @@ const GraphEditor = ({ graphId = null, onClose }) => {
         e.preventDefault();
         try {
             setLoading(true);
-            const url = graphId 
+            const url = graphId
                 ? `${config.apiUrl}/graph/${graphId}`
                 : `${config.apiUrl}/graph`;
-            
+
             const method = graphId ? 'PUT' : 'POST';
-            
+
             const response = await fetch(url, {
                 method,
                 headers: {
@@ -316,8 +313,8 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                     </button>
                 </div>
 
-                <div 
-                    ref={containerRef} 
+                <div
+                    ref={containerRef}
                     className="cytoscape-container"
                 ></div>
 

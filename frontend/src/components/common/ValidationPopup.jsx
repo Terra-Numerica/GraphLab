@@ -37,4 +37,4 @@ const ValidationPopup = ({ type, title, message, onClose }) => {
     );
 };
 
-export default ValidationPopup; 
+export default ValidationPopup;

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 // Components => Navigation
 import Navbar from './components/Navigation/Navbar';
@@ -22,6 +23,9 @@ import AlgoPage from './components/pages/ArbreCouvrant/AlgoPage'
 import Dashboard from './components/Admin/Dashboard';
 import Login from './components/Admin/Login';
 
+// Components => Common
+import MobileWarning from './components/common/MobileWarning';
+
 // Styles
 import './styles/global.css'
 
@@ -40,6 +44,24 @@ function RequireAuth({ children }) {
 }
 
 function App() {
+	const [isMobile, setIsMobile] = useState(false);
+
+	useEffect(() => {
+		const checkMobile = () => {
+			setIsMobile(window.innerWidth <= 768);
+		};
+
+		checkMobile();
+
+		window.addEventListener('resize', checkMobile);
+
+		return () => window.removeEventListener('resize', checkMobile);
+	}, []);
+
+	if (isMobile) {
+		return <MobileWarning />;
+	}
+
 	return (
 		<BrowserRouter>
 		<div className="app">

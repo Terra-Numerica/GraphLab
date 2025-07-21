@@ -10,7 +10,9 @@
     "start": "node .",
     "build": "npm i && tsc && tsc-alias",
     "dev": "tsx watch src/server.ts",
-    "update": "ncu -u && npm install"
+    "update": "ncu -u && npm install",
+    "test": "jest",
+    "migrate": "tsx migrations/migrateGraphs.ts"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -27,9 +29,12 @@
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
+    "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.14.1",
+    "jest": "^30.0.4",
     "npm-check-updates": "^17.1.18",
+    "ts-jest": "^29.4.0",
     "tsx": "^4.19.3"
   }
 }

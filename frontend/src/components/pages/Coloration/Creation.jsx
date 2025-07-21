@@ -1,17 +1,15 @@
+// Imports
 import { colors as colorPalette } from '../../../utils/colorPalette';
 import { useState, useRef, useEffect, useMemo } from 'react';
-import { rgbToHex } from '../../../utils/colorUtils';
+import { useTimer } from '../../../hooks/useTimer';
 import { useNavigate } from 'react-router-dom';
 
 import ValidationPopup from '../../common/ValidationPopup';
+import TimerDisplay from '../../common/TimerDisplay';
 import RulesPopup from '../../common/RulesPopup';
 import GraphDisplay from './GraphDisplay';
 
 import '../../../styles/pages/Coloration/GlobalMode.css';
-
-const TimerDisplay = ({ time, formatTime }) => {
-    return <div className="mode-timer">Temps: {formatTime(time)}</div>;
-};
 
 const Creation = () => {
     const navigate = useNavigate();
@@ -38,6 +36,12 @@ const Creation = () => {
     }, [showRules]);
 
     const handleAddNode = (node) => {
+        if (!node.data?.color) {
+            node.data = {
+                ...node.data,
+                color: '#CCCCCC'
+            };
+        }
         setGraphData(prev => ({
             nodes: [...prev.nodes, node],
             edges: prev.edges
@@ -134,7 +138,7 @@ const Creation = () => {
         if (cyRef.current) {
             cyRef.current.nodes().forEach(node => {
                 if (!node.data('isColorNode')) {
-                    node.style('background-color', '#CCCCCC');
+                    node.data('color', '#CCCCCC');
                 }
             });
         }
@@ -162,23 +166,17 @@ const Creation = () => {
 
         cyRef.current.nodes().forEach((node) => {
             if (!node.data('isColorNode')) {
-                nodeColors.set(node.id(), node.style('background-color'));
+                nodeColors.set(node.id(), node.data('color') || defaultColor);
             }
         });
 
         cyRef.current.nodes().forEach((node) => {
             if (node.data('isColorNode')) return;
             const nodeColor = nodeColors.get(node.id());
-            let hexNodeColor = '';
-            if (nodeColor.startsWith('rgb')) {
-                hexNodeColor = rgbToHex(nodeColor);
-            } else {
-                hexNodeColor = nodeColor;
-            }
-            if (hexNodeColor === defaultColor) {
+            if (nodeColor === defaultColor) {
                 isCompleted = false;
             } else {
-                usedColors.add(hexNodeColor);
+                usedColors.add(nodeColor);
             }
             node.connectedEdges().forEach((edge) => {
                 const neighbor = edge.source().id() === node.id() ? edge.target() : edge.source();
@@ -225,7 +223,7 @@ const Creation = () => {
             return {
                 nodes: graphData.nodes,
                 edges: graphData.edges,
-                pastilleCounts: getPastilleCounts()
+                tabletCounts: getPastilleCounts()
             };
         }
         return graphData;
@@ -264,7 +262,10 @@ const Creation = () => {
                             const newNodeId = `node-${graphData.nodes.length}-${Date.now()}`;
                             const newNode = {
                                 group: 'nodes',
-                                data: { id: newNodeId },
+                                data: { 
+                                    id: newNodeId,
+                                    color: '#CCCCCC'
+                                },
                                 position: {
                                     x: Math.random() * 800 + 100,
                                     y: Math.random() * 400 + 100
@@ -361,36 +362,6 @@ const Creation = () => {
             )}
         </div>
     );
-};
-
-const useTimer = () => {
-    const [time, setTime] = useState(0);
-    const [isRunning, setIsRunning] = useState(false);
-    const timerRef = useRef(null);
-
-    useEffect(() => {
-        if (isRunning) {
-            timerRef.current = setInterval(() => {
-                setTime(prevTime => prevTime + 1);
-            }, 1000);
-        } else {
-            clearInterval(timerRef.current);
-        }
-        return () => clearInterval(timerRef.current);
-    }, [isRunning]);
-
-    const start = () => setIsRunning(true);
-    const stop = () => setIsRunning(false);
-    const reset = () => {
-        setTime(0);
-        setIsRunning(false);
-    };
-    const formatTime = (seconds) => {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-    };
-    return { time, isRunning, start, stop, reset, formatTime };
 };
 
 export default Creation; 
