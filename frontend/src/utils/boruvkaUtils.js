@@ -1,3 +1,9 @@
+/**
+ * @description Find the root of a node in a tree
+ * @param {Object} parent - The parent object
+ * @param {string} i - The node to find the root of
+ * @returns {string} The root of the node
+*/
 const find = (parent, i) => {
     if (parent[i] !== i) {
         parent[i] = find(parent, parent[i]);
@@ -5,6 +11,13 @@ const find = (parent, i) => {
     return parent[i];
 };
 
+/**
+ * @description Union two nodes in a tree
+ * @param {Object} parent - The parent object
+ * @param {Object} rank - The rank object
+ * @param {string} x - The first node
+ * @param {string} y - The second node
+*/
 const union = (parent, rank, x, y) => {
     const rootX = find(parent, x);
     const rootY = find(parent, y);
@@ -21,6 +34,13 @@ const union = (parent, rank, x, y) => {
     }
 };
 
+/**
+ * @description Find the minimum edge for a component
+ * @param {Array} edges - The edges of the graph
+ * @param {Array} componentNodes - The nodes of the component
+ * @param {Object} parent - The parent object
+ * @returns {Object} The minimum edge
+*/
 const findMinEdgeForComponent = (edges, componentNodes, parent) => {
     let minEdge = null;
     let minWeight = Infinity;
@@ -44,6 +64,12 @@ const findMinEdgeForComponent = (edges, componentNodes, parent) => {
     return minEdge;
 };
 
+/**
+ * @description The Boruvka algorithm
+ * @param {Array} nodes - The nodes of the graph
+ * @param {Array} edges - The edges of the graph
+ * @returns {Array} The steps of the algorithm
+*/
 export const boruvkaAlgorithm = (nodes, edges) => {
     const steps = [];
     const parent = {};

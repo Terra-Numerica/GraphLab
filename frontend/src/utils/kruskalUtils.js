@@ -1,9 +1,19 @@
+/**
+ * @description The UnionFind class
+ * @param {number} size - The size of the UnionFind
+ * @returns {Object} The UnionFind instance
+*/
 export class UnionFind {
     constructor(size) {
         this.parent = Array.from({ length: size }, (_, i) => i);
         this.rank = Array(size).fill(0);
     }
 
+    /**
+     * @description Find the root of a node
+     * @param {number} x - The node to find the root of
+     * @returns {number} The root of the node
+    */
     find(x) {
         if (this.parent[x] !== x) {
             this.parent[x] = this.find(this.parent[x]);
@@ -11,6 +21,11 @@ export class UnionFind {
         return this.parent[x];
     }
 
+    /**
+     * @description Union two nodes
+     * @param {number} x - The first node
+     * @param {number} y - The second node
+    */
     union(x, y) {
         const rootX = this.find(x);
         const rootY = this.find(y);
@@ -27,6 +42,12 @@ export class UnionFind {
     }
 }
 
+/**
+ * @description The Kruskal algorithm
+ * @param {Array} nodes - The nodes of the graph
+ * @param {Array} edges - The edges of the graph
+ * @returns {Array} The steps of the algorithm
+*/
 export const kruskalAlgorithm = (nodes, edges) => {
     const nodeCount = nodes.length;
     const uf = new UnionFind(nodeCount);

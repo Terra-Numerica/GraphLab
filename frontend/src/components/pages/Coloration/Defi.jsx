@@ -3,17 +3,16 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import ValidationPopup from '../../common/ValidationPopup';
+import TimerDisplay from '../../common/TimerDisplay';
 import RulesPopup from '../../common/RulesPopup';
 import GraphDisplay from './GraphDisplay';
-import config from '../../../config';
+
+import { useFetchGraphs, useFetchGraph } from '../../../hooks/useFetchGraphs';
+import { useTimer } from '../../../hooks/useTimer';
 
 import '../../../styles/pages/Coloration/GlobalMode.css';
 
 const Defi = () => {
-
-    const TimerDisplay = ({ time, formatTime }) => {
-        return <div className="mode-timer">Temps: {formatTime(time)}</div>;
-    };
 
     const [graphs, setGraphs] = useState({
         tresFacile: [],
@@ -24,18 +23,85 @@ const Defi = () => {
     });
     const [selectedGraph, setSelectedGraph] = useState('');
     const [currentGraph, setCurrentGraph] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [validationPopup, setValidationPopup] = useState(null);
     const [isImpossibleEnabled, setIsImpossibleEnabled] = useState(false);
     const cyRef = useRef(null);
-    const { time, start, stop, reset, formatTime, isRunning } = useTimer();
     const [showRules, setShowRules] = useState(false);
+    const { time, start, stop, reset, formatTime, isRunning } = useTimer();
     const navigate = useNavigate();
 
+    const { graphs: fetchedGraphs, loading: graphsLoading, error } = useFetchGraphs();
+    const { graph: selectedGraphData, loading: graphLoading } = useFetchGraph({ id: selectedGraph });
+
     useEffect(() => {
-        fetchGraphs();
-    }, []);
+        if (fetchedGraphs.length > 0) {
+            const sortedGraphs = {
+                tresFacile: [],
+                facile: [],
+                moyen: [],
+                difficile: [],
+                extreme: []
+            };
+
+            const coloringWorkshops = fetchedGraphs.filter((graph) => graph.workshopData.coloring.enabled);
+
+            coloringWorkshops.forEach(graph => {
+                const difficulty = graph.workshopData.coloring.difficulty;
+
+                switch (difficulty) {
+                    case 'Très facile':
+                        sortedGraphs.tresFacile.push(graph);
+                        break;
+                    case 'Facile':
+                        sortedGraphs.facile.push(graph);
+                        break;
+                    case 'Moyen':
+                        sortedGraphs.moyen.push(graph);
+                        break;
+                    case 'Difficile':
+                        sortedGraphs.difficile.push(graph);
+                        break;
+                    case 'Impossible-preuve-facile':
+                        sortedGraphs.moyen.push(graph);
+                        break;
+                    case 'Impossible-preuve-difficile':
+                        sortedGraphs.extreme.push(graph);
+                        break;
+                    default:
+                        sortedGraphs.facile.push(graph);
+                }
+            });
+            setGraphs(sortedGraphs);
+        }
+    }, [fetchedGraphs]);
+
+    useEffect(() => {
+        if (selectedGraphData?.data) {
+            const graphConfig = selectedGraphData;
+
+            graphConfig.data.nodes.forEach(node => {
+                if (node.position) {
+                    node.position.y += 80;
+                }
+            });
+
+            graphConfig.data.edges.forEach(edge => {
+                if (edge.data) {
+                    edge.data.controlPointDistance = edge.data.controlPointDistance ?? 0;
+                }
+            });
+
+            setCurrentGraph({
+                name: graphConfig.name,
+                data: graphConfig.data,
+                optimalCount: graphConfig.workshopData.coloring.optimalCount,
+                tabletCounts: graphConfig.workshopData.coloring.tabletCounts,
+                difficulty: graphConfig.workshopData.coloring.difficulty
+            });
+            reset();
+            start();
+        }
+    }, [selectedGraphData]);
 
     useEffect(() => {
         if (cyRef.current) {
@@ -65,142 +131,6 @@ const Defi = () => {
         extreme: 'Extrême'
     };
 
-    return (
-        <div className="mode-container">
-            <button className="mode-back-btn" onClick={() => navigate('/coloration')}>&larr; Retour</button>
-            <h2 className="mode-title">Mode Défi</h2>
-            <div className="mode-top-bar">
-                <select
-                    className="mode-select"
-                    value={selectedGraph}
-                    onChange={handleGraphSelect}
-                    disabled={loading}
-                >
-                    <option value="" disabled hidden>
-                        {loading ? "Chargement des graphes..." : "Choisis un graphe"}
-                    </option>
-                    {Object.entries(graphs).map(([difficulty, graphList]) => (
-                        graphList.length > 0 && (
-                            <optgroup key={difficulty} label={difficultyLabels[difficulty]}>
-                                {graphList.map((graph) => (
-                                    <option key={graph._id} value={graph._id}>
-                                        {graph.name}
-                                    </option>
-                                ))}
-                            </optgroup>
-                        )
-                    ))}
-                </select>
-                {error && <div className="error-message">{error}</div>}
-                {currentGraph && <TimerDisplay time={time} formatTime={formatTime} />}
-            </div>
-            {currentGraph && <div className="mode-buttons-row">
-                <button className="mode-btn mode-btn-validate" onClick={validateGraph}>Valider la coloration</button>
-                <button className="mode-btn mode-btn-reset" onClick={resetColors}>Réinitialiser la coloration</button>
-                <button
-                    className="mode-btn mode-btn-impossible"
-                    onClick={handleImpossible}
-                    disabled={!isImpossibleEnabled}
-                >
-                    Je pense qu'il est impossible
-                </button>
-            </div>}
-
-            {currentGraph && <GraphDisplay graphData={currentGraph} cyRef={cyRef} />}
-
-            <button className="mode-rules-btn" onClick={() => setShowRules(true)}>&#9432; Voir les règles</button>
-
-            {validationPopup && (
-                <ValidationPopup
-                    type={validationPopup.type}
-                    title={validationPopup.title}
-                    message={validationPopup.message}
-                    onClose={handleClosePopup}
-                />
-            )}
-
-            {showRules && (
-                <RulesPopup title="Règles du mode Défi" onClose={() => setShowRules(false)}>
-                    <h3>🎯 Objectif</h3>
-                    <ul>
-                        <li>Deux sommets adjacents ne doivent jamais avoir la même couleur.</li>
-                        <li>Tu disposes d'un nombre limité de pastilles que tu dois placer correctement.</li>
-                    </ul>
-
-                    <h3>🛠️ Comment jouer à la <strong>Coloration d'un Graphe</strong></h3>
-                    <ul>
-                        <li>Choisis un graphe prédéfini dans le menu déroulant.</li>
-                        <li>Attrape une pastille de couleur, fais-la glisser vers un sommet et relâche-la pour lui attribuer cette couleur.</li>
-                        <li>Colorie entièrement le graphe en respectant les règles de coloration.</li>
-                        <li>Quand tu penses avoir réussi, clique sur le bouton <strong>Valider la Coloration</strong> pour vérifier si le graphe est correctement coloré.</li>
-                    </ul>
-
-                    <h3>🔧 Fonctionnalités</h3>
-                    <ul>
-                        <li>Si tu penses avoir fait une erreur, tu peux faire un clic droit sur un sommet pour lui retirer sa couleur.</li>
-                        <li>Si tu veux recommencer, clique sur <strong>Réinitialiser la Coloration</strong> pour remettre tous les sommets dans leur état initial.</li>
-                    </ul>
-                </RulesPopup>
-            )}
-        </div>
-    );
-
-    function fetchGraphs() {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`${config.apiUrl}/graph`);
-                if (!response.ok) {
-                    throw new Error('Impossible de récupérer la liste des graphes');
-                }
-                const data = await response.json();
-
-                const sortedGraphs = {
-                    tresFacile: [],
-                    facile: [],
-                    moyen: [],
-                    difficile: [],
-                    extreme: []
-                };
-
-                data.forEach(graph => {
-                    switch (graph.difficulty) {
-                        case 'Très facile':
-                            sortedGraphs.tresFacile.push(graph);
-                            break;
-                        case 'Facile':
-                            sortedGraphs.facile.push(graph);
-                            break;
-                        case 'Moyen':
-                            sortedGraphs.moyen.push(graph);
-                            break;
-                        case 'Difficile':
-                            sortedGraphs.difficile.push(graph);
-                            break;
-                        case 'Extrême':
-                            sortedGraphs.extreme.push(graph);
-                            break;
-                        case 'Impossible-preuve-facile':
-                            sortedGraphs.moyen.push(graph);
-                            break;
-                        case 'Impossible-preuve-difficile':
-                            sortedGraphs.extreme.push(graph);
-                            break;
-                        default:
-                            sortedGraphs.facile.push(graph);
-                    }
-                });
-
-                setGraphs(sortedGraphs);
-                setLoading(false);
-            } catch (err) {
-                setError('Impossible de récupérer la liste des graphes');
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }
-
     function handleGraphSelect(event) {
         const graphId = event.target.value;
         setSelectedGraph(graphId);
@@ -209,50 +139,7 @@ const Defi = () => {
         if (!graphId) {
             setCurrentGraph(null);
             reset();
-            return;
         }
-
-        const fetchGraph = async () => {
-            try {
-                const response = await fetch(`${config.apiUrl}/graph/${graphId}`);
-                if (!response.ok) {
-                    throw new Error('Impossible de récupérer les détails du graphe');
-                }
-                const graphConfig = await response.json();
-
-                if (graphConfig?.data) {
-                    graphConfig.data.nodes.forEach(node => {
-                        if (node.position) {
-                            node.position.y += 80;
-                        }
-                    });
-
-                    graphConfig.data.edges.forEach(edge => {
-                        if (edge.data) {
-                            edge.data.controlPointDistance = edge.data.controlPointDistance ?? 0;
-                        }
-                    });
-
-                    setCurrentGraph({
-                        name: graphConfig.name,
-                        data: graphConfig.data,
-                        optimalColoring: graphConfig.optimalColoring,
-                        pastilleCounts: graphConfig.pastilleCounts,
-                        difficulty: graphConfig.difficulty
-                    });
-                    reset();
-                    start();
-                } else {
-                    throw new Error('Données invalides pour le graphe');
-                }
-            } catch (err) {
-                console.error('Erreur lors du chargement du graphe:', err);
-                setError('Impossible de charger le graphe sélectionné');
-                setCurrentGraph(null);
-            }
-        };
-
-        fetchGraph();
     }
 
     function checkColoredPercentage() {
@@ -260,7 +147,7 @@ const Defi = () => {
 
         const totalNodes = cyRef.current.nodes().filter(node => !node.data('isColorNode')).length;
         const coloredNodes = cyRef.current.nodes().filter(node => {
-            return !node.data('isColorNode') && rgbToHex(node.style('background-color')) !== '#CCCCCC';
+            return !node.data('isColorNode') && node.data('color') !== '#CCCCCC';
         }).length;
 
         const percentage = (coloredNodes / totalNodes) * 100;
@@ -273,24 +160,28 @@ const Defi = () => {
         const defaultColor = '#CCCCCC';
         let isCompleted = true;
         let isValid = true;
+        const usedColors = new Set();
 
         cyRef.current.nodes().forEach((node) => {
-            const nodeColor = node.style('background-color');
-            let hexNodeColor = '';
+            if (node.data('isColorNode')) return;
 
-            if (nodeColor.startsWith('rgb')) {
-                hexNodeColor = rgbToHex(nodeColor);
+            const nodeColor = node.data('color') || defaultColor;
+
+            if (nodeColor === defaultColor) {
+                isCompleted = false;
+            } else {
+                usedColors.add(nodeColor);
             }
-
-            if (hexNodeColor === defaultColor) isCompleted = false;
 
             node.connectedEdges().forEach((edge) => {
                 const neighbor = edge.source().id() === node.id() ? edge.target() : edge.source();
-                if (neighbor.style('background-color') === nodeColor) {
+                if (!neighbor.data('isColorNode') && neighbor.data('color') === nodeColor) {
                     isValid = false;
                 }
             });
         });
+
+        const optimalColorCount = currentGraph.optimalCount;
 
         if (!isCompleted) {
             setValidationPopup({
@@ -302,15 +193,23 @@ const Defi = () => {
             setValidationPopup({
                 type: 'error',
                 title: 'Erreur !',
-                message: "Deux sommets adjacents ont la même couleur."
+                message: 'Deux sommets adjacents ont la même couleur.'
             });
         } else {
-            stop();
-            setValidationPopup({
-                type: 'success',
-                title: 'Félicitations !',
-                message: `Bravo ! La coloration est valide ! \n Temps: ${formatTime(time)}`
-            });
+            if (usedColors.size > optimalColorCount) {
+                setValidationPopup({
+                    type: 'success',
+                    title: 'Félicitations !',
+                    message: `Tu as réussi à colorer le graphe ! Il existe une solution qui utilise moins de couleurs. Peux-tu la trouver ?`
+                });
+            } else {
+                stop();
+                setValidationPopup({
+                    type: 'success',
+                    title: 'Félicitations !',
+                    message: `Tu as réussi à colorer le graphe en ${formatTime(time)} ! Tu as trouvé la solution qui utilise le nombre minimum de couleurs !`
+                });
+            }
         }
     }
 
@@ -323,13 +222,13 @@ const Defi = () => {
 
         cyRef.current.nodes().forEach((node) => {
             if (!node.data('isColorNode')) {
-                const currentColor = rgbToHex(node.style('background-color'));
-                if (currentColor !== defaultColor) {
+                const currentColor = node.data('color');
+                if (currentColor && currentColor !== defaultColor) {
                     colorCounts[currentColor] = (colorCounts[currentColor] || 0) + 1;
                 }
-                node.style('background-color', defaultColor);
+                node.data('color', defaultColor);
             } else {
-                const color = rgbToHex(node.style('background-color'));
+                const color = node.data('color');
                 unusedColors[color] = (unusedColors[color] || 0) + 1;
             }
         });
@@ -348,18 +247,13 @@ const Defi = () => {
             for (let i = 0; i < count; i++) {
                 cyRef.current.add({
                     group: 'nodes',
-                    data: { id: `color-${color}-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`, isColorNode: true },
-                    position: { x: currentXPosition, y: 50 },
-                    style: {
-                        'background-color': color,
-                        'width': 30,
-                        'height': 30,
-                        'label': '',
-                        'border-width': 2,
-                        'border-color': '#000',
-                        'shape': 'ellipse',
+                    data: { 
+                        id: `color-${color}-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`, 
+                        isColorNode: true,
+                        color: color
                     },
-                    locked: false,
+                    position: { x: currentXPosition, y: 50 },
+                    locked: false
                 });
                 currentXPosition += 50;
             }
@@ -443,45 +337,87 @@ const Defi = () => {
     function handleClosePopup() {
         setValidationPopup(null);
     }
-};
 
-const useTimer = () => {
-    const [time, setTime] = useState(0);
-    const [isRunning, setIsRunning] = useState(false);
-    const timerRef = useRef(null);
+    return (
+        <div className="mode-container">
+            <button className="mode-back-btn" onClick={() => navigate('/coloration')}>&larr; Retour</button>
+            <h2 className="mode-title">Mode Défi</h2>
+            <div className="mode-top-bar">
+                <select
+                    className="mode-select"
+                    value={selectedGraph}
+                    onChange={handleGraphSelect}
+                    disabled={graphsLoading}
+                >
+                    <option value="" disabled hidden>
+                        {graphsLoading ? "Chargement des graphes..." : "Choisis un graphe"}
+                    </option>
+                    {Object.entries(graphs).map(([difficulty, graphList]) => (
+                        graphList.length > 0 && (
+                            <optgroup key={difficulty} label={difficultyLabels[difficulty]}>
+                                {graphList.map((graph) => (
+                                    <option key={graph._id} value={graph._id}>
+                                        {graph.name}
+                                    </option>
+                                ))}
+                            </optgroup>
+                        )
+                    ))}
+                </select>
+                {error && <div className="error-message">{error}</div>}
+                {currentGraph && <TimerDisplay time={time} formatTime={formatTime} />}
+            </div>
 
-    useEffect(() => {
-        if (isRunning) {
-            timerRef.current = setInterval(() => {
-                setTime(prevTime => prevTime + 1);
-            }, 1000);
-        } else {
-            clearInterval(timerRef.current);
-        }
+            {currentGraph && !graphLoading && <div className="mode-buttons-row">
+                <button className="mode-btn mode-btn-validate" onClick={validateGraph}>Valider la coloration</button>
+                <button className="mode-btn mode-btn-reset" onClick={resetColors}>Réinitialiser la coloration</button>
+                <button
+                    className="mode-btn mode-btn-impossible"
+                    onClick={handleImpossible}
+                    disabled={!isImpossibleEnabled}
+                >
+                    Je pense qu'il est impossible
+                </button>
+            </div>}
 
-        return () => clearInterval(timerRef.current);
-    }, [isRunning]);
+            {currentGraph && !graphLoading && <GraphDisplay graphData={currentGraph} cyRef={cyRef} />}
 
-    const start = () => {
-        setIsRunning(true);
-    };
+            <button className="mode-rules-btn" onClick={() => setShowRules(true)}>&#9432; Voir les règles</button>
 
-    const stop = () => {
-        setIsRunning(false);
-    };
+            {validationPopup && (
+                <ValidationPopup
+                    type={validationPopup.type}
+                    title={validationPopup.title}
+                    message={validationPopup.message}
+                    onClose={handleClosePopup}
+                />
+            )}
 
-    const reset = () => {
-        setTime(0);
-        setIsRunning(false);
-    };
+            {showRules && (
+                <RulesPopup title="Règles du mode Défi" onClose={() => setShowRules(false)}>
+                    <h3>🎯 Objectif</h3>
+                    <ul>
+                        <li>Deux sommets adjacents ne doivent jamais avoir la même couleur.</li>
+                        <li>Tu disposes d'un nombre limité de pastilles que tu dois placer correctement.</li>
+                    </ul>
 
-    const formatTime = (seconds) => {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-    };
+                    <h3>🛠️ Comment jouer à la <strong>Coloration d'un Graphe</strong></h3>
+                    <ul>
+                        <li>Choisis un graphe prédéfini dans le menu déroulant.</li>
+                        <li>Attrape une pastille de couleur, fais-la glisser vers un sommet et relâche-la pour lui attribuer cette couleur.</li>
+                        <li>Colorie entièrement le graphe en respectant les règles de coloration.</li>
+                        <li>Quand tu penses avoir réussi, clique sur le bouton <strong>Valider la Coloration</strong> pour vérifier si le graphe est correctement coloré.</li>
+                    </ul>
 
-    return { time, isRunning, start, stop, reset, formatTime };
+                    <h3>🔧 Fonctionnalités</h3>
+                    <ul>
+                        <li>Si tu penses avoir fait une erreur, tu peux faire un clic droit sur un sommet pour lui retirer sa couleur.</li>
+                        <li>Si tu veux recommencer, clique sur <strong>Réinitialiser la Coloration</strong> pour remettre tous les sommets dans leur état initial.</li>
+                    </ul>
+                </RulesPopup>
+            )}
+        </div>
+    );
 };
 
 export default Defi; 

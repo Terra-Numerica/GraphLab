@@ -1,5 +1,6 @@
 // Imports
 import * as controller from '@/controllers/graph.controller';
+
 import { Router } from 'express';
 
 const router = Router();

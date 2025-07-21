@@ -9,7 +9,7 @@ const Main = () => {
     const [showTutorial, setShowTutorial] = useState(false);
 
     useEffect(() => {
-        const hasSeenTutorial = localStorage.getItem('hasSeenMSTTutorial');
+        const hasSeenTutorial = localStorage.getItem('hasSeenMSTTutorial') || sessionStorage.getItem('hasSeenMSTTutorial');
         if (!hasSeenTutorial) {
             setShowTutorial(true);
         }
@@ -23,6 +23,12 @@ const Main = () => {
         if (dontShowAgain) {
             localStorage.setItem('hasSeenMSTTutorial', 'true');
         }
+        sessionStorage.setItem('hasSeenMSTTutorial', 'true');
+        setShowTutorial(false);
+    };
+
+    const handleTutorialClose = () => {
+        sessionStorage.setItem('hasSeenMSTTutorial', 'true');
         setShowTutorial(false);
     };
 
@@ -74,7 +80,7 @@ const Main = () => {
                             }
                         ]
                     }
-                    onClose={() => setShowTutorial(false)}
+                    onClose={handleTutorialClose}
                     onComplete={handleTutorialComplete}
                 />
             )}

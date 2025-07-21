@@ -23,7 +23,8 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
             data: {
                 ...node.data,
                 color: '#cccccc',
-            }
+            },
+            locked: true
         }));
 
         const nodesMap = {};
@@ -92,11 +93,13 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
                     selector: 'node',
                     style: {
                         'background-color': '#cccccc',
-                        'width': 30,
-                        'height': 30,
+                        'width': 40,
+                        'height': 40,
+                        'border-width': 1,
+                        'border-color': '#666',
                         'text-valign': 'center',
                         'text-halign': 'center',
-                        'font-size': 12,
+                        'font-size': 15,
                         'label': 'data(label)',
                         'text-wrap': 'wrap'
                     }
@@ -105,7 +108,7 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
                     selector: 'edge',
                     style: {
                         'line-color': '#666',
-                        'width': 2,
+                        'width': 3,
                         'curve-style': 'unbundled-bezier',
                         'control-point-distance': 'data(controlPointDistance)',
                         'control-point-weight': 0.5,
@@ -127,8 +130,8 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
                 {
                     selector: 'edge.selected',
                     style: {
-                        'line-color': '#2ecc71',
-                        'width': 3
+                        'line-color': '#9400D3',
+                        'width': 4
                     }
                 },
                 {

@@ -61,7 +61,7 @@ const AlgoVisualization = ({ algo, graph, cyRef }) => {
         cyRef.current.edges().removeClass('algo-edge-selected algo-prim-selected algo-kruskal-selected algo-boruvka-selected algo-boruvka-min-edge')
             .style({
                 'line-color': '#666',
-                'line-width': 1,
+                'width': 3,
                 'opacity': 1
             });
         cyRef.current.nodes().removeClass('algo-node-start algo-prim-start algo-boruvka-component')
@@ -82,8 +82,8 @@ const AlgoVisualization = ({ algo, graph, cyRef }) => {
                             edge.addClass(config.edgeClass);
                         }
                         edge.style({
-                            'line-color': '#2ecc71',
-                            'line-width': 3,
+                            'line-color': '#9400D3',
+                            'width': 4,
                             'opacity': 1
                         });
                     }

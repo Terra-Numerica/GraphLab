@@ -27,7 +27,7 @@ const Navbar = () => {
 
 	useEffect(() => {
 		const checkAuth = () => {
-			const token = localStorage.getItem('jwt');
+			const token = sessionStorage.getItem('jwt');
 			setIsAuthenticated(!!token);
 		};
 		checkAuth();
@@ -36,7 +36,7 @@ const Navbar = () => {
 	}, []);
 
 	const handleLogout = () => {
-		localStorage.removeItem('jwt');
+		sessionStorage.removeItem('jwt');
 		setIsAuthenticated(false);
 		navigate('/');
 	};

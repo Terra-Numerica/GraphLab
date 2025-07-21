@@ -1,4 +1,7 @@
+// Imports
 import GraphModel from '@/models/graph.model';
+
+// Types
 import type { Request, Response } from 'express';
 
 export const getGraphs = async (req: Request, res: Response) => {

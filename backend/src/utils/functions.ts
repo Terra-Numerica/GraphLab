@@ -55,6 +55,14 @@ export const getCurrentHour = () => {
     return IntlHour;
 };
 
+export const isWeekend = () => {
+    const IntlDate = new Intl.DateTimeFormat("fr-FR", {
+        weekday: "long"
+    }).format(new Date());
+    
+    return (IntlDate === "samedi" && parseInt(getCurrentHour(), 10) >= 13 && parseInt(getCurrentHour(), 10) <= 19) || IntlDate === "dimanche";
+};
+
 const request = async (url: string) => {
 
     const IntlHour = getCurrentHour();

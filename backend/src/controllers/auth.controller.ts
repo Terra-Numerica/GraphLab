@@ -1,7 +1,11 @@
-import { Request, Response } from 'express';
-import Admin from '../models/admin.model';
-import { generateToken } from '../utils/jwt';
+// Imports
+import { generateToken } from '@/utils/jwt';
+
+import Admin from '@/models/admin.model';
 import bcrypt from 'bcrypt';
+
+// Types
+import type { Request, Response } from 'express';
 
 export const login = async (req: Request, res: Response): Promise<void> => {
     try {

@@ -1,3 +1,9 @@
+/**
+ * @description The Prim algorithm
+ * @param {Array} nodes - The nodes of the graph
+ * @param {Array} edges - The edges of the graph
+ * @returns {Array} The steps of the algorithm
+*/
 export const primAlgorithm = (nodes, edges) => {
     const nodeCount = nodes.length;
     const nodeToIndex = {};

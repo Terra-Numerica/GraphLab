@@ -24,7 +24,7 @@ const Login = () => {
                 throw new Error("Identifiant ou mot de passe invalide");
             }
             const data = await response.json();
-            localStorage.setItem('jwt', data.token);
+            sessionStorage.setItem('jwt', data.token);
             window.dispatchEvent(new Event('authChanged'));
             navigate('/admin');
         } catch (err) {

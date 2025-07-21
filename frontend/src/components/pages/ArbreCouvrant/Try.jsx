@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { kruskalAlgorithm } from '../../../utils/kruskalUtils';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useTimer } from '../../../hooks/useTimer';
+import TimerDisplay from '../../common/TimerDisplay';
 
 import ValidationPopup from '../../common/ValidationPopup';
 import RulesPopup from '../../common/RulesPopup';
@@ -8,10 +10,6 @@ import GraphDisplay from './GraphDisplay';
 import config from '../../../config';
 
 import '../../../styles/pages/ArbreCouvrant/GlobalMode.css';
-
-const TimerDisplay = memo(({ time, formatTime }) => {
-    return <div className="mode-timer">Temps: {formatTime(time)}</div>;
-});
 
 const CostDisplay = memo(({ currentCost, optimalCost }) => {
     return (
@@ -24,25 +22,26 @@ const CostDisplay = memo(({ currentCost, optimalCost }) => {
 const GraphDisplayMemo = memo(GraphDisplay);
 
 const Try = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const [graphs, setGraphs] = useState({
         petit: [],
         moyen: [],
         grand: []
     });
-    const [selectedGraph, setSelectedGraph] = useState('');
+    const [selectedGraph, setSelectedGraph] = useState(location.state?.selectedGraph || '');
     const [currentGraph, setCurrentGraph] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [validationPopup, setValidationPopup] = useState(null);
-    const [weightType, setWeightType] = useState(''); // 'predefined', 'one', 'random'
+    const [weightType, setWeightType] = useState(location.state?.weightType || '');
     const [selectedEdges, setSelectedEdges] = useState(new Set());
     const [currentCost, setCurrentCost] = useState(0);
     const [optimalCost, setOptimalCost] = useState(0);
     const cyRef = useRef(null);
     const [showRules, setShowRules] = useState(false);
     const { time, start, stop, reset, formatTime, isRunning } = useTimer();
-    const navigate = useNavigate();
 
     useEffect(() => {
         fetchGraphs();
@@ -68,6 +67,7 @@ const Try = () => {
     useEffect(() => {
         if (!selectedGraph || !weightType) {
             setCurrentGraph(null);
+            setSelectedEdges(new Set());
             return;
         }
         const fetchGraph = async () => {
@@ -122,6 +122,7 @@ const Try = () => {
                         },
                         difficulty: graphConfig.difficulty
                     });
+                    setSelectedEdges(new Set());
                     reset();
                     start();
                 } else {
@@ -130,6 +131,7 @@ const Try = () => {
             } catch (err) {
                 setError('Impossible de charger le graphe sélectionné');
                 setCurrentGraph(null);
+                setSelectedEdges(new Set());
             }
         };
         fetchGraph();
@@ -295,6 +297,12 @@ const Try = () => {
         });
     }, [currentGraph, selectedGraph, weightType, navigate]);
 
+    useEffect(() => {
+        if (cyRef.current && selectedEdges.size === 0) {
+            cyRef.current.edges().removeClass('selected');
+        }
+    }, [selectedEdges]);
+
     return (
         <div className="tree-mode-container">
             <button className="tree-mode-back-btn" onClick={() => navigate('/arbre-couvrant')}>&larr; Retour</button>
@@ -453,38 +461,6 @@ const Try = () => {
     function handleClosePopup() {
         setValidationPopup(null);
     }
-};
-
-const useTimer = () => {
-    const [time, setTime] = useState(0);
-    const [isRunning, setIsRunning] = useState(false);
-    const timerRef = useRef(null);
-
-    useEffect(() => {
-        if (isRunning) {
-            timerRef.current = setInterval(() => {
-                setTime(prevTime => prevTime + 1);
-            }, 1000);
-        } else {
-            clearInterval(timerRef.current);
-        }
-
-        return () => clearInterval(timerRef.current);
-    }, [isRunning]);
-
-    const start = () => setIsRunning(true);
-    const stop = () => setIsRunning(false);
-    const reset = () => {
-        setTime(0);
-        setIsRunning(false);
-    };
-    const formatTime = (seconds) => {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-    };
-
-    return { time, isRunning, start, stop, reset, formatTime };
 };
 
 export default Try;

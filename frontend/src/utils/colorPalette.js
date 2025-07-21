@@ -1,4 +1,7 @@
-// === Couleurs ===
+/**
+ * @description The color palette
+ * @type {Array}
+*/
 export const colors = [
     "#FF5733", // Rouge
     "#3498DB", // Bleu
