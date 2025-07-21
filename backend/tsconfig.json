@@ -11,6 +11,7 @@
 		"resolveJsonModule": true,
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
+		"rootDir": "src",
 		"outDir": "dist",
 		"typeRoots": ["src/types", "node_modules/@types"],
 		"baseUrl": "./src",
@@ -21,6 +22,6 @@
 	"tsc-alias": {
 		"resolveFullPaths": true
 	},
-	"include": ["src","types", "__tests__", "migrations", "migrations"],
+	"include": ["src","types"],
 	"exclude": ["node_modules"]
 }

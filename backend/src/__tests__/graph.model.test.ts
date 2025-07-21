@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { describe, beforeAll, afterAll, afterEach, it, expect } from '@jest/globals';
-import Graph from '../src/models/graph.model';
+import Graph from '@/models/graph.model';
 
 describe('Graph Model Test', () => {
     beforeAll(async () => {
