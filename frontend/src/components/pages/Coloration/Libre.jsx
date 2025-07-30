@@ -8,6 +8,7 @@ import RulesPopup from '../../common/RulesPopup';
 import config from '../../../config';
 
 import '../../../styles/pages/Coloration/GlobalMode.css';
+import {ColorGraphSort} from "../../../utils/GraphSorting.js";
 
 const Libre = () => {
 
@@ -133,6 +134,9 @@ const Libre = () => {
                     throw new Error('Impossible de récupérer la liste des graphes');
                 }
                 const data = await response.json();
+
+                const sortedData = ColorGraphSort(data);
+
                 const sortedGraphs = {
                     tresFacile: [],
                     facile: [],
@@ -140,7 +144,7 @@ const Libre = () => {
                     difficile: [],
                     extreme: []
                 };
-                data.forEach(graph => {
+                sortedData.forEach(graph => {
                     switch (graph.difficulty) {
                         case 'Très facile':
                             sortedGraphs.tresFacile.push(graph);

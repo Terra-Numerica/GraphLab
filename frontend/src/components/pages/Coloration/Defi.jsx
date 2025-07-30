@@ -1,6 +1,7 @@
 import { rgbToHex } from '../../../utils/colorUtils';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ColorGraphSort } from '../../../utils/GraphSorting.js';
 
 import ValidationPopup from '../../common/ValidationPopup';
 import RulesPopup from '../../common/RulesPopup';
@@ -154,6 +155,8 @@ const Defi = () => {
                 }
                 const data = await response.json();
 
+                const sortedData = ColorGraphSort(data);
+
                 const sortedGraphs = {
                     tresFacile: [],
                     facile: [],
@@ -162,7 +165,7 @@ const Defi = () => {
                     extreme: []
                 };
 
-                data.forEach(graph => {
+                sortedData.forEach(graph => {
                     switch (graph.difficulty) {
                         case 'Très facile':
                             sortedGraphs.tresFacile.push(graph);
