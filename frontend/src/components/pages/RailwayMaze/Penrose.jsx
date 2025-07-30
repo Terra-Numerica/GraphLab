@@ -94,7 +94,7 @@ const Penrose = () => {
                     tag : data.tag
                 });
                 reset();
-                /*start();*/
+                start();
                 initGame(data)
             } catch (error){
                 console.log('Erreur dans fetchGraph :', error);
