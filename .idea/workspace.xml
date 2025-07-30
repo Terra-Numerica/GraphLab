@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1e87cc7b-41e7-4af0-99df-7d39127a0c7e" name="Changes" comment="Commit" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JSX File" />
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="SWAP_SIDES_IN_COMPARE_BRANCHES" value="true" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Nurulome&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Terra-Numerica/GraphLab.git&quot;,
+    &quot;accountId&quot;: &quot;0ca6781d-7806-44c6-9333-b78d83aa0d59&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2y51asPU6qRvwjcAVKOKRuMN8aT" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "GraphModelChangetest",
+    "last_opened_file_path": "/Users/pablotravail/WebstormProjects/GraphLab",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
+    "ts.external.directory.path": "/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/frontend/src/utils" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-WS-251.25410.117" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1e87cc7b-41e7-4af0-99df-7d39127a0c7e" name="Changes" comment="Feat : Added import and route to RailwayMazeMain" />
+      <created>1749109688274</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1749109688274</updated>
+      <workItem from="1749109689388" duration="7979000" />
+      <workItem from="1749128110971" duration="24854000" />
+      <workItem from="1749216122857" duration="290000" />
+      <workItem from="1749216418418" duration="8834000" />
+      <workItem from="1749540298947" duration="31234000" />
+      <workItem from="1749633576299" duration="37000" />
+      <workItem from="1749644818193" duration="5317000" />
+      <workItem from="1749652869525" duration="2121000" />
+      <workItem from="1749713672292" duration="8997000" />
+      <workItem from="1749977492705" duration="7081000" />
+      <workItem from="1750059275901" duration="17664000" />
+      <workItem from="1750145782639" duration="28172000" />
+      <workItem from="1750251525538" duration="5104000" />
+      <workItem from="1750319560791" duration="909000" />
+      <workItem from="1750320669292" duration="12000" />
+      <workItem from="1750320716369" duration="22666000" />
+      <workItem from="1750677870490" duration="35708000" />
+      <workItem from="1751012957114" duration="6452000" />
+      <workItem from="1751529868282" duration="32802000" />
+      <workItem from="1752048464177" duration="19355000" />
+      <workItem from="1752524627476" duration="49998000" />
+      <workItem from="1752739103199" duration="55000" />
+      <workItem from="1752739373068" duration="37054000" />
+      <workItem from="1753084731928" duration="47103000" />
+      <workItem from="1753712618100" duration="20688000" />
+    </task>
+    <task id="LOCAL-00001" summary="Feat : Added import and route to Penrose">
+      <option name="closed" value="true" />
+      <created>1750087909217</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1750087909217</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Feat : Added penrose &quot;card&quot; to home page">
+      <option name="closed" value="true" />
+      <created>1750087942606</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1750087942606</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Feat : Added incomplete CSS for Railway Maze">
+      <option name="closed" value="true" />
+      <created>1750087982818</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1750087982818</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Feat : &#10;Added placeholder in Main of Railway Maze&#10;Added Railway to Navbar&#10;Added Timer to common dir">
+      <option name="closed" value="true" />
+      <created>1750088086045</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1750088086045</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Feat : &#10;Added Penrose and incomplete GraphDisplay for the page">
+      <option name="closed" value="true" />
+      <created>1750088133090</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1750088133090</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Feat : &#10;Added Penrose and incomplete GraphDisplay for the page">
+      <option name="closed" value="true" />
+      <created>1750088150602</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1750088150602</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Commit">
+      <option name="closed" value="true" />
+      <created>1753880626666</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1753880626666</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Commit">
+      <option name="closed" value="true" />
+      <created>1753880709504</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1753880709504</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Feat : Added import and route to RailwayMazeMain" />
+    <MESSAGE value="Feat : Added import and route to Penrose" />
+    <MESSAGE value="Feat : Added penrose &quot;card&quot; to home page" />
+    <MESSAGE value="Feat : Added incomplete CSS for Railway Maze" />
+    <MESSAGE value="Feat : &#10;Added placeholder in Main of Railway Maze&#10;Added Railway to Navbar&#10;Added Timer to common dir" />
+    <MESSAGE value="Feat : &#10;Added Penrose and incomplete GraphDisplay for the page" />
+    <MESSAGE value="Commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Commit" />
+  </component>
+</project>
