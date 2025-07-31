@@ -53,6 +53,53 @@
     text-align: center;
 }
 
+
+.mode-btn:hover:not(:disabled) {
+    background-color: #1565c0;
+    color: #fff;
+    opacity: 0.95;
+}
+
+.mode-btn:disabled {
+    background-color: #e3eaf2;
+    color: #b0b0b0;
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+.mode-btn-validate {
+    background: #3498db;
+}
+
+.mode-btn-validate:hover {
+    background: #2980b9;
+}
+
+.mode-btn-reset {
+    background: #e74c3c;
+}
+
+.mode-btn-reset:hover {
+    background: #c0392b;
+}
+
+.mode-btn-impossible {
+    background: #95a5a6;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+.mode-btn-impossible:not(:disabled) {
+    background: #34495e;
+    cursor: pointer;
+    opacity: 1;
+}
+
+.mode-btn-impossible:not(:disabled):hover {
+    background: #2c3e50;
+}
+
+
 .mode-graph-area {
     width: 1075px;
     height: 700px;
