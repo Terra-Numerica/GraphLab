@@ -9,10 +9,12 @@ import '../../../styles/pages/RailwayMaze/GlobalMode.css'
 import ValidationPopup from "../../common/ValidationPopup.jsx";
 import RulesPopup from '../../common/RulesPopup';
 
+//Voir commons pour le Timer (fait par Mael)
 const TimerDisplay = (({ time, formatTime }) => {
     return <div className="mode-timer">Temps: {formatTime(time)}</div>;
 });
 
+//Le composant "de base"
 const Penrose = () => {
     const initialGraphData = {
         _id : '',
@@ -24,6 +26,8 @@ const Penrose = () => {
         tag : ['PEN']
     };
 
+    //L'ensemble des "variables", fonctionne (pour la plupart) avec un système de getter setter et
+    //une valeur initiale.
     const cyRef = useRef(null);
     const [graphs, setGraphs] = useState([]);
     const [graphData, setGraphData] = useState(null);
@@ -41,15 +45,19 @@ const Penrose = () => {
     const [validationPopup, setValidationPopup] = useState(null);
     const [showRules, setShowRules] = useState(false);
 
-
+    //Fonction s'activant lorsqu'on sélectionne un graph par le menu déroulant.
+    //On récupère le nom du graph (qui s'affiche sur le menu déroulant) puis on réinitialise les données memorisées.
+    //Enfin, on change graphId (active un UseEffect plus bas pour recuperer les données associées)
     const handleGraphSelect = (option) => {
-        setSelectedOption(option);
         if (option) {
+            setSelectedOption(option);
             setGraphData(initialGraphData);
             setGraphId(option.value);
         }
     };
 
+    ///Permet de recuperer l'ensemble des graphs
+    ///Récupère l'ensemble des graphes pour les trier puis conserve leur ID
     const fetchGraphs = async () => {
         const fetchData = async () => {
             try {
@@ -68,6 +76,9 @@ const Penrose = () => {
         void fetchData();
     };
 
+    ///Initialise les données du jeu : trouve la node A affin de la
+    ///conserver comme "CurrentNode" et init le chemin
+    ///Déclenche un useEffect plus bas pour la couleur et les nodes selectable
     const initGame = useCallback((data) => {
         const nodeA = data.data.nodes.find(node => node.classes && node.classes.includes("A"));
         if (nodeA) {
@@ -78,6 +89,7 @@ const Penrose = () => {
         }
     }, []);
 
+    ///Récupère le graph d'ID graphID lorsque appelée et récupère ses données
     const fetchGraph = useCallback(async () => {
         if (graphId !== '') {
             setCurrentColor(null);
@@ -114,10 +126,10 @@ const Penrose = () => {
         setSelectableNodes([]);
     }, [graphId, initGame, reset, start]);
 
+    //Affiche un message au joueur à la fin du jeu (différents si path optimal)
     const handleFinDuJeu = () => {
         stop();
         const sol = algoBFS()
-        console.log(path, sol)
         const messagePop = (path.length+1 === sol.length) ?
             "Bravo ! Le chemin que tu propose est valide et optimal" :
             "Bravo ! Le chemin que tu propose est valide. \n Il existe un chemin plus court"
@@ -128,6 +140,8 @@ const Penrose = () => {
         });
     }
 
+    //Récupère l'ID de la node suivante et
+    //à partir de la node de depart (currentNode) memorise la couleur "d'arrivée" actuelle
     const handleNextNode = (nodeID) => {
         if (!graphData || !currentNode) return;
         const clickedNode = graphData.data.nodes.find(node => node.data.id === nodeID);
@@ -161,10 +175,12 @@ const Penrose = () => {
         setCurrentNode(clickedNode);
     }
 
+    //Rappel fetchGraph (permet de réinitialiser le graphe)
     const handleRetry = async () => {
         void fetchGraph();
     }
 
+    //Récupère la précédente node du path et l'utilise pour récupérer la couleur d'arrivée correcte après l'undo
     const handleUndo = () => {
         if (path && path.length > 1) {
             const prevNodeId = path[path.length - 2];
@@ -196,6 +212,7 @@ const Penrose = () => {
         }
     }
 
+    //Récupère les voisins d'une node ainsi que la couleur d'arrivée à chaque voisin
     const getVoisins = (id, color) => {
         const voisIDAndCol = new Set ()
         const connectedEdges = graphData.data.edges.filter(
@@ -224,6 +241,8 @@ const Penrose = () => {
 
     }
 
+    ///Determine le path solution avec un BFS
+    ///Rend [] si pas de solution
     const algoBFS = () => {
         const initialNode = graphData.data.nodes.find(node => node.classes && node.classes.includes("A"));
         const endNode = graphData.data.nodes.find(node => node.classes && node.classes.includes("B"));
@@ -251,13 +270,15 @@ const Penrose = () => {
         return [];
     }
 
+    //On change le path pour qu'il devienne vide et on affiche la solution rendue par algoBFS
     const handleShowSolution = () => {
         const chemin = algoBFS()
         setPath([])
-
-        pathColoring([155,135,12],[255,255,0],chemin)
+        pathColoring([27,79,8], [0,255,0],chemin)
     }
 
+    //Calcule les deux valeurs rbg pour un edge à partir des deux couleurs de l'edge complet
+    //pour un certain facteur (correspondant à sa position dans le path)
     const edgeColorGradient = (startColor, endColor, factor)  => {
         const resultat = []
         for (let i = 0; i < 3; i++) {
@@ -266,6 +287,7 @@ const Penrose = () => {
         return 'rgb(' + resultat.join(', ') + ')';
     }
 
+    //Applique à un chemin donné en paramètre un gradient de couleur dependant des couleurs données
     const pathColoring = useCallback((startColor, endColor, pathToColor) => {
         if (!graphData || !pathToColor || pathToColor.length<2) return;
         let hasChanged = false;
@@ -300,6 +322,7 @@ const Penrose = () => {
                     'line-outline-width' : 1,
                     'line-outline-color' : 'black'
                 }
+                //Verification (potentiellement imparfaite) des changements de style
                 if (JSON.stringify(edge.style) !== JSON.stringify(newStyle)) {
                     hasChanged = true;
                 }
@@ -321,14 +344,19 @@ const Penrose = () => {
         }
     },[graphData])
 
+    //Tiré du code de Mael
     const handleClosePopup = () => {
         setValidationPopup(null);
     }
 
+    //S'active une fois au lancement de la page pour recuperer les graphs (le comportement des useEffect depend de
+    //l'array de dependence (deps) qui est ici vide).
     useEffect(() => {
         void fetchGraphs();
     }, []);
 
+    //S'active lorsque graphs change (donc après l'appel de fetchGraphs) pour correctement mettre en place
+    //le select (menu déroulant).
     useEffect(() => {
         const options = graphs.map((graph) => ({
             value: graph._id,
@@ -337,10 +365,13 @@ const Penrose = () => {
         setSelectOpt(options);
     }, [graphs])
 
+    //Appel fetchGraph()
     useEffect(() => {
         void fetchGraph();
     }, [fetchGraph]);
 
+    //Réagit au changement de currentNode et calcule les nodes selectables
+    // pour rajouter les classes adaptées aux différents nodes
     useEffect(() => {
         if (!graphData || !currentNode) return;
         const newSelectableNodeIds = new Set();
@@ -395,10 +426,14 @@ const Penrose = () => {
         setSelectableNodes([...newSelectableNodeIds]);
     }, [graphData, currentNode, currentColor, selectableNodes]);
 
+    //Active la fonction pathColoring sur le path à chaque fois qu'il change
     useEffect(() => {
         pathColoring([27,79,8], [0,255,0], path)
     }, [path, pathColoring]);
 
+    //La partie "HTML" du composant : c'est ce qui est réellement affiché
+    //Le composant GraphDisplay depend du fichier PenroseGraphDisplay et correspond à ce qui
+    //est affiché en tant que graph.
     return (
         <div className="penrose-container">
             <button className="mode-back-btn" onClick={() => navigate('/railway-maze')}>&larr; Retour</button>
@@ -415,9 +450,9 @@ const Penrose = () => {
                 {<TimerDisplay time={time} formatTime={formatTime} />}
             </div>
             <div className="mode-buttons-row">
-                <button className={"mode-btn"} onClick={handleRetry}>Retry</button>
-                <button className={"mode-btn"} onClick={handleUndo}>Undo</button>
-                <button className={"mode-btn"} onClick={handleShowSolution}>Solution</button>
+                <button className={"mode-btn mode-btn-validate"} onClick={handleRetry}>Retry</button>
+                <button className={"mode-btn mode-btn-validate"} onClick={handleUndo}>Undo</button>
+                <button className={"mode-btn mode-btn-validate"} onClick={handleShowSolution}>Solution</button>
             </div>
             {<GraphDisplay graphData={graphData} cyRef={cyRef} selectableNodes={selectableNodes} handleNextNode={handleNextNode}/>}
             <button className="mode-rules-btn" onClick={() => setShowRules(true)}>&#9432; Voir les règles</button>
@@ -428,6 +463,16 @@ const Penrose = () => {
                     message={validationPopup.message}
                     onClose={handleClosePopup}
                 />
+            )}
+            {showRules && (
+                <RulesPopup title="Règles du Jeu" onClose={() => setShowRules(false)}>
+                    <h3> PlaceholderCat1 </h3>
+                    <ul>
+                        <li>PlaceholderLigne1</li>
+                        <li>PlaceholderLigne2</li>
+                    </ul>
+                    <h3> PlaceholderCat2 </h3>
+                </RulesPopup>
             )}
         </div>
     )
