@@ -36,7 +36,7 @@ const Main = () => {
                 <h2>Coloration des Sommets</h2>
                 <div className="explanation-text">
                     <p>
-                        La coloration de graphe est un problème d'optimisation où chaque sommet doit recevoir une couleur distincte de ses sommets adjacents. Ce problème trouve son application dans l'allocation de ressources, comme la planification de fréquences pour des antennes de communication.
+                        La coloration de graphe est un problème d'optimisation où chaque sommet doit recevoir une couleur distincte des sommets auxquels il est adjacent, c’est-à-dire relié par une arête. Ce problème trouve son application dans l'allocation de ressources, comme la planification de fréquences pour des antennes de communication.
                     </p>
                     <p>
                         L'objectif est double : d'une part, respecter la contrainte d'adjacence en attribuant des couleurs différentes aux sommets reliés, et d'autre part, minimiser le nombre total de couleurs utilisées pour colorer l'ensemble du graphe.
@@ -59,17 +59,17 @@ const Main = () => {
                             },
                             {
                                 title: "Coloration avec 2 couleurs adjacentes",
-                                description: "Ici, nous avons un graphe coloré avec 2 couleurs adjacentes, cela n'est pas valide.",
+                                description: "Des sommets adjacents (reliés par une arête) doivent avoir des couleurs différentes. Ici, les deux sommets rouges, ainsi que les deux bleus, sont reliés par une arête. Ce n’est pas valide. ",
                                 image: "/tutorial/Coloration/2-colors.png"
                             },
                             {
                                 title: "Coloration valide mais non optimale",
-                                description: "Ici, nous avons un graphe coloré avec 4 couleurs, cela est valide mais non optimale.",
+                                description: "Ici toutes les arêtes ont leurs extrémités de couleurs différentes. La coloration est valide mais non optimale car elle utilise 4 couleurs au lieu de 3.",
                                 image: "/tutorial/Coloration/3-colors.png"
                             },
                             {
                                 title: "Coloration optimale",
-                                description: "Ici, nous avons un graphe coloré avec 3 couleurs, cela est valide et optimal.",
+                                description: "Ici, le graphe est coloré avec 3 couleurs. Cela est valide et optimal.",
                                 image: "/tutorial/Coloration/optimal-coloring.png"
                             }
                         ]

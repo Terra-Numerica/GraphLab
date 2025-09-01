@@ -2,6 +2,7 @@ import { kruskalAlgorithm } from '../../../utils/kruskalUtils';
 import { boruvkaAlgorithm } from '../../../utils/boruvkaUtils';
 import { primAlgorithm } from '../../../utils/primUtils';
 import { useState, useCallback, useEffect } from 'react';
+import { getDarkerColor, getLighterColor } from '../../../utils/colorUtils';
 
 import '../../../styles/pages/ArbreCouvrant/AlgoVisualization.css';
 
@@ -58,6 +59,8 @@ const AlgoVisualization = ({ algo, graph, cyRef }) => {
 
     useEffect(() => {
         if (!cyRef.current || steps.length === 0) return;
+        
+        // Réinitialiser tous les styles
         cyRef.current.edges().removeClass('algo-edge-selected algo-prim-selected algo-kruskal-selected algo-boruvka-selected algo-boruvka-min-edge')
             .style({
                 'line-color': '#666',
@@ -70,9 +73,12 @@ const AlgoVisualization = ({ algo, graph, cyRef }) => {
                 'border-width': 1,
                 'border-color': '#444'
             });
+            
         if (currentStep >= 0) {
             for (let i = 0; i <= currentStep; i++) {
                 const step = steps[i];
+                
+                // Traiter les arêtes
                 if (step.edge) {
                     const edge = cyRef.current.getElementById(step.edge.data.id);
                     if (edge) {
@@ -81,24 +87,56 @@ const AlgoVisualization = ({ algo, graph, cyRef }) => {
                         } else {
                             edge.addClass(config.edgeClass);
                         }
-                        edge.style({
-                            'line-color': '#9400D3',
-                            'width': 4,
-                            'opacity': 1
-                        });
+                        
+                        // Colorer l'arête selon l'algorithme
+                        if (algo === 'prim' && step.componentColor) {
+                            edge.style({
+                                'line-color': getLighterColor(step.componentColor),
+                                'width': 4,
+                                'opacity': 1
+                            });
+                        } else {
+                            edge.style({
+                                'line-color': '#9400D3',
+                                'width': 4,
+                                'opacity': 1
+                            });
+                        }
                     }
                 }
+                
+                // Colorer les nœuds pour Prim
+                if (algo === 'prim' && step.visitedNodes) {
+                    step.visitedNodes.forEach(nodeId => {
+                        const node = cyRef.current.getElementById(nodeId);
+                        if (node) {
+                            node.addClass(config.nodeStartClass);
+                            if (step.componentColor) {
+                                node.style({
+                                    'background-color': step.componentColor,
+                                    'border-color': getDarkerColor(step.componentColor),
+                                    'border-width': 2
+                                });
+                            }
+                        }
+                    });
+                }
+                
+                // Traitement spécifique pour le démarrage de Prim
                 if (algo === 'prim' && step.action === 'start' && step.node) {
                     const node = cyRef.current.getElementById(step.node);
                     if (node) {
                         node.addClass(config.nodeStartClass);
                     }
                 }
+                
+                // Traitement spécifique pour Boruvka
                 if (algo === 'boruvka' && step.action === 'start') {
                     cyRef.current.nodes().addClass(config.componentClass);
                 }
             }
         }
+        
         if (currentStep >= 0 && steps[currentStep]) {
             setExplanation(steps[currentStep].explanation);
         } else {
@@ -197,6 +235,9 @@ const AlgoVisualization = ({ algo, graph, cyRef }) => {
                         <button className="tree-mode-btn" onClick={() => handleSpeedChange(2000)} title="Lent">⏪</button>
                         <button className="tree-mode-btn" onClick={() => handleSpeedChange(1000)} title="Vitesse normale">1x</button>
                         <button className="tree-mode-btn" onClick={() => handleSpeedChange(500)} title="Rapide">⏩</button>
+                        <div className="tree-mode-speed-indicator">
+                            Vitesse: {speed === 2000 ? 'Lente' : speed === 1000 ? 'Normale' : 'Rapide'}
+                        </div>
                     </div>
                 )}
                 <div className="tree-mode-progress">

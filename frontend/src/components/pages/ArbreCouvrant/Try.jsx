@@ -39,6 +39,7 @@ const Try = () => {
     const [selectedEdges, setSelectedEdges] = useState(new Set());
     const [currentCost, setCurrentCost] = useState(0);
     const [optimalCost, setOptimalCost] = useState(0);
+    const [hasCycle, setHasCycle] = useState(false);
     const cyRef = useRef(null);
     const [showRules, setShowRules] = useState(false);
     const { time, start, stop, reset, formatTime, isRunning } = useTimer();
@@ -63,6 +64,55 @@ const Try = () => {
         moyen: 'Moyen',
         grand: 'Grand'
     };
+
+    // Fonction pour détecter les cycles dans le graphe sélectionné
+    const detectCycle = useCallback((edges, nodes) => {
+        if (edges.length === 0) return false;
+        
+        // Créer la liste d'adjacence
+        const adjacencyList = {};
+        nodes.forEach(node => {
+            adjacencyList[node.data.id] = [];
+        });
+        
+        edges.forEach(edge => {
+            adjacencyList[edge.data.source].push(edge.data.target);
+            adjacencyList[edge.data.target].push(edge.data.source);
+        });
+        
+        // DFS pour détecter les cycles
+        const visited = new Set();
+        const recStack = new Set();
+        
+        const hasCycleDFS = (node, parent) => {
+            visited.add(node);
+            recStack.add(node);
+            
+            for (const neighbor of adjacencyList[node]) {
+                if (!visited.has(neighbor)) {
+                    if (hasCycleDFS(neighbor, node)) {
+                        return true;
+                    }
+                } else if (neighbor !== parent && recStack.has(neighbor)) {
+                    return true;
+                }
+            }
+            
+            recStack.delete(node);
+            return false;
+        };
+        
+        // Vérifier chaque composante connectée
+        for (const node of nodes) {
+            if (!visited.has(node.data.id)) {
+                if (hasCycleDFS(node.data.id, null)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }, []);
 
     useEffect(() => {
         if (!selectedGraph || !weightType) {
@@ -172,7 +222,11 @@ const Try = () => {
         const selectedEdgesData = currentGraph.data.edges.filter(edge => selectedEdgeIds.includes(edge.data.id));
         const totalWeight = selectedEdgesData.reduce((sum, edge) => sum + edge.data.weight, 0);
         setCurrentCost(totalWeight);
-    }, [selectedEdges, currentGraph]);
+        
+        // Détecter les cycles
+        const cycleDetected = detectCycle(selectedEdgesData, currentGraph.data.nodes);
+        setHasCycle(cycleDetected);
+    }, [selectedEdges, currentGraph, detectCycle]);
 
     useEffect(() => {
         if (!currentGraph) return;
@@ -193,6 +247,7 @@ const Try = () => {
 
         setSelectedEdges(new Set());
         setCurrentCost(0);
+        setHasCycle(false);
     }, []);
 
     const validateGraph = useCallback(() => {
@@ -353,6 +408,11 @@ const Try = () => {
                 <button className="tree-mode-btn tree-mode-btn-reset" onClick={resetEdges}>Réinitialiser la sélection</button>
             </div>}
             {currentGraph && weightType && <GraphDisplayMemo graphData={currentGraph} cyRef={cyRef} onSelectEdge={handleEdgeSelect} />}
+            {hasCycle && (
+                <div className="tree-mode-cycle-error">
+                    <span className="cycle-error-text">⚠️ Vous avez créé un cycle</span>
+                </div>
+            )}
             {currentGraph && weightType && (
                 <div className="tree-mode-algos-solutions-container">
                     <span className="tree-mode-algos-solutions-title">Solutions :</span>

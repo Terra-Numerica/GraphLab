@@ -64,7 +64,7 @@ Le projet est divisé en deux parties principales :
    npm install
 
    # Backend
-   cd ../backend
+   cd backend
    npm install
    ```
 

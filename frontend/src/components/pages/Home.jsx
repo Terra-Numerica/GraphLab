@@ -10,7 +10,7 @@ const Home = () => {
                 <div className="graph-explanation">
                     <h2>Qu'est-ce qu'un graphe ?</h2>
                     <p>
-                        Un graphe est un objet composé de sommets (ou nœuds) et d'arêtes (ou arcs, dans certains cas) qui relient les sommets.
+                        Un graphe est un objet composé de sommets (représentés par des cercles) et d’arêtes (représentées par des lignes droites ou courbes) qui relient les sommets.
                     </p>
                     <p>
                         On peut voir un graphe comme une carte géographique : les sommets sont alors des villes et les arêtes sont les routes qui mènent d'une ville à l'autre.

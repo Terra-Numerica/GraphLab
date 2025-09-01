@@ -24,11 +24,14 @@ export const primAlgorithm = (nodes, edges) => {
 
     const visited = Array(nodeCount).fill(false);
     const steps = [];
+    const componentColor = '#4ECDC4'; // Couleur de la composante en construction
 
     visited[0] = true;
     steps.push({
         action: 'start',
         node: indexToNode[0],
+        visitedNodes: [indexToNode[0]],
+        componentColor: componentColor,
         explanation: `On commence par le sommet ${indexToNode[0]}.`
     });
 
@@ -58,13 +61,22 @@ export const primAlgorithm = (nodes, edges) => {
             (e.data.source === targetId && e.data.target === sourceId)
         );
 
+        // Ajouter le nouveau nœud à la liste des nœuds visités
+        visited[minJ] = true;
+        const visitedNodes = [];
+        for (let i = 0; i < nodeCount; i++) {
+            if (visited[i]) {
+                visitedNodes.push(indexToNode[i]);
+            }
+        }
+
         steps.push({
             edge,
             action: 'add',
-            explanation: `Ajout de l'arête ${sourceId}-${targetId} (poids : ${edge.data.weight}) car c'est l'arête de poids minimal reliant un sommet visité à un sommet non visité.`
+            visitedNodes: visitedNodes,
+            componentColor: componentColor,
+            explanation: `Ajout de l'arête ${sourceId}-${targetId} (poids : ${edge.data.weight}) car c'est l'arête de poids minimal reliant un sommet visité à un sommet non visité. Le sommet ${targetId} rejoint maintenant la composante en construction.`
         });
-
-        visited[minJ] = true;
     }
 
     return steps;

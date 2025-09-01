@@ -283,6 +283,47 @@
     display: flex;
     gap: 1rem;
     justify-content: center;
+    align-items: center;
+}
+
+.tree-mode-speed-indicator {
+    background: #f8f9fa;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    color: #2c3e50;
+    border: 2px solid #e9ecef;
+    font-size: 0.9rem;
+    min-width: 120px;
+    text-align: center;
+}
+
+.tree-mode-cycle-error {
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: cycleErrorPulse 2s ease-in-out infinite;
+}
+
+.cycle-error-text {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #dc3545;
+}
+
+@keyframes cycleErrorPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
 }
 
 .tree-mode-progress {

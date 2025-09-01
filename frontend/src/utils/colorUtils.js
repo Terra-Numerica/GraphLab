@@ -20,6 +20,54 @@ export const rgbToHex = (rgb) => {
 };
 
 /**
+ * @description Get a darker version of a hex color
+ * @param {string} hexColor - The hex color
+ * @param {number} factor - The darkening factor (0-1)
+ * @returns {string} The darker hex color
+*/
+export const getDarkerColor = (hexColor, factor = 0.7) => {
+    // Remove # if present
+    const hex = hexColor.replace('#', '');
+    
+    // Convert to RGB
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    
+    // Darken
+    const darkerR = Math.floor(r * factor);
+    const darkerG = Math.floor(g * factor);
+    const darkerB = Math.floor(b * factor);
+    
+    // Convert back to hex
+    return `#${darkerR.toString(16).padStart(2, '0')}${darkerG.toString(16).padStart(2, '0')}${darkerB.toString(16).padStart(2, '0')}`;
+};
+
+/**
+ * @description Get a lighter version of a hex color
+ * @param {string} hexColor - The hex color
+ * @param {number} factor - The lightening factor (0-1)
+ * @returns {string} The lighter hex color
+*/
+export const getLighterColor = (hexColor, factor = 0.3) => {
+    // Remove # if present
+    const hex = hexColor.replace('#', '');
+    
+    // Convert to RGB
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+    
+    // Lighten
+    const lighterR = Math.min(255, Math.floor(r + (255 - r) * factor));
+    const lighterG = Math.min(255, Math.floor(g + (255 - g) * factor));
+    const lighterB = Math.min(255, Math.floor(b + (255 - b) * factor));
+    
+    // Convert back to hex
+    return `#${lighterR.toString(16).padStart(2, '0')}${lighterG.toString(16).padStart(2, '0')}${lighterB.toString(16).padStart(2, '0')}`;
+};
+
+/**
  * @description Find a free position on the X axis
  * @param {Object} cy - The cytoscape instance
  * @returns {number} The free position on the X axis
