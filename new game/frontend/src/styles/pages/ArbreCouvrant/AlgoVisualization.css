@@ -1,0 +1,39 @@
+.algo-node-start {
+    background-color: var(--algo-start-color, #1565c0) !important;
+    border-width: 2px !important;
+    border-color: var(--algo-start-border, #003b63) !important;
+}
+
+.algo-edge-selected {
+    background-color: var(--algo-edge-color, #2ecc71) !important;
+    border-width: 2px !important;
+    border-color: var(--algo-edge-border, #27ae60) !important;
+    width: 2px !important;
+}
+
+.algo-prim-start {
+    --algo-start-color: #1565c0;
+    --algo-start-border: #003b63;
+}
+
+.algo-kruskal-selected {
+    --algo-edge-color: #2ecc71;
+    --algo-edge-border: #27ae60;
+}
+
+.algo-boruvka-selected {
+    --algo-edge-color: #2ecc71;
+    --algo-edge-border: #27ae60;
+}
+
+.algo-boruvka-component {
+    background-color: #9b59b6 !important;
+    border-width: 2px !important;
+    border-color: #8e44ad !important;
+}
+
+.algo-boruvka-min-edge {
+    background-color: #e67e22 !important;
+    border-color: #d35400 !important;
+    width: 2px !important;
+} 

@@ -19,6 +19,10 @@ import ArbreCouvrantMain from './components/pages/ArbreCouvrant/Main'
 import ArbreCouvrantTry from './components/pages/ArbreCouvrant/Try'
 import AlgoPage from './components/pages/ArbreCouvrant/AlgoPage'
 
+// Components => Pages => Railway Maze
+import RailwayMazeMain from './components/pages/RailwayMaze/Main'
+import Penrose from './components/pages/RailwayMaze/Penrose'
+
 // Components => Admin
 import Dashboard from './components/Admin/Dashboard';
 import Login from './components/Admin/Login';
@@ -76,6 +80,8 @@ function App() {
 						<Route path="/arbre-couvrant" element={<ArbreCouvrantMain />} />
 						<Route path="/arbre-couvrant/try" element={<ArbreCouvrantTry />} />
 						<Route path="/arbre-couvrant/:algo/:graphId" element={<AlgoPage />} />
+						<Route path="/railway-maze" element={<RailwayMazeMain />} />
+						<Route path="/railway-maze/penrose" element={<Penrose />} />
 						<Route path="/admin/login" element={<Login />} />
 						<Route path="/admin" element={<RequireAuth><Dashboard /></RequireAuth>} />
 					</Routes>

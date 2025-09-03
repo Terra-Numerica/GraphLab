@@ -27,7 +27,7 @@ const Navbar = () => {
 
 	useEffect(() => {
 		const checkAuth = () => {
-			const token = sessionStorage.getItem('jwt');
+			const token = localStorage.getItem('jwt');
 			setIsAuthenticated(!!token);
 		};
 		checkAuth();
@@ -36,7 +36,7 @@ const Navbar = () => {
 	}, []);
 
 	const handleLogout = () => {
-		sessionStorage.removeItem('jwt');
+		localStorage.removeItem('jwt');
 		setIsAuthenticated(false);
 		navigate('/');
 	};
@@ -76,7 +76,7 @@ const Navbar = () => {
 							>
 								<a href="/coloration">Coloration des sommets</a>
 								<a href="/arbre-couvrant">Arbre Couvrant</a>
-								<a href="/railway-maze">Railway Maze</a>
+								<a href="/railway-maze">Problème du "Railway Maze"</a>
 							</div>
 						)}
 					</div>

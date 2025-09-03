@@ -1,0 +1,253 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--darkBlue);
+  color: white;
+}
+
+.nav-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.nav-left, .nav-center, .nav-right {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-center {
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--lightBlue);
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-img {
+  height: 55px;
+  width: auto;
+  object-fit: contain;
+}
+
+.logo-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--lightBlue);
+  letter-spacing: 1px;
+}
+
+.nav-link {
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.3em 0.9em;
+}
+
+.nav-link:hover {
+  color: var(--lightBlue);
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-arrow {
+  font-size: 0.8em;
+  margin-left: 0.3em;
+}
+
+.dropdown-trigger {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-trigger:hover, .dropdown-trigger:focus {
+  color: var(--lightBlue);
+}
+
+.dropdown-content {
+  position: absolute;
+  top: calc(100% - 0.5em);
+  left: 0;
+  background-color: var(--darkBlue);
+  min-width: 200px;
+  border-radius: 4px;
+  margin-top: 0.5em;
+  display: none;
+  flex-direction: column;
+}
+
+.dropdown:hover .dropdown-content,
+.dropdown-content:hover,
+.dropdown-trigger:focus + .dropdown-content,
+.dropdown-trigger.open + .dropdown-content {
+  display: flex;
+}
+
+.dropdown-content a {
+  color: white;
+  padding: 12px 16px;
+  display: block;
+  font-size: 1rem;
+  white-space: nowrap;
+}
+
+.dropdown-content a:hover {
+  background-color: var(--blueHover);
+  color: var(--lightBlue);
+}
+
+.admin-btn {
+  background-color: var(--blue);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.admin-btn:hover {
+  background-color: var(--blueHover);
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+.hamburger .bar {
+  width: 28px;
+  height: 4px;
+  background: white;
+  margin: 3px 0;
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+.desktop-logo {
+  display: flex;
+}
+.nav-mobile-logo {
+  display: none;
+}
+
+.nav-mobile-header {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: row;
+    padding: 0.5rem 1rem;
+    position: relative;
+  }
+  .hamburger {
+    display: flex;
+  }
+  .nav-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--darkBlue);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 0;
+    display: none;
+    z-index: 1000;
+    width: 100%;
+  }
+  .nav-content.open {
+    display: flex;
+  }
+  .nav-left, .nav-center, .nav-right {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+    text-align: left;
+  }
+  .nav-center {
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    margin: 1rem 0;
+    justify-content: flex-start;
+  }
+  .dropdown-content {
+    position: static;
+    min-width: unset;
+    box-shadow: none;
+    background: none;
+    border-radius: 0;
+    padding-left: 1rem;
+    display: flex;
+  }
+  .dropdown-content a {
+    padding: 10px 0;
+    color: var(--lightBlue);
+  }
+  .admin-btn {
+    width: 100%;
+    margin-top: 1rem;
+  }
+  .desktop-logo {
+    display: none !important;
+  }
+  .nav-mobile-logo {
+    display: flex;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    align-items: center;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    z-index: 1;
+  }
+  .nav-mobile-logo .logo-img {
+    height: 32px;
+  }
+  .nav-mobile-logo .logo-text {
+    font-size: 1.1rem;
+  }
+  .nav-mobile-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    position: relative;
+    height: 48px;
+    justify-content: flex-start;
+  }
+} 
