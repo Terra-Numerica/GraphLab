@@ -159,6 +159,20 @@ const graphSchema = new Schema({
 				}
 			}
 		},
+		spanningTree: {
+			enabled: {
+				type: Boolean,
+				default: false,
+				required: true
+			}
+		},
+		railwayMaze: {
+			enabled: {
+				type: Boolean,
+				default: false,
+				required: true
+			}
+		}
 	}
 }, {
 	timestamps: true,
@@ -170,6 +184,32 @@ const graphSchema = new Schema({
 
 // Validation au niveau du schéma
 graphSchema.pre('save', function (next) {
+	// Initialiser les champs workshopData manquants pour les documents existants
+	if (!this.workshopData) {
+		this.workshopData = {};
+	}
+	
+	// Initialiser spanningTree si manquant
+	if (!this.workshopData.spanningTree) {
+		this.workshopData.spanningTree = {
+			enabled: false
+		};
+	}
+	
+	// Initialiser railwayMaze si manquant
+	if (!this.workshopData.railwayMaze) {
+		this.workshopData.railwayMaze = {
+			enabled: false
+		};
+	}
+	
+	// Initialiser coloring si manquant
+	if (!this.workshopData.coloring) {
+		this.workshopData.coloring = {
+			enabled: false
+		};
+	}
+
 	// Vérifier que les nœuds référencés dans les arêtes existent
 	const nodeIds = new Set(this.data.nodes.map((node: Node) => node.data.id));
 	const edgesValid = this.data.edges.every((edge: Edge) =>
@@ -186,6 +226,49 @@ graphSchema.pre('save', function (next) {
 	}
 
 	next();
+});
+
+// Hook pour initialiser les champs manquants lors de la récupération des documents
+graphSchema.pre(['find', 'findOne', 'findOneAndUpdate'], function (next) {
+	// Cette fonction sera appelée pour chaque document retourné
+	next();
+});
+
+// Hook post pour s'assurer que les documents retournés ont les champs requis
+graphSchema.post(['find', 'findOne', 'findOneAndUpdate'], function (docs) {
+	if (!docs) return;
+	
+	const documents = Array.isArray(docs) ? docs : [docs];
+	
+	documents.forEach(doc => {
+		if (doc) {
+			// Initialiser workshopData si manquant
+			if (!doc.workshopData) {
+				doc.workshopData = {};
+			}
+			
+			// Initialiser spanningTree si manquant
+			if (!doc.workshopData.spanningTree) {
+				doc.workshopData.spanningTree = {
+					enabled: false
+				};
+			}
+			
+			// Initialiser railwayMaze si manquant
+			if (!doc.workshopData.railwayMaze) {
+				doc.workshopData.railwayMaze = {
+					enabled: false
+				};
+			}
+			
+			// Initialiser coloring si manquant
+			if (!doc.workshopData.coloring) {
+				doc.workshopData.coloring = {
+					enabled: false
+				};
+			}
+		}
+	});
 });
 
 // Export

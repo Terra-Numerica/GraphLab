@@ -12,7 +12,7 @@
     "dev": "tsx watch src/server.ts",
     "update": "ncu -u && npm install",
     "test": "jest",
-    "migrate": "tsx __migrations__/migrateGraphs.ts"
+    "migrate": "tsx src/__migrations__/migrateGraphs.ts"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

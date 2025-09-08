@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { kruskalAlgorithm } from '../../../utils/kruskalUtils';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTimer } from '../../../hooks/useTimer';
+import { useFetchGraphs, useFetchGraph } from '../../../hooks/useFetchGraphs';
 import TimerDisplay from '../../common/TimerDisplay';
 
 import ValidationPopup from '../../common/ValidationPopup';
@@ -32,8 +33,6 @@ const Try = () => {
     });
     const [selectedGraph, setSelectedGraph] = useState(location.state?.selectedGraph || '');
     const [currentGraph, setCurrentGraph] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [validationPopup, setValidationPopup] = useState(null);
     const [weightType, setWeightType] = useState(location.state?.weightType || '');
     const [selectedEdges, setSelectedEdges] = useState(new Set());
@@ -44,9 +43,8 @@ const Try = () => {
     const [showRules, setShowRules] = useState(false);
     const { time, start, stop, reset, formatTime, isRunning } = useTimer();
 
-    useEffect(() => {
-        fetchGraphs();
-    }, []);
+    const { graphs: fetchedGraphs, loading: graphsLoading, error: graphsError } = useFetchGraphs();
+    const { graph: selectedGraphData, loading: graphLoading, error: graphError } = useFetchGraph({ id: selectedGraph });
 
     useEffect(() => {
         if (showRules) {
@@ -64,6 +62,43 @@ const Try = () => {
         moyen: 'Moyen',
         grand: 'Grand'
     };
+
+    // Trier les graphes par difficulté (basé sur le nombre de nœuds/arêtes)
+    useEffect(() => {
+        if (fetchedGraphs.length > 0) {
+            const sortedGraphs = {
+                petit: [],
+                moyen: [],
+                grand: []
+            };
+
+            const spanningTreeWorkshops = fetchedGraphs.filter((graph) => graph.workshopData.spanningTree.enabled);
+
+            spanningTreeWorkshops.forEach(graph => {
+                const nodeCount = graph.data.nodes.length;
+                const edgeCount = graph.data.edges.length;
+
+                if (nodeCount <= 9 && edgeCount <= 9) {
+                    sortedGraphs.petit.push({
+                        ...graph,
+                        name: graph.name.replace("Jeu", "Graphe")
+                    });
+                } else if (nodeCount <= 16 && edgeCount <= 16) {
+                    sortedGraphs.moyen.push({
+                        ...graph,
+                        name: graph.name.replace("Jeu", "Graphe")
+                    });
+                } else {
+                    sortedGraphs.grand.push({
+                        ...graph,
+                        name: graph.name.replace("Jeu", "Graphe")
+                    });
+                }
+            });
+
+            setGraphs(sortedGraphs);
+        }
+    }, [fetchedGraphs]);
 
     // Fonction pour détecter les cycles dans le graphe sélectionné
     const detectCycle = useCallback((edges, nodes) => {
@@ -115,77 +150,62 @@ const Try = () => {
     }, []);
 
     useEffect(() => {
-        if (!selectedGraph || !weightType) {
+        if (!selectedGraph || !weightType || !selectedGraphData) {
             setCurrentGraph(null);
             setSelectedEdges(new Set());
             return;
         }
-        const fetchGraph = async () => {
-            try {
-                const response = await fetch(`${config.apiUrl}/graph/${selectedGraph}`);
-                if (!response.ok) {
-                    throw new Error('Impossible de récupérer les détails du graphe');
-                }
-                const graphConfig = await response.json();
-                if (graphConfig?.data) {
-                    let edges = [...graphConfig.data.edges];
-                    let updated = false;
 
-                    edges = edges.map((edge) => {
-                        const newEdge = { ...edge };
-                        if (newEdge.data) {
-                            newEdge.data.controlPointDistance = newEdge.data.controlPointDistance ?? 0;
-                            if (weightType === 'predefined') {
-                                if (newEdge.data.weight === undefined || newEdge.data.weight === null || newEdge.data.weight === "") {
-                                    newEdge.data.weight = Math.floor(Math.random() * 10) + 1;
-                                    updated = true;
-                                }
-                            } else if (weightType === 'one') {
-                                newEdge.data.weight = 1;
-                            } else if (weightType === 'random') {
-                                newEdge.data.weight = Math.floor(Math.random() * 10) + 1;
-                            }
+        if (selectedGraphData?.data) {
+            let edges = [...selectedGraphData.data.edges];
+            let updated = false;
+
+            edges = edges.map((edge) => {
+                const newEdge = { ...edge };
+                if (newEdge.data) {
+                    newEdge.data.controlPointDistance = newEdge.data.controlPointDistance ?? 0;
+                    if (weightType === 'predefined') {
+                        if (newEdge.data.weight === undefined || newEdge.data.weight === null || newEdge.data.weight === "") {
+                            newEdge.data.weight = Math.floor(Math.random() * 10) + 1;
+                            updated = true;
                         }
-                        return newEdge;
-                    });
-
-                    if (weightType === 'predefined' && updated) {
-                        await fetch(`${config.apiUrl}/graph/${selectedGraph}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                ...graphConfig,
-                                data: {
-                                    ...graphConfig.data,
-                                    edges: edges
-                                }
-                            })
-                        });
+                    } else if (weightType === 'one') {
+                        newEdge.data.weight = 1;
+                    } else if (weightType === 'random') {
+                        newEdge.data.weight = Math.floor(Math.random() * 10) + 1;
                     }
-                    setCurrentGraph({
-                        name: graphConfig.name,
-                        data: {
-                            ...graphConfig.data,
-                            edges: edges
-                        },
-                        difficulty: graphConfig.difficulty
-                    });
-                    setSelectedEdges(new Set());
-                    reset();
-                    start();
-                } else {
-                    throw new Error('Données invalides pour le graphe');
                 }
-            } catch (err) {
-                setError('Impossible de charger le graphe sélectionné');
-                setCurrentGraph(null);
-                setSelectedEdges(new Set());
+                return newEdge;
+            });
+
+            if (weightType === 'predefined' && updated) {
+                fetch(`${config.apiUrl}/graph/${selectedGraph}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ...selectedGraphData,
+                        data: {
+                            ...selectedGraphData.data,
+                            edges: edges
+                        }
+                    })
+                });
             }
-        };
-        fetchGraph();
-    }, [selectedGraph, weightType]);
+            setCurrentGraph({
+                name: selectedGraphData.name,
+                data: {
+                    ...selectedGraphData.data,
+                    edges: edges
+                },
+                difficulty: selectedGraphData.difficulty
+            });
+            setSelectedEdges(new Set());
+            reset();
+            start();
+        }
+    }, [selectedGraph, weightType, selectedGraphData]);
 
     const handleGraphSelect = useCallback((event) => {
         const graphId = event.target.value;
@@ -226,7 +246,7 @@ const Try = () => {
         // Détecter les cycles
         const cycleDetected = detectCycle(selectedEdgesData, currentGraph.data.nodes);
         setHasCycle(cycleDetected);
-    }, [selectedEdges, currentGraph, detectCycle]);
+    }, [selectedEdges, currentGraph]);
 
     useEffect(() => {
         if (!currentGraph) return;
@@ -234,7 +254,7 @@ const Try = () => {
         const optimalEdges = kruskalAlgorithm(currentGraph.data.nodes, currentGraph.data.edges);
         const optimalWeight = optimalEdges.reduce((sum, step) => sum + (step.edge?.data.weight || 0), 0);
         setOptimalCost(optimalWeight);
-    }, [currentGraph, kruskalAlgorithm]);
+    }, [currentGraph]);
 
     const resetEdges = useCallback(() => {
         if (!cyRef.current) return;
@@ -248,7 +268,7 @@ const Try = () => {
         setSelectedEdges(new Set());
         setCurrentCost(0);
         setHasCycle(false);
-    }, []);
+    }, [isRunning, reset, start]);
 
     const validateGraph = useCallback(() => {
         if (!currentGraph || !cyRef.current) return;
@@ -367,10 +387,10 @@ const Try = () => {
                     className="tree-mode-select"
                     value={selectedGraph}
                     onChange={handleGraphSelect}
-                    disabled={loading}
+                    disabled={graphsLoading}
                 >
                     <option value="" disabled hidden>
-                        {loading ? "Chargement des graphes..." : "Choisis un graphe"}
+                        {graphsLoading ? "Chargement des graphes..." : "Choisis un graphe"}
                     </option>
                     {Object.entries(graphs).map(([difficulty, graphList]) => (
                         graphList.length > 0 && (
@@ -395,7 +415,7 @@ const Try = () => {
                     <option value="one">Poids à 1</option>
                     <option value="random">Poids aléatoire</option>
                 </select>
-                {error && <div className="tree-mode-error">{error}</div>}
+                {(graphsError || graphError) && <div className="tree-mode-error">{graphsError || graphError}</div>}
                 {currentGraph && weightType && (
                     <div className="mode-info">
                         <CostDisplay currentCost={currentCost} optimalCost={optimalCost} />
@@ -477,46 +497,6 @@ const Try = () => {
         </div>
     );
 
-    function fetchGraphs() {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`${config.apiUrl}/graph`);
-                if (!response.ok) {
-                    throw new Error('Impossible de récupérer la liste des graphes');
-                }
-                const data = await response.json();
-                const sortedGraphs = {
-                    petit: [],
-                    moyen: [],
-                    grand: []
-                };
-                data.forEach(graph => {
-
-                    graph = {
-                        ...graph,
-                        name: graph.name.replace("Jeu", "Graphe")
-                    }
-
-                    const nodeCount = graph.data.nodes.length;
-                    const edgeCount = graph.data.edges.length;
-
-                    if (nodeCount <= 9 && edgeCount <= 9) {
-                        sortedGraphs.petit.push(graph);
-                    } else if (nodeCount <= 16 && edgeCount <= 16) {
-                        sortedGraphs.moyen.push(graph);
-                    } else {
-                        sortedGraphs.grand.push(graph);
-                    }
-                });
-                setGraphs(sortedGraphs);
-                setLoading(false);
-            } catch (err) {
-                setError('Impossible de récupérer la liste des graphes');
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }
 
     function handleClosePopup() {
         setValidationPopup(null);

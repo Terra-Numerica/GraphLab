@@ -143,9 +143,6 @@ const Dashboard = () => {
                                 <div key={graph._id} className="graph-card">
                                     <div className="graph-info">
                                         <h3>{graph.name}</h3>
-                                        <div className="graph-type">
-                                            Difficulté: {graph.difficulty}
-                                        </div>
                                     </div>
                                     <div className="graph-actions">
                                         <button 
