@@ -402,13 +402,13 @@ const Penrose = () => {
                                 node.classes && node.classes.includes("B")
                             );
                             
-                            // Vérifier si le graphe a des arêtes avec des classes de couleur Railway Maze
+                            // Vérifier si le graphe a des arêtes avec des classes de couleur Labyrinthe Voyageur
                             const hasRailwayEdges = graph.data.edges.some(edge => {
                                 const classesArray = getClassesArray(edge.classes);
                                 return classesArray.some(cls => ['RR', 'RB', 'BR', 'BB'].includes(cls));
                             });
                             
-                            // Un graphe Railway Maze doit avoir les nœuds A et B et des arêtes colorées
+                            // Un graphe Labyrinthe Voyageur doit avoir les nœuds A et B et des arêtes colorées
                             return hasNodeA && hasNodeB && hasRailwayEdges;
                         })
                         .map((graph) => (
@@ -440,7 +440,7 @@ const Penrose = () => {
                 />
             )}
             {showRules && (
-                <RulesPopup title="Règles du Railway Maze" onClose={() => setShowRules(false)}>
+                <RulesPopup title="Règles du Labyrinthe Voyageur" onClose={() => setShowRules(false)}>
                     <h3>Objectif</h3>
                     <ul>
                         <li>Naviguez de la station A vers la station B</li>

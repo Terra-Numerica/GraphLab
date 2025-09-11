@@ -76,7 +76,7 @@ const Navbar = () => {
 							>
 								<a href="/coloration">Coloration des sommets</a>
 								<a href="/arbre-couvrant">Arbre Couvrant</a>
-								<a href="/railway-maze">Railway Maze</a>
+								<a href="/railway-maze">Labyrinthe Voyageur</a>
 							</div>
 						)}
 					</div>

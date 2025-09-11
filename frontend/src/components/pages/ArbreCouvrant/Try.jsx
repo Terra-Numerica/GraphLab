@@ -3,9 +3,9 @@ import { kruskalAlgorithm } from '../../../utils/kruskalUtils';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTimer } from '../../../hooks/useTimer';
 import { useFetchGraphs, useFetchGraph } from '../../../hooks/useFetchGraphs';
-import TimerDisplay from '../../common/TimerDisplay';
 
 import ValidationPopup from '../../common/ValidationPopup';
+import TimerDisplay from '../../common/TimerDisplay';
 import RulesPopup from '../../common/RulesPopup';
 import GraphDisplay from './GraphDisplay';
 import config from '../../../config';
@@ -39,6 +39,7 @@ const Try = () => {
     const [currentCost, setCurrentCost] = useState(0);
     const [optimalCost, setOptimalCost] = useState(0);
     const [hasCycle, setHasCycle] = useState(false);
+    const [disconnectedComponents, setDisconnectedComponents] = useState([]);
     const cyRef = useRef(null);
     const [showRules, setShowRules] = useState(false);
     const { time, start, stop, reset, formatTime, isRunning } = useTimer();
@@ -149,6 +150,45 @@ const Try = () => {
         return false;
     }, []);
 
+    // Fonction pour détecter les composantes connectées
+    const findConnectedComponents = useCallback((edges, nodes) => {
+        // Créer la liste d'adjacence
+        const adjacencyList = {};
+        nodes.forEach(node => {
+            adjacencyList[node.data.id] = [];
+        });
+        
+        edges.forEach(edge => {
+            adjacencyList[edge.data.source].push(edge.data.target);
+            adjacencyList[edge.data.target].push(edge.data.source);
+        });
+        
+        const visited = new Set();
+        const components = [];
+        
+        const dfs = (node, component) => {
+            visited.add(node);
+            component.push(node);
+            
+            for (const neighbor of adjacencyList[node]) {
+                if (!visited.has(neighbor)) {
+                    dfs(neighbor, component);
+                }
+            }
+        };
+        
+        // Trouver toutes les composantes connectées
+        for (const node of nodes) {
+            if (!visited.has(node.data.id)) {
+                const component = [];
+                dfs(node.data.id, component);
+                components.push(component);
+            }
+        }
+        
+        return components;
+    }, []);
+
     useEffect(() => {
         if (!selectedGraph || !weightType || !selectedGraphData) {
             setCurrentGraph(null);
@@ -165,9 +205,20 @@ const Try = () => {
                 if (newEdge.data) {
                     newEdge.data.controlPointDistance = newEdge.data.controlPointDistance ?? 0;
                     if (weightType === 'predefined') {
-                        if (newEdge.data.weight === undefined || newEdge.data.weight === null || newEdge.data.weight === "") {
-                            newEdge.data.weight = Math.floor(Math.random() * 10) + 1;
+                        // Pour les poids prédéfinis, on utilise les poids originaux du graphe
+                        // Si pas de poids original, on génère un poids aléatoire
+                        if (newEdge.data.originalWeight !== undefined) {
+                            newEdge.data.weight = newEdge.data.originalWeight;
+                        } else if (newEdge.data.weight === undefined || newEdge.data.weight === null || newEdge.data.weight === "") {
+                            const randomWeight = Math.floor(Math.random() * 10) + 1;
+                            newEdge.data.weight = randomWeight;
+                            newEdge.data.originalWeight = randomWeight; // Sauvegarder comme poids original
                             updated = true;
+                        } else {
+                            // Si on a déjà un poids mais pas de poids original, le sauvegarder
+                            if (newEdge.data.originalWeight === undefined) {
+                                newEdge.data.originalWeight = newEdge.data.weight;
+                            }
                         }
                     } else if (weightType === 'one') {
                         newEdge.data.weight = 1;
@@ -202,6 +253,7 @@ const Try = () => {
                 difficulty: selectedGraphData.difficulty
             });
             setSelectedEdges(new Set());
+            setDisconnectedComponents([]);
             reset();
             start();
         }
@@ -246,7 +298,11 @@ const Try = () => {
         // Détecter les cycles
         const cycleDetected = detectCycle(selectedEdgesData, currentGraph.data.nodes);
         setHasCycle(cycleDetected);
-    }, [selectedEdges, currentGraph]);
+        
+        // Détecter les composantes connectées
+        const components = findConnectedComponents(selectedEdgesData, currentGraph.data.nodes);
+        setDisconnectedComponents(components);
+    }, [selectedEdges, currentGraph, detectCycle, findConnectedComponents]);
 
     useEffect(() => {
         if (!currentGraph) return;
@@ -268,6 +324,7 @@ const Try = () => {
         setSelectedEdges(new Set());
         setCurrentCost(0);
         setHasCycle(false);
+        setDisconnectedComponents([]);
     }, [isRunning, reset, start]);
 
     const validateGraph = useCallback(() => {
@@ -313,10 +370,49 @@ const Try = () => {
         }
 
         if (visited.size !== nodeCount) {
+            // Trouver les composantes connectées
+            const components = findConnectedComponents(selectedEdgesData, nodes);
+            
+            // Créer le message détaillé
+            let message = "Le graphe n'est pas connecté. ";
+            if (components.length > 1) {
+                message += "Il y a " + components.length + " composantes séparées :\n\n";
+                
+                // Séparer les composantes connectées et non connectées
+                const connectedComponents = components.filter(comp => comp.length > 1);
+                const disconnectedComponents = components.filter(comp => comp.length === 1);
+                
+                if (connectedComponents.length > 0) {
+                    message += "Composantes connectées :\n";
+                    connectedComponents.forEach((component) => {
+                        const nodeLabels = component.map(nodeId => {
+                            const node = nodes.find(n => n.data.id === nodeId);
+                            return node ? node.data.label || nodeId : nodeId;
+                        });
+                        message += `• ${nodeLabels.join(', ')}\n`;
+                    });
+                }
+                
+                if (disconnectedComponents.length > 0) {
+                    message += "\nComposantes non connectées :\n";
+                    disconnectedComponents.forEach((component) => {
+                        const nodeLabels = component.map(nodeId => {
+                            const node = nodes.find(n => n.data.id === nodeId);
+                            return node ? node.data.label || nodeId : nodeId;
+                        });
+                        message += `• ${nodeLabels[0]}\n`;
+                    });
+                }
+                
+                message += "\nTous les sommets doivent être connectés pour former un arbre couvrant.";
+            } else {
+                message += "Tous les sommets doivent être accessibles.";
+            }
+            
             setValidationPopup({
                 type: 'error',
                 title: 'Erreur',
-                message: "Le graphe n'est pas connecté. Tous les sommets doivent être accessibles."
+                message: message
             });
             return;
         }
@@ -431,6 +527,43 @@ const Try = () => {
             {hasCycle && (
                 <div className="tree-mode-cycle-error">
                     <span className="cycle-error-text">⚠️ Vous avez créé un cycle</span>
+                </div>
+            )}
+            {disconnectedComponents.length > 1 && currentGraph && (
+                <div className="tree-mode-components-error">
+                    <div className="components-error-text">
+                        {(() => {
+                            const connectedComponents = disconnectedComponents.filter(comp => comp.length > 1);
+                            const nonConnectedComponents = disconnectedComponents.filter(comp => comp.length === 1);
+                            
+                            return (
+                                <div style={{ marginTop: '0.5rem' }}>
+                                    {connectedComponents.length > 0 && (
+                                        <div>
+                                            <strong>Composantes connectées :</strong> {connectedComponents.map((component) => {
+                                                const nodeLabels = component.map(nodeId => {
+                                                    const node = currentGraph?.data?.nodes?.find(n => n.data.id === nodeId);
+                                                    return node ? node.data.label || nodeId : nodeId;
+                                                });
+                                                return nodeLabels.join(', ');
+                                            }).join(' | ')}
+                                        </div>
+                                    )}
+                                    {nonConnectedComponents.length > 0 && (
+                                        <div>
+                                            <strong>Composantes non connectées :</strong> {nonConnectedComponents.map((component) => {
+                                                const nodeLabels = component.map(nodeId => {
+                                                    const node = currentGraph?.data?.nodes?.find(n => n.data.id === nodeId);
+                                                    return node ? node.data.label || nodeId : nodeId;
+                                                });
+                                                return nodeLabels[0];
+                                            }).join(', ')}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })()}
+                    </div>
                 </div>
             )}
             {currentGraph && weightType && (

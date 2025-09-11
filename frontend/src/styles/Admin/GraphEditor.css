@@ -497,7 +497,7 @@ body.modal-open {
     border-color: var(--red);
 }
 
-/* Styles pour les règles de couleur Railway Maze */
+/* Styles pour les règles de couleur Labyrinthe Voyageur */
 .color-rules {
     display: flex;
     flex-direction: column;

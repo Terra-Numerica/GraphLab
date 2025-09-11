@@ -53,24 +53,28 @@ const Main = () => {
                     steps={
                         [
                             {
-                                title: "Graphe (Coloration)",
-                                description: "Voici un graphe, tu dois le colorer avec le moins de couleurs possible.",
-                                image: "/tutorial/Coloration/graph.png"
+                                title: "Coloration de graphe",
+                                description: "Un graphe est un ensemble de points (appelés sommets) reliés entre eux par des traits (appelés arêtes). Le but est d'attribuer une couleur à chaque sommet.",
+                                image: "/tutorial/Coloration/graph.png",
+                                status: "none"
                             },
                             {
-                                title: "Coloration avec 2 couleurs adjacentes",
-                                description: "Des sommets adjacents (reliés par une arête) doivent avoir des couleurs différentes. Ici, les deux sommets rouges, ainsi que les deux bleus, sont reliés par une arête. Ce n’est pas valide. ",
-                                image: "/tutorial/Coloration/2-colors.png"
+                                title: "Mauvaise pratique",
+                                description: "Deux sommets reliés par une arête ne peuvent pas avoir la même couleur. Ici, ce n'est pas valide car deux sommets rouges et deux sommets bleus sont adjacents.",
+                                image: "/tutorial/Coloration/2-colors.png",
+                                status: "no"
                             },
                             {
-                                title: "Coloration valide mais non optimale",
-                                description: "Ici toutes les arêtes ont leurs extrémités de couleurs différentes. La coloration est valide mais non optimale car elle utilise 4 couleurs au lieu de 3.",
-                                image: "/tutorial/Coloration/3-colors.png"
+                                title: "Bonne pratique mais pas optimale",
+                                description: "La règle est respectée : aucun sommet relié n'a la même couleur. Cependant, on utilise 4 couleurs alors qu'il serait possible de faire mieux.",
+                                image: "/tutorial/Coloration/3-colors.png",
+                                status: "yes"
                             },
                             {
-                                title: "Coloration optimale",
-                                description: "Ici, le graphe est coloré avec 3 couleurs. Cela est valide et optimal.",
-                                image: "/tutorial/Coloration/optimal-coloring.png"
+                                title: "Bonne pratique optimale",
+                                description: "Le graphe est coloré avec seulement 3 couleurs. C'est à la fois correct (aucune erreur) et optimal (minimum de couleurs).",
+                                image: "/tutorial/Coloration/optimal-coloring.png",
+                                status: "yes"
                             }
                         ]
                     }

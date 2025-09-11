@@ -25,7 +25,15 @@ const TutorialPopup = ({ onClose, onComplete, steps }) => {
         <div className="tutorial-popup-overlay">
             <div className="tutorial-popup">
                 <button className="tutorial-popup-close" onClick={onClose}>&times;</button>
-                <h3 className="tutorial-popup-title">{steps[currentStep].title}</h3>
+                <h3 className="tutorial-popup-title">
+                    {steps[currentStep].title}
+                    {steps[currentStep].status && (
+                        <span className={`tutorial-status tutorial-status-${steps[currentStep].status}`}>
+                            {steps[currentStep].status === 'yes' && '✓'}
+                            {steps[currentStep].status === 'no' && '✗'}
+                        </span>
+                    )}
+                </h3>
                 <div className="tutorial-popup-content">
                     <img 
                         src={steps[currentStep].image} 

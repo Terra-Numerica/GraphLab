@@ -19,7 +19,7 @@ import ArbreCouvrantMain from './components/pages/ArbreCouvrant/Main'
 import ArbreCouvrantTry from './components/pages/ArbreCouvrant/Try'
 import AlgoPage from './components/pages/ArbreCouvrant/AlgoPage'
 
-// Components => Pages => Railway Maze
+// Components => Pages => Labyrinthe Voyageur
 import RailwayMazeMain from './components/pages/RailwayMaze/Main'
 import Penrose from './components/pages/RailwayMaze/Penrose'
 

@@ -31,6 +31,32 @@
     color: #1976d2;
     font-weight: 700;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.tutorial-status {
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tutorial-status-yes {
+    background-color: #4caf50;
+    color: white;
+}
+
+.tutorial-status-no {
+    background-color: #f44336;
+    color: white;
 }
 
 .tutorial-popup-content {

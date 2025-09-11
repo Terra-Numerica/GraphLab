@@ -717,7 +717,7 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                                         checked={graphData.workshopData.railwayMaze.enabled}
                                         onChange={() => toggleWorkshop('railwayMaze')}
                                     />
-                                    <span>Railway Maze</span>
+                                    <span>Labyrinthe Voyageur</span>
                                 </label>
                             </div>
                         </div>

@@ -13,10 +13,10 @@ const RailwayMazeMain = () => {
     return (
         <div className="railway-maze-container">
             <div className="explanation-section">
-                <h2>Le problème du "Railway-Maze"</h2>
+                <h2>Le problème du "Labyrinthe Voyageur"</h2>
                 <div className="explanation-text">
                     <p>
-                        Le Railway-Maze est un problème de théorie des graphes qui consiste à naviguer dans un réseau ferroviaire 
+                        Le Labyrinthe Voyageur est un problème de théorie des graphes qui consiste à naviguer dans un réseau ferroviaire 
                         en respectant des contraintes de couleur. Le joueur doit trouver un chemin valide entre deux points 
                         en utilisant uniquement les connexions autorisées selon les règles de couleur.
                     </p>
