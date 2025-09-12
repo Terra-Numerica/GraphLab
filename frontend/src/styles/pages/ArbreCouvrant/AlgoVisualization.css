@@ -36,4 +36,22 @@
     background-color: #e67e22 !important;
     border-color: #d35400 !important;
     width: 2px !important;
+}
+
+/* Styles pour l'algorithme de la propriété d'échange */
+.algo-exchange-selected {
+    --algo-edge-color: #34db8a;
+    --algo-edge-border: #2ecc71;
+}
+
+.algo-exchange-excluded {
+    --algo-edge-color: #e74c3c;
+    --algo-edge-border: #c0392b;
+    opacity: 0.6 !important;
+}
+
+.algo-exchange-cycle {
+    --algo-edge-color: #f39c12;
+    --algo-edge-border: #e67e22;
+    opacity: 0.8 !important;
 } 

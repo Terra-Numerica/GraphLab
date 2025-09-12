@@ -468,6 +468,16 @@ const Try = () => {
         });
     }, [currentGraph, selectedGraph, weightType, navigate]);
 
+    const showExchangePropertySolution = useCallback(() => {
+        if (!currentGraph || !cyRef.current) return;
+        navigate(`/arbre-couvrant/exchange-property/${selectedGraph}`, {
+            state: {
+                graph: currentGraph,
+                weightType: weightType
+            }
+        });
+    }, [currentGraph, selectedGraph, weightType, navigate]);
+
     useEffect(() => {
         if (cyRef.current && selectedEdges.size === 0) {
             cyRef.current.edges().removeClass('selected');
@@ -588,6 +598,12 @@ const Try = () => {
                         >
                             Selon l'algorithme de Boruvka
                         </button>
+                        <button
+                            className="tree-mode-btn-algo tree-mode-btn-exchange"
+                            onClick={showExchangePropertySolution}
+                        >
+                            Selon l'algorithme de la propriété d'échange
+                        </button>
                     </div>
                 </div>
             )}
@@ -629,7 +645,6 @@ const Try = () => {
             )}
         </div>
     );
-
 
     function handleClosePopup() {
         setValidationPopup(null);

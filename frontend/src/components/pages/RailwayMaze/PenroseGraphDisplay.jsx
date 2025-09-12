@@ -1,10 +1,12 @@
 import { useEffect, useRef} from 'react';
+
 import cytoscape from 'cytoscape';
 
-const PenroseGraphDisplay = ({graphData, cyRef, selectableNodes, handleNextNode}) => {
+const GraphDisplay = ({graphData, cyRef, selectableNodes, handleNextNode}) => {
     const containerRef = useRef(null);
 
     useEffect(() => {
+
         if (cyRef.current) {
             cyRef.current = null;
         }
@@ -67,6 +69,7 @@ const PenroseGraphDisplay = ({graphData, cyRef, selectableNodes, handleNextNode}
                     'line-fill': 'linear-gradient',
                     'line-gradient-stop-colors': ['orange', 'orange', 'black', '#00AAFF', '#00AAFF'],
                 }
+
             },
             {
                 selector: 'edge.BR',
@@ -116,20 +119,20 @@ const PenroseGraphDisplay = ({graphData, cyRef, selectableNodes, handleNextNode}
                     'border-opacity': 1
                 }
             }
-        ]);
+        ])
 
         cyRef.current = cy;
 
-        cy.unbind('tap');
+        cy.unbind('tap')
 
         cy.on('tap', 'node', (evt) => {
             const evtNode = evt.target;
-            const evtNodeID = evtNode.id();
-            console.log(evtNodeID);
+            const evtNodeID = evtNode.id()
+            console.log(evtNodeID)
             if (selectableNodes.includes(evtNodeID)) {
                 handleNextNode(evtNodeID);
             }
-        });
+        })
 
     }, [graphData, cyRef, selectableNodes, handleNextNode]);
 
@@ -144,4 +147,4 @@ const PenroseGraphDisplay = ({graphData, cyRef, selectableNodes, handleNextNode}
     );
 };
 
-export default PenroseGraphDisplay;
+export default GraphDisplay;

@@ -230,6 +230,10 @@
     background: #c834db;
 }
 
+.tree-mode-btn-exchange {
+    background: #34db8a;
+}
+
 .mode-info {
     display: flex;
     gap: 20px;

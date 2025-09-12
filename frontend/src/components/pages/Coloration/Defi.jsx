@@ -367,7 +367,6 @@ const Defi = () => {
                 {error && <div className="error-message">{error}</div>}
                 {currentGraph && <TimerDisplay time={time} formatTime={formatTime} />}
             </div>
-
             {currentGraph && !graphLoading && <div className="mode-buttons-row">
                 <button className="mode-btn mode-btn-validate" onClick={validateGraph}>Valider la coloration</button>
                 <button className="mode-btn mode-btn-reset" onClick={resetColors}>Réinitialiser la coloration</button>
@@ -383,7 +382,6 @@ const Defi = () => {
             {currentGraph && !graphLoading && <GraphDisplay graphData={currentGraph} cyRef={cyRef} />}
 
             <button className="mode-rules-btn" onClick={() => setShowRules(true)}>&#9432; Voir les règles</button>
-
             {validationPopup && (
                 <ValidationPopup
                     type={validationPopup.type}

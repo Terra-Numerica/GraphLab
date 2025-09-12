@@ -1,70 +1,85 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+// Imports
+import { useFetchGraph, useFetchGraphs } from "../../../hooks/useFetchGraphs.jsx";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { useTimer } from '../../../hooks/useTimer';
 import { useNavigate } from 'react-router-dom';
 
-// Components
-import PenroseGraphDisplay from './PenroseGraphDisplay.jsx';
 import ValidationPopup from "../../common/ValidationPopup.jsx";
 import RulesPopup from '../../common/RulesPopup';
+import GraphDisplay from './PenroseGraphDisplay.jsx';
+import TimerDisplay from '../../common/TimerDisplay.jsx';
 
-// Hooks
-import TimerDisplay from "../../common/TimerDisplay.jsx";
-import { useTimer } from "../../../hooks/useTimer.jsx";
-import { useFetchGraphs, useFetchGraph } from '../../../hooks/useFetchGraphs';
-
-// Styles
+// Style
 import '../../../styles/pages/RailwayMaze/GlobalMode.css';
 
+const GraphDisplayMemo = memo(GraphDisplay);
+
 const Penrose = () => {
-    // Fonction utilitaire pour gérer les classes (chaîne ou tableau)
-    const getClassesArray = (classes) => {
-        if (!classes) return [];
-        return Array.isArray(classes) 
-            ? classes 
-            : classes.split(' ').filter(cls => cls.trim() !== '');
-    };
 
-    const initialGraphData = {
-        _id: '',
-        name: '',
-        data: {
-            edges: [],
-            nodes: [],
-        }
-    };
-
-    // Refs and state
     const cyRef = useRef(null);
-    const [graphData, setGraphData] = useState(null);
-    const [graphId, setGraphId] = useState('');
-    const [selectedOption, setSelectedOption] = useState();
     const [path, setPath] = useState([]);
     const [currentNode, setCurrentNode] = useState(null);
     const [currentColor, setCurrentColor] = useState(null);
     const [selectableNodes, setSelectableNodes] = useState([]);
 
-    const navigate = useNavigate();
-    const { time, start, stop, reset, formatTime } = useTimer();
+    const [graphs, setGraphs] = useState([]);
+    const [selectedGraph, setSelectedGraph] = useState('');
+    const [currentGraph, setCurrentGraph] = useState(null);
     const [validationPopup, setValidationPopup] = useState(null);
     const [showRules, setShowRules] = useState(false);
+    const { time, start, stop, reset, formatTime } = useTimer();
+    const navigate = useNavigate();
 
-    // Hooks for fetching data
-    const { graphs: fetchedGraphs, loading: graphsLoading, error } = useFetchGraphs();
-    const { graph: selectedGraphData, loading: graphLoading } = useFetchGraph({ id: graphId });
+    const { graphs: fetchedGraphs, loading: graphsLoading, error: graphsError } = useFetchGraphs();
+    const { graph: selectedGraphData, loading: graphLoading, error: graphError } = useFetchGraph({ id: selectedGraph });
 
-    // Graph selection handler
-    const handleGraphSelect = (event) => {
-        const selectedId = event.target.value;
-        if (selectedId) {
-            const selectedGraph = fetchedGraphs.find(g => g._id === selectedId);
-            setSelectedOption({ value: selectedId, label: selectedGraph?.name || '' });
-            setGraphData(initialGraphData);
-            setGraphId(selectedId);
+    useEffect(() => {
+        if (showRules) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
         }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [showRules]);
+
+    useEffect(() => {
+        if (fetchedGraphs.length > 0) {
+
+            const penroseWorkshops = fetchedGraphs.filter((graph) => graph.workshopData.railwayMaze.enabled);
+
+            setGraphs(penroseWorkshops);
+        }
+    }, [fetchedGraphs]);
+
+    useEffect(() => {
+        if (selectedGraphData?.data) {
+
+            setCurrentGraph({
+                name: selectedGraphData.name,
+                data: selectedGraphData.data,
+            });
+            initGame(selectedGraphData);
+            reset();
+            start();
+        }
+    }, [selectedGraphData]);
+
+    const handleGraphSelect = (event) => {
+
+        const graphId = event.target.value;
+
+        setSelectedGraph(graphId);
+
+        if (!graphId) {
+            setCurrentGraph(null);
+            reset();
+        };
     };
 
-    // Initialize game
-    const initGame = useCallback((data) => {
-        const nodeA = data.data.nodes.find(node => node.classes && node.classes.includes("A"));
+    const initGame = useCallback((graphData) => {
+        const nodeA = graphData.data.nodes.find(node => node.classes && node.classes.includes("A"));
         if (nodeA) {
             setCurrentNode(nodeA);
             setPath([nodeA.data.id]);
@@ -73,43 +88,42 @@ const Penrose = () => {
         }
     }, []);
 
-
-
-    // Handle game completion
+    //Affiche un message au joueur à la fin du jeu (différents si path optimal)
     const handleFinDuJeu = () => {
         stop();
-        const sol = algoBFS();
+        const sol = algoBFS()
         const messagePop = (path.length + 1 === sol.length) ?
             "Bravo ! Le chemin que tu propose est valide et optimal" :
-            "Bravo ! Le chemin que tu propose est valide. \n Il existe un chemin plus court";
+            "Bravo ! Le chemin que tu propose est valide. \n Il existe un chemin plus court"
         setValidationPopup({
             type: 'success',
             title: 'Félicitations !',
             message: messagePop + `\n Temps: ${formatTime(time)}`
         });
-    };
+    }
 
-    // Handle next node selection
-    const handleNextNode = (nodeID) => {
-        if (!graphData || !currentNode) return;
-        const clickedNode = graphData.data.nodes.find(node => node.data.id === nodeID);
+    //Récupère l'ID de la node suivante et
+    //à partir de la node de depart (currentNode) memorise la couleur "d'arrivée" actuelle
+    const handleNextNode = useCallback((nodeID) => {
+        if (!currentGraph || !currentNode) return;
+        const clickedNode = currentGraph.data.nodes.find(node => node.data.id === nodeID);
         if (!clickedNode) {
-            console.error("Erreur : pas de node correspondant a celle selectionee");
+            console.error("Erreur : pas de node correspondant a celle selectionee")
             return;
         }
         if (clickedNode.classes.includes('B')) {
             handleFinDuJeu();
             return;
         }
-        const connectingEdge = graphData.data.edges.find(edge =>
+        const connectingEdge = currentGraph.data.edges.find(edge =>
             (edge.data.source === currentNode.data.id && edge.data.target === clickedNode.data.id) ||
             (edge.data.source === clickedNode.data.id && edge.data.target === currentNode.data.id)
         );
         if (!connectingEdge) {
-            console.error("Erreur : pas de edge trouvee");
+            console.error("Erreur : pas de edge trouvee")
             return;
         }
-        const edgeColorClass = getClassesArray(connectingEdge.classes).find(cls =>
+        const edgeColorClass = (connectingEdge.classes || []).find(cls =>
             ['RR', 'RB', 'BR', 'BB'].includes(cls)
         );
         if (!edgeColorClass) {
@@ -121,32 +135,33 @@ const Penrose = () => {
         setPath(prevPath => [...prevPath, clickedNode.data.id]);
         setCurrentColor(color);
         setCurrentNode(clickedNode);
-    };
+    }, [currentGraph, currentNode]);
 
-    // Retry handler
-    const handleRetry = async () => {
-        // Reset the game state
-        setCurrentColor(null);
-        setPath([]);
-        setSelectableNodes([]);
-        if (selectedGraphData) {
-            initGame(selectedGraphData);
-            reset();
-            start();
-        }
-    };
+    const handleRetry = useCallback(() => {
+        if (!currentGraph) return;
+        
+        // Reset the game to initial state
+        initGame(currentGraph);
+        
+        // Reset timer
+        reset();
+        start();
+        
+        // Clear any validation popup
+        setValidationPopup(null);
+    }, [currentGraph, initGame, reset, start]);
 
-    // Undo handler
+    //Récupère la précédente node du path et l'utilise pour récupérer la couleur d'arrivée correcte après l'undo
     const handleUndo = () => {
         if (path && path.length > 1) {
             const prevNodeId = path[path.length - 2];
-            const prevNode = graphData.data.nodes.find(node => node.data.id === prevNodeId);
-            const edgeASupp = graphData.data.edges.find(edge =>
+            const prevNode = currentGraph.data.nodes.find(node => node.data.id === prevNodeId);
+            const edgeASupp = currentGraph.data.edges.find(edge =>
                 (edge.data.source === prevNodeId && edge.data.target === path[path.length - 1]) ||
                 (edge.data.source === path[path.length - 1] && edge.data.target === prevNodeId)
-            );
+            )
             if (!edgeASupp) {
-                console.error("Erreur : pas de edge trouvee");
+                console.error("Erreur : pas de edge trouvee")
                 return;
             }
             const edgeColorClass = (edgeASupp.classes || []).find(cls =>
@@ -157,53 +172,56 @@ const Penrose = () => {
                 return;
             }
             if (path.length === 2) {
-                setCurrentColor(null);
+                setCurrentColor(null)
             } else {
                 const [colorFromSource, colorFromTarget] = edgeColorClass.split('');
                 const couleurDepart = (edgeASupp.data.source === prevNodeId) ? colorFromSource : colorFromTarget;
-                setCurrentColor((couleurDepart === 'R') ? 'B' : 'R');
+                setCurrentColor((couleurDepart === 'R') ? 'B' : 'R')
             }
             setPath(path.slice(0, -1));
             setCurrentNode(prevNode);
         }
-    };
+    }
 
-    // Get neighbors
+    //Récupère les voisins d'une node ainsi que la couleur d'arrivée à chaque voisin
     const getVoisins = (id, color) => {
-        const voisIDAndCol = new Set();
-        const connectedEdges = graphData.data.edges.filter(
+        const voisIDAndCol = new Set()
+        const connectedEdges = currentGraph.data.edges.filter(
             edge => edge.data.source === id || edge.data.target === id
         );
         connectedEdges.forEach(edge => {
             const sourceId = edge.data.source;
             const targetId = edge.data.target;
             const isCurrentSource = sourceId === id;
-            const edgeColorClass = getClassesArray(edge.classes).find(cls =>
+            const edgeColorClass = (edge.classes || []).find(cls =>
                 ['RR', 'RB', 'BR', 'BB'].includes(cls)
             );
             if (!edgeColorClass) {
-                console.error("erreur : pas de couleur sur un edge");
+                console.error("erreur : pas de couleur sur un edge")
                 return;
             }
             const [colorFromSource, colorFromTarget] = edgeColorClass.split('');
             const outColor = isCurrentSource ? colorFromSource : colorFromTarget;
+            //On récupère la couleur d'entrée à la node suivante
             const nextColor = isCurrentSource ? colorFromTarget : colorFromSource;
             if (color === null || outColor !== color) {
                 voisIDAndCol.add([(isCurrentSource ? targetId : sourceId), nextColor]);
             }
-        });
+        })
         return voisIDAndCol;
-    };
 
-    // BFS algorithm for solution
+    }
+
+    ///Determine le path solution avec un BFS
+    ///Rend [] si pas de solution
     const algoBFS = () => {
-        const initialNode = graphData.data.nodes.find(node => node.classes && node.classes.includes("A"));
-        const endNode = graphData.data.nodes.find(node => node.classes && node.classes.includes("B"));
+        const initialNode = currentGraph.data.nodes.find(node => node.classes && node.classes.includes("A"));
+        const endNode = currentGraph.data.nodes.find(node => node.classes && node.classes.includes("B"));
         if (!initialNode || !initialNode.data.id || !endNode || !endNode.data.id) {
-            console.error("Erreur : pas de node trouvee pour depart ou arrivee");
+            console.error("Erreur : pas de node trouvee pour depart ou arrivee")
             return [];
         }
-        const fileDePassage = [[initialNode.data.id, null, []]];
+        const fileDePassage = [[initialNode.data.id, null, []]]
         const setDeVisite = new Set([initialNode.data.id, null]);
         while (fileDePassage.length > 0) {
             const [nodeId, entryColor, nodePath] = fileDePassage.shift();
@@ -221,50 +239,51 @@ const Penrose = () => {
             });
         }
         return [];
-    };
+    }
 
-    // Show solution
+    //On change le path pour qu'il devienne vide et on affiche la solution rendue par algoBFS
     const handleShowSolution = () => {
-        const chemin = algoBFS();
-        setPath([]);
-        pathColoring([27, 79, 8], [0, 255, 0], chemin);
-    };
+        const chemin = algoBFS()
+        setPath([])
+        pathColoring([27, 79, 8], [0, 255, 0], chemin)
+    }
 
-    // Edge color gradient calculation
+    //Calcule les deux valeurs rbg pour un edge à partir des deux couleurs de l'edge complet
+    //pour un certain facteur (correspondant à sa position dans le path)
     const edgeColorGradient = (startColor, endColor, factor) => {
-        const resultat = [];
+        const resultat = []
         for (let i = 0; i < 3; i++) {
-            resultat.push(Math.round(startColor[i] + factor * (endColor[i] - startColor[i])));
+            resultat.push(Math.round(startColor[i] + factor * (endColor[i] - startColor[i])))
         }
         return 'rgb(' + resultat.join(', ') + ')';
-    };
+    }
 
-    // Path coloring
+    //Applique à un chemin donné en paramètre un gradient de couleur dependant des couleurs données
     const pathColoring = useCallback((startColor, endColor, pathToColor) => {
-        if (!graphData || !pathToColor || pathToColor.length < 2) return;
+        if (!currentGraph || !pathToColor || pathToColor.length < 2) return;
         let hasChanged = false;
         const edgePath = [];
         const colorPath = [];
         for (let i = 1; i < pathToColor.length; i++) {
             const fNode = pathToColor[i - 1];
             const sNode = pathToColor[i];
-            const edge = graphData.data.edges.find(edge =>
+            const edge = currentGraph.data.edges.find(edge =>
                 (edge.data.source === fNode && edge.data.target === sNode) ||
                 (edge.data.source === sNode && edge.data.target === fNode)
-            );
+            )
             const color1 = edgeColorGradient(startColor, endColor, ((i - 1) / (pathToColor.length - 1)));
             const color2 = edgeColorGradient(startColor, endColor, (i / (pathToColor.length - 1)));
-            edgePath.push(edge.data.id);
+            edgePath.push(edge.data.id)
             if (fNode === edge.data.source) {
                 colorPath.push([color1, color2]);
             } else {
                 colorPath.push([color2, color1]);
             }
         }
-        const edgeStyled = graphData.data.edges.map(edge => {
-            const index = edgePath.lastIndexOf(edge.data.id);
+        const edgeStyled = currentGraph.data.edges.map(edge => {
+            const index = edgePath.lastIndexOf(edge.data.id)
             if (index === -1) {
-                edge.style = {};
+                edge.style = {}
                 return edge;
             } else {
                 const newStyle = {
@@ -273,18 +292,19 @@ const Penrose = () => {
                     'line-gradient-stop-colors': [colorPath[index][0], colorPath[index][1]],
                     'line-outline-width': 1,
                     'line-outline-color': 'black'
-                };
+                }
+                //Verification (potentiellement imparfaite) des changements de style
                 if (JSON.stringify(edge.style) !== JSON.stringify(newStyle)) {
                     hasChanged = true;
                 }
                 return {
                     ...edge,
                     style: newStyle
-                };
+                }
             }
-        });
+        })
         if (hasChanged) {
-            setGraphData(prev => ({
+            setCurrentGraph(prev => ({
                 ...prev,
                 data: {
                     ...prev.data,
@@ -293,48 +313,30 @@ const Penrose = () => {
                 }
             }));
         }
-    }, [graphData]);
+    }, [currentGraph])
 
-    // Close popup
+    //Tiré du code de Mael
     const handleClosePopup = () => {
         setValidationPopup(null);
-    };
+    }
 
-
-
+    //Réagit au changement de currentNode et calcule les nodes selectables
+    // pour rajouter les classes adaptées aux différents nodes
     useEffect(() => {
-        if (selectedGraphData && graphId) {
-            setCurrentColor(null);
-            setGraphData({
-                _id: selectedGraphData._id,
-                name: selectedGraphData.name,
-                data: {
-                    nodes: selectedGraphData.data.nodes,
-                    edges: selectedGraphData.data.edges
-                }
-            });
-            reset();
-            start();
-            initGame(selectedGraphData);
-            setSelectableNodes([]);
-        }
-    }, [selectedGraphData, graphId, initGame, reset, start]);
-
-    useEffect(() => {
-        if (!graphData || !currentNode) return;
+        if (!currentGraph || !currentNode) return;
         const newSelectableNodeIds = new Set();
-        const connectedEdges = graphData.data.edges.filter(
+        const connectedEdges = currentGraph.data.edges.filter(
             edge => edge.data.source === currentNode.data.id || edge.data.target === currentNode.data.id
         );
         connectedEdges.forEach(edge => {
             const sourceId = edge.data.source;
             const targetId = edge.data.target;
             const isCurrentSource = sourceId === currentNode.data.id;
-            const edgeColorClass = getClassesArray(edge.classes).find(cls =>
+            const edgeColorClass = (edge.classes || []).find(cls =>
                 ['RR', 'RB', 'BR', 'BB'].includes(cls)
             );
             if (!edgeColorClass) {
-                console.error("erreur : pas de couleur sur un edge");
+                console.error("erreur : pas de couleur sur un edge")
                 return;
             }
             const [colorFromSource, colorFromTarget] = edgeColorClass.split('');
@@ -347,12 +349,12 @@ const Penrose = () => {
         const prevNodeIds = new Set(selectableNodes);
         const hasChanged = ([...newSelectableNodeIds].some(id => !prevNodeIds.has(id))) || newSelectableNodeIds.size !== prevNodeIds.size;
         if (!hasChanged) return;
-        const updatedNodes = graphData.data.nodes.map(node => {
+        const updatedNodes = currentGraph.data.nodes.map(node => {
             const classes = new Set(
                 Array.isArray(node.classes) ? node.classes : (node.classes || '').split(' ')
             );
             classes.delete('selectable');
-            classes.delete('selected');
+            classes.delete('selected')
             if (newSelectableNodeIds.has(node.data.id)) {
                 classes.add('selectable');
             }
@@ -364,72 +366,55 @@ const Penrose = () => {
                 classes: Array.from(classes),
             };
         });
-        setGraphData({
-            ...graphData,
+        setCurrentGraph({
+            ...currentGraph,
             data: {
-                ...graphData.data,
+                ...currentGraph.data,
                 nodes: updatedNodes,
             }
         });
         setSelectableNodes([...newSelectableNodeIds]);
-    }, [graphData, currentNode, currentColor, selectableNodes]);
+    }, [currentGraph, currentNode, currentColor, selectableNodes]);
 
+    //Active la fonction pathColoring sur le path à chaque fois qu'il change
     useEffect(() => {
-        pathColoring([27, 79, 8], [0, 255, 0], path);
+        pathColoring([27, 79, 8], [0, 255, 0], path)
     }, [path, pathColoring]);
 
+    //La partie "HTML" du composant : c'est ce qui est réellement affiché
+    //Le composant GraphDisplay depend du fichier PenroseGraphDisplay et correspond à ce qui
+    //est affiché en tant que graph.
     return (
-        <div className="mode-container">
+        <div className="penrose-container">
             <button className="mode-back-btn" onClick={() => navigate('/railway-maze')}>&larr; Retour</button>
             <h2 className="mode-title">Penrose Maze</h2>
             <div className="mode-top-bar">
                 <select
                     className="mode-select"
-                    value={selectedOption?.value || ''}
+                    value={selectedGraph}
                     onChange={handleGraphSelect}
                     disabled={graphsLoading}
                 >
                     <option value="" disabled hidden>
                         {graphsLoading ? "Chargement des graphes..." : "Choisis un graphe"}
                     </option>
-                    {fetchedGraphs
-                        .filter((graph) => {
-                            // Vérifier si le graphe a des nœuds avec les classes A et B (départ et arrivée)
-                            const hasNodeA = graph.data.nodes.some(node => 
-                                node.classes && node.classes.includes("A")
-                            );
-                            const hasNodeB = graph.data.nodes.some(node => 
-                                node.classes && node.classes.includes("B")
-                            );
-                            
-                            // Vérifier si le graphe a des arêtes avec des classes de couleur Labyrinthe Voyageur
-                            const hasRailwayEdges = graph.data.edges.some(edge => {
-                                const classesArray = getClassesArray(edge.classes);
-                                return classesArray.some(cls => ['RR', 'RB', 'BR', 'BB'].includes(cls));
-                            });
-                            
-                            // Un graphe Labyrinthe Voyageur doit avoir les nœuds A et B et des arêtes colorées
-                            return hasNodeA && hasNodeB && hasRailwayEdges;
-                        })
-                        .map((graph) => (
-                            <option key={graph._id} value={graph._id}>
-                                {graph.name}
-                            </option>
-                        ))}
+                    {graphs.map((graph) => (
+                        <option key={graph._id} value={graph._id}>
+                            {graph.name}
+                        </option>
+                    ))}
                 </select>
-                <TimerDisplay time={time} formatTime={formatTime} />
+                {currentGraph && <TimerDisplay time={time} formatTime={formatTime} />}
             </div>
-            <div className="mode-buttons-row">
-                <button className="mode-btn mode-btn-validate" onClick={handleRetry}>Recommencer</button>
-                <button className="mode-btn mode-btn-validate" onClick={handleUndo}>Annuler</button>
+
+            {currentGraph && !graphLoading && <div className="mode-buttons-row">
+                <button className="mode-btn mode-btn-reset" onClick={handleUndo}>Revenir en arrière</button>
+                <button className="mode-btn mode-btn-validate" onClick={handleRetry}>Réinitialiser</button>
                 <button className="mode-btn mode-btn-validate" onClick={handleShowSolution}>Solution</button>
-            </div>
-            <PenroseGraphDisplay 
-                graphData={graphData} 
-                cyRef={cyRef} 
-                selectableNodes={selectableNodes} 
-                handleNextNode={handleNextNode}
-            />
+            </div>}
+
+            {currentGraph && <GraphDisplayMemo graphData={currentGraph} cyRef={cyRef} selectableNodes={selectableNodes} handleNextNode={handleNextNode} />}
+            
             <button className="mode-rules-btn" onClick={() => setShowRules(true)}>&#9432; Voir les règles</button>
             {validationPopup && (
                 <ValidationPopup
@@ -440,24 +425,17 @@ const Penrose = () => {
                 />
             )}
             {showRules && (
-                <RulesPopup title="Règles du Labyrinthe Voyageur" onClose={() => setShowRules(false)}>
-                    <h3>Objectif</h3>
+                <RulesPopup title="Règles du Jeu" onClose={() => setShowRules(false)}>
+                    <h3> PlaceholderCat1 </h3>
                     <ul>
-                        <li>Naviguez de la station A vers la station B</li>
-                        <li>Respectez les règles de couleur des rails</li>
-                        <li>Trouvez le chemin optimal</li>
+                        <li>PlaceholderLigne1</li>
+                        <li>PlaceholderLigne2</li>
                     </ul>
-                    <h3>Règles de couleur</h3>
-                    <ul>
-                        <li>RR : Rail orange vers orange</li>
-                        <li>RB : Rail orange vers bleu</li>
-                        <li>BR : Rail bleu vers orange</li>
-                        <li>BB : Rail bleu vers bleu</li>
-                    </ul>
+                    <h3> PlaceholderCat2 </h3>
                 </RulesPopup>
             )}
         </div>
-    );
+    )
 };
 
 export default Penrose;

@@ -46,6 +46,20 @@ const algoConfig = {
         "Cet algorithme est particulièrement efficace pour les grands réseaux car il peut traiter plusieurs connexions en parallèle à chaque étape."
       ]
     }
+  },
+  'exchange-property': {
+    title: "Visualisation de l'algorithme de la propriété d'échange",
+    explanation: {
+      title: "Algorithme de la propriété d'échange",
+      steps: [
+        "L'algorithme de la propriété d'échange construit l'arbre couvrant de poids minimal en ajoutant les arêtes une par une et en appliquant la propriété d'échange dès qu'un cycle est détecté.",
+        "1. On commence par trier toutes les arêtes par poids croissant",
+        "2. On ajoute les arêtes une par une dans l'ordre croissant",
+        "3. Dès qu'un cycle est détecté, on applique la propriété d'échange : on retire l'arête la plus lourde du cycle",
+        "4. On continue jusqu'à avoir n-1 arêtes (arbre couvrant complet)",
+        "Cet algorithme illustre parfaitement la propriété d'échange : dans tout cycle, l'arête la plus lourde ne peut pas faire partie d'un arbre couvrant minimal."
+      ]
+    }
   }
 };
 

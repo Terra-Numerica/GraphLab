@@ -1,6 +1,7 @@
 import { kruskalAlgorithm } from '../../../utils/kruskalUtils';
 import { boruvkaAlgorithm } from '../../../utils/boruvkaUtils';
 import { primAlgorithm } from '../../../utils/primUtils';
+import { exchangePropertyAlgorithm } from '../../../utils/exchangePropertyUtils';
 import { useState, useCallback, useEffect } from 'react';
 import { getDarkerColor, getLighterColor } from '../../../utils/colorUtils';
 
@@ -21,6 +22,12 @@ const algoMap = {
         edgeClass: 'algo-edge-selected algo-boruvka-selected',
         componentClass: 'algo-boruvka-component',
         minEdgeClass: 'algo-boruvka-min-edge',
+    },
+    'exchange-property': {
+        algorithm: exchangePropertyAlgorithm,
+        edgeClass: 'algo-edge-selected algo-exchange-selected',
+        excludedEdgeClass: 'algo-edge-excluded algo-exchange-excluded',
+        cycleEdgeClass: 'algo-edge-cycle algo-exchange-cycle',
     }
 };
 
@@ -61,7 +68,7 @@ const AlgoVisualization = ({ algo, graph, cyRef }) => {
         if (!cyRef.current || steps.length === 0) return;
         
         // Réinitialiser tous les styles
-        cyRef.current.edges().removeClass('algo-edge-selected algo-prim-selected algo-kruskal-selected algo-boruvka-selected algo-boruvka-min-edge')
+        cyRef.current.edges().removeClass('algo-edge-selected algo-prim-selected algo-kruskal-selected algo-boruvka-selected algo-boruvka-min-edge algo-edge-excluded algo-exchange-excluded algo-edge-cycle algo-exchange-cycle')
             .style({
                 'line-color': '#666',
                 'width': 3,
@@ -133,6 +140,89 @@ const AlgoVisualization = ({ algo, graph, cyRef }) => {
                 // Traitement spécifique pour Boruvka
                 if (algo === 'boruvka' && step.action === 'start') {
                     cyRef.current.nodes().addClass(config.componentClass);
+                }
+                
+                // Traitement spécifique pour l'algorithme de la propriété d'échange
+                if (algo === 'exchange-property') {
+                    // Colorer les nœuds visités (comme Prim)
+                    if (step.visitedNodes) {
+                        step.visitedNodes.forEach(nodeId => {
+                            const node = cyRef.current.getElementById(nodeId);
+                            if (node) {
+                                node.addClass('algo-node-start');
+                                if (step.componentColor) {
+                                    node.style({
+                                        'background-color': step.componentColor,
+                                        'border-color': '#2c3e50',
+                                        'border-width': 2
+                                    });
+                                }
+                            }
+                        });
+                    }
+                    
+                    // Traitement selon le type d'action
+                    if (step.action === 'add' && step.edge) {
+                        const edge = cyRef.current.getElementById(step.edge.data.id);
+                        if (edge) {
+                            edge.addClass(config.edgeClass);
+                            edge.style({
+                                'line-color': '#34db8a',
+                                'width': 4,
+                                'opacity': 1
+                            });
+                        }
+                    }
+                    
+                    if (step.action === 'exchange') {
+                        // Mettre en évidence l'arête ajoutée
+                        if (step.edgeAdded) {
+                            const edge = cyRef.current.getElementById(step.edgeAdded.data.id);
+                            if (edge) {
+                                edge.addClass(config.edgeClass);
+                                edge.style({
+                                    'line-color': '#34db8a',
+                                    'width': 4,
+                                    'opacity': 1
+                                });
+                            }
+                        }
+                        
+                        // Mettre en évidence l'arête retirée
+                        if (step.edgeRemoved) {
+                            const edge = cyRef.current.getElementById(step.edgeRemoved.data.id);
+                            if (edge) {
+                                edge.addClass(config.excludedEdgeClass);
+                                edge.style({
+                                    'line-color': '#e74c3c',
+                                    'width': 3,
+                                    'opacity': 0.4
+                                });
+                            }
+                        }
+                    }
+                    
+                    if (step.action === 'result' && step.treeEdges) {
+                        // Réinitialiser toutes les arêtes
+                        cyRef.current.edges().style({
+                            'line-color': '#666',
+                            'width': 3,
+                            'opacity': 1
+                        });
+                        
+                        // Colorer les arêtes de l'arbre final
+                        step.treeEdges.forEach(treeEdge => {
+                            const edge = cyRef.current.getElementById(treeEdge.data.id);
+                            if (edge) {
+                                edge.addClass(config.edgeClass);
+                                edge.style({
+                                    'line-color': '#34db8a',
+                                    'width': 4,
+                                    'opacity': 1
+                                });
+                            }
+                        });
+                    }
                 }
             }
         }
