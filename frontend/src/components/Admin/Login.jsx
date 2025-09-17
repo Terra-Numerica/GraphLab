@@ -36,27 +36,66 @@ const Login = () => {
 
     return (
         <div className="login-page">
-            <form className="login-form" onSubmit={handleSubmit}>
-                <h2>Connexion Admin</h2>
-                {error && <div className="login-error">{error}</div>}
-                <input
-                    type="text"
-                    placeholder="Nom d'utilisateur"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Mot de passe"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    required
-                />
-                <button type="submit" className="btn-primary" disabled={loading}>
-                    {loading ? 'Connexion...' : 'Se connecter'}
-                </button>
-            </form>
+            <div className="login-container">
+                <div className="login-header">
+                    <div className="login-logo">
+                        <h1>GraphLab</h1>
+                        <p>Panel Administrateur</p>
+                    </div>
+                </div>
+
+                <div className="login-card">
+                    <div className="login-card-header">
+                        <h2>Connexion</h2>
+                        <p>Accédez au panel d'administration</p>
+                    </div>
+
+                    <form className="login-form" onSubmit={handleSubmit}>
+                        {error && <div className="login-error">{error}</div>}
+                        
+                        <div className="form-group">
+                            <label htmlFor="username">Nom d'utilisateur</label>
+                            <input
+                                id="username"
+                                type="text"
+                                placeholder="Entrez votre nom d'utilisateur"
+                                value={username}
+                                onChange={e => setUsername(e.target.value)}
+                                required
+                                disabled={loading}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="password">Mot de passe</label>
+                            <input
+                                id="password"
+                                type="password"
+                                placeholder="Entrez votre mot de passe"
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
+                                required
+                                disabled={loading}
+                            />
+                        </div>
+
+                        <button type="submit" className="login-btn" disabled={loading}>
+                            {loading ? (
+                                <>
+                                    <span className="loading-spinner"></span>
+                                    Connexion en cours...
+                                </>
+                            ) : (
+                                'Se connecter'
+                            )}
+                        </button>
+                    </form>
+                </div>
+
+                <div className="login-footer">
+                    <p>© 2024 GraphLab - Plateforme d'apprentissage des graphes</p>
+                </div>
+            </div>
         </div>
     );
 };

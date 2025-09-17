@@ -125,10 +125,22 @@
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
 }
 
 .admin-btn:hover {
   background-color: var(--blueHover);
+}
+
+.logout-btn {
+  background-color: #dc3545;
+  margin-left: 0.5rem;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
 }
 
 .hamburger {
@@ -218,7 +230,12 @@
   }
   .admin-btn {
     width: 100%;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
+  }
+  
+  .logout-btn {
+    margin-left: 0;
+    margin-top: 0.5rem;
   }
   .desktop-logo {
     display: none !important;

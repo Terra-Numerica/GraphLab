@@ -15,7 +15,20 @@ const Home = () => {
                     <p>
                         On peut voir un graphe comme une carte géographique : les sommets sont alors des villes et les arêtes sont les routes qui mènent d'une ville à l'autre.
                     </p>
-                    <img src="/graphe.png" alt="graphe" className="graph-image" />
+                    <div className="graphs-examples">
+                        <div className="graph-example">
+                            <img src="/metro-paris.png" alt="Plan du métro parisien" className="graph-image-small" />
+                            <p className="graph-caption">Plan du métro parisien</p>
+                        </div>
+                        <div className="graph-example">
+                            <img src="/graphe.png" alt="Graphe général" className="graph-image-small" />
+                            <p className="graph-caption">Graphe général</p>
+                        </div>
+                        <div className="graph-example">
+                            <img src="/reseau-social.png" alt="Réseau social" className="graph-image-small" />
+                            <p className="graph-caption">Réseau social</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 

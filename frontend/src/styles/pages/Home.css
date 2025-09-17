@@ -130,6 +130,43 @@
     width: 320px;
 }
 
+.graphs-examples {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin: 1.5rem 0 0 0;
+}
+
+.graph-example {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.graph-image-small {
+    max-width: 100%;
+    height: auto;
+    width: 200px;
+    border-radius: 4px;
+}
+
+.graph-image-small[alt="Plan du métro parisien"],
+.graph-image-small[alt="Réseau social"] {
+    width: 280px;
+}
+
+.graph-caption {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+    text-align: center;
+    font-weight: 500;
+}
+
 /* Media Queries */
 @media screen and (min-width: 480px) {
     .home-container {
@@ -150,6 +187,20 @@
     
     .graph-image {
         width: 380px;
+    }
+    
+    .graphs-examples {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .graph-image-small {
+        width: 150px;
+    }
+    
+    .graph-image-small[alt="Plan du métro parisien"],
+    .graph-image-small[alt="Réseau social"] {
+        width: 200px;
     }
 }
 
@@ -177,6 +228,20 @@
     .graph-image {
         width: 420px;
     }
+    
+    .graphs-examples {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+    }
+    
+    .graph-image-small {
+        width: 180px;
+    }
+    
+    .graph-image-small[alt="Plan du métro parisien"],
+    .graph-image-small[alt="Réseau social"] {
+        width: 250px;
+    }
 }
 
 @media screen and (min-width: 1024px) {
@@ -203,5 +268,26 @@
     
     .graph-image {
         width: 480px;
+    }
+    
+    .graphs-examples {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+    }
+    
+    .graph-image-small[alt="Graphe général"] {
+        width: 230px;
+    }
+    
+    .graph-image-small[alt="Plan du métro parisien"] {
+        width: 280px;
+    }
+    
+    .graph-image-small[alt="Réseau social"] {
+        width: 220px;
+    }
+    
+    .graph-example {
+        padding: 1.5rem;
     }
 } 

@@ -19,7 +19,6 @@
     display: flex;
     align-items: center;
     gap: 2rem;
-    margin-bottom: 2rem;
 }
 
 .tree-mode-select {
@@ -446,4 +445,34 @@
     justify-content: center;
     gap: 2rem;
     align-items: center;
+}
+
+.algo-bottom-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    padding: 1rem;
+}
+
+.tree-mode-back-btn-large {
+    padding: 0.5rem 3rem;
+    background: #1976d2;
+    color: #fff;
+    border: 2px solid #1565c0;
+    border-radius: 12px;
+    font-size: 1.4rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.2);
+    transition: all 0.2s ease;
+    letter-spacing: 0.5px;
+    min-width: 200px;
+}
+
+.tree-mode-back-btn-large:hover {
+    background: #1565c0;
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(25, 118, 210, 0.3);
+    transform: translateY(-2px);
 }

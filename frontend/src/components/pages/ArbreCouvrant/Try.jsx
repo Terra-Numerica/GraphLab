@@ -189,6 +189,29 @@ const Try = () => {
         return components;
     }, []);
 
+    // Fonction pour formater les composantes selon le nouveau format
+    const formatComponents = useCallback((components, nodes) => {
+        if (components.length === 0) return '';
+        
+        // Trier les composantes : d'abord les composantes connectées (taille > 1), puis les isolées (taille = 1)
+        const sortedComponents = [...components].sort((a, b) => {
+            if (a.length > 1 && b.length === 1) return -1; // Composantes connectées en premier
+            if (a.length === 1 && b.length > 1) return 1;  // Composantes isolées en dernier
+            return a.length - b.length; // Sinon trier par taille
+        });
+        
+        // Convertir chaque composante en format (N1, N2, ...)
+        const formattedComponents = sortedComponents.map(component => {
+            const nodeLabels = component.map(nodeId => {
+                const node = nodes.find(n => n.data.id === nodeId);
+                return node ? node.data.label || nodeId : nodeId;
+            });
+            return `(${nodeLabels.join(', ')})`;
+        });
+        
+        return formattedComponents.join(' ~ ');
+    }, []);
+
     useEffect(() => {
         if (!selectedGraph || !weightType || !selectedGraphData) {
             setCurrentGraph(null);
@@ -377,34 +400,8 @@ const Try = () => {
             let message = "Le graphe n'est pas connecté. ";
             if (components.length > 1) {
                 message += "Il y a " + components.length + " composantes séparées :\n\n";
-                
-                // Séparer les composantes connectées et non connectées
-                const connectedComponents = components.filter(comp => comp.length > 1);
-                const disconnectedComponents = components.filter(comp => comp.length === 1);
-                
-                if (connectedComponents.length > 0) {
-                    message += "Composantes connectées :\n";
-                    connectedComponents.forEach((component) => {
-                        const nodeLabels = component.map(nodeId => {
-                            const node = nodes.find(n => n.data.id === nodeId);
-                            return node ? node.data.label || nodeId : nodeId;
-                        });
-                        message += `• ${nodeLabels.join(', ')}\n`;
-                    });
-                }
-                
-                if (disconnectedComponents.length > 0) {
-                    message += "\nComposantes non connectées :\n";
-                    disconnectedComponents.forEach((component) => {
-                        const nodeLabels = component.map(nodeId => {
-                            const node = nodes.find(n => n.data.id === nodeId);
-                            return node ? node.data.label || nodeId : nodeId;
-                        });
-                        message += `• ${nodeLabels[0]}\n`;
-                    });
-                }
-                
-                message += "\nTous les sommets doivent être connectés pour former un arbre couvrant.";
+                message += formatComponents(components, nodes);
+                message += "\n\nTous les sommets doivent être connectés pour former un arbre couvrant.";
             } else {
                 message += "Tous les sommets doivent être accessibles.";
             }
@@ -426,7 +423,7 @@ const Try = () => {
             setValidationPopup({
                 type: 'success',
                 title: 'Félicitations !',
-                message: `Tu as trouvé l'arbre couvrant de poids minimal avec un poids total de ${totalWeight}.`
+                message: `Tu as trouvé l'arbre couvrant de poids minimal en ${formatTime(time)} avec un poids total de ${totalWeight}.`
             });
             stop();
         } else {
@@ -529,6 +526,15 @@ const Try = () => {
                     </div>
                 )}
             </div>
+            {disconnectedComponents.length > 0 && currentGraph && (
+                <div className="tree-mode-components-error">
+                    <div className="components-error-text">
+                        <div style={{ marginTop: '0.5rem' }}>
+                            <strong>Composantes :</strong> {formatComponents(disconnectedComponents, currentGraph.data.nodes)}
+                        </div>
+                    </div>
+                </div>
+            )}
             {currentGraph && weightType && <div className="tree-mode-buttons-row">
                 <button className="tree-mode-btn tree-mode-btn-validate" onClick={validateGraph}>Valider l'arbre couvrant</button>
                 <button className="tree-mode-btn tree-mode-btn-reset" onClick={resetEdges}>Réinitialiser la sélection</button>
@@ -539,43 +545,7 @@ const Try = () => {
                     <span className="cycle-error-text">⚠️ Vous avez créé un cycle</span>
                 </div>
             )}
-            {disconnectedComponents.length > 1 && currentGraph && (
-                <div className="tree-mode-components-error">
-                    <div className="components-error-text">
-                        {(() => {
-                            const connectedComponents = disconnectedComponents.filter(comp => comp.length > 1);
-                            const nonConnectedComponents = disconnectedComponents.filter(comp => comp.length === 1);
-                            
-                            return (
-                                <div style={{ marginTop: '0.5rem' }}>
-                                    {connectedComponents.length > 0 && (
-                                        <div>
-                                            <strong>Composantes connectées :</strong> {connectedComponents.map((component) => {
-                                                const nodeLabels = component.map(nodeId => {
-                                                    const node = currentGraph?.data?.nodes?.find(n => n.data.id === nodeId);
-                                                    return node ? node.data.label || nodeId : nodeId;
-                                                });
-                                                return nodeLabels.join(', ');
-                                            }).join(' | ')}
-                                        </div>
-                                    )}
-                                    {nonConnectedComponents.length > 0 && (
-                                        <div>
-                                            <strong>Composantes non connectées :</strong> {nonConnectedComponents.map((component) => {
-                                                const nodeLabels = component.map(nodeId => {
-                                                    const node = currentGraph?.data?.nodes?.find(n => n.data.id === nodeId);
-                                                    return node ? node.data.label || nodeId : nodeId;
-                                                });
-                                                return nodeLabels[0];
-                                            }).join(', ')}
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })()}
-                    </div>
-                </div>
-            )}
+
             {currentGraph && weightType && (
                 <div className="tree-mode-algos-solutions-container">
                     <span className="tree-mode-algos-solutions-title">Solutions :</span>

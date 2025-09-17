@@ -130,16 +130,19 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
                 {
                     selector: 'edge.selected',
                     style: {
-                        'line-color': '#9400D3',
-                        'width': 4
+                        // Une couleur plus flashy et pas rouge
+                        'line-color': '#00AAFF',
+                        'width': 6
                     }
                 },
                 {
                     selector: 'edge.hover',
                     style: {
                         'font-size': 26,
-                        'text-background-color': '#ffe5b4',
+                        'line-color': '#ff0000',
+                        'text-background-color': '#ff0000',
                         'text-background-opacity': 1,
+                        'width': 6,
                         'z-index': 9999
                     }
                 }

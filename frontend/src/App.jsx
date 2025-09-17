@@ -26,6 +26,9 @@ import Penrose from './components/pages/RailwayMaze/Penrose'
 // Components => Admin
 import Dashboard from './components/Admin/Dashboard';
 import Login from './components/Admin/Login';
+import GraphList from './components/Admin/GraphList';
+import Workshops from './components/Admin/Workshops';
+import AdminLayout from './components/Admin/AdminLayout';
 
 // Components => Common
 import MobileWarning from './components/common/MobileWarning';
@@ -45,6 +48,28 @@ function RequireAuth({ children }) {
 		return <Navigate to="/admin/login" state={{ from: location }} replace />;
 	}
 	return children;
+}
+
+// Layout pour les pages publiques (avec navbar et footer)
+function PublicLayout({ children }) {
+	return (
+		<div className="app">
+			<Navbar />
+			<main className="main-content">
+				{children}
+			</main>
+			<Footer />
+		</div>
+	);
+}
+
+// Layout pour les pages admin (sans navbar et footer)
+function AdminLayoutWrapper({ children }) {
+	return (
+		<div className="admin-app">
+			{children}
+		</div>
+	);
 }
 
 function App() {
@@ -68,26 +93,37 @@ function App() {
 
 	return (
 		<BrowserRouter>
-		<div className="app">
-			<Navbar />
-			<main className="main-content">
-					<Routes>
-						<Route path="/" element={<Home />} />
-						<Route path="/coloration" element={<ColorationMain />} />
-						<Route path="/coloration/defi" element={<Defi />} />
-						<Route path="/coloration/libre" element={<Libre />} />
-						<Route path="/coloration/creation" element={<Creation />} />
-						<Route path="/arbre-couvrant" element={<ArbreCouvrantMain />} />
-						<Route path="/arbre-couvrant/try" element={<ArbreCouvrantTry />} />
-						<Route path="/arbre-couvrant/:algo/:graphId" element={<AlgoPage />} />
-						<Route path="/railway-maze" element={<RailwayMazeMain />} />
-						<Route path="/railway-maze/penrose" element={<Penrose />} />
-						<Route path="/admin/login" element={<Login />} />
-						<Route path="/admin" element={<RequireAuth><Dashboard /></RequireAuth>} />
-					</Routes>
-			</main>
-			<Footer />
-		</div>
+			<Routes>
+				{/* Routes publiques avec navbar et footer */}
+				<Route path="/*" element={
+					<PublicLayout>
+						<Routes>
+							<Route path="/" element={<Home />} />
+							<Route path="/coloration" element={<ColorationMain />} />
+							<Route path="/coloration/defi" element={<Defi />} />
+							<Route path="/coloration/libre" element={<Libre />} />
+							<Route path="/coloration/creation" element={<Creation />} />
+							<Route path="/arbre-couvrant" element={<ArbreCouvrantMain />} />
+							<Route path="/arbre-couvrant/try" element={<ArbreCouvrantTry />} />
+							<Route path="/arbre-couvrant/:algo/:graphId" element={<AlgoPage />} />
+							<Route path="/railway-maze" element={<RailwayMazeMain />} />
+							<Route path="/railway-maze/penrose" element={<Penrose />} />
+						</Routes>
+					</PublicLayout>
+				} />
+				
+				{/* Routes admin sans navbar et footer */}
+				<Route path="/admin/*" element={
+					<AdminLayoutWrapper>
+						<Routes>
+							<Route path="/login" element={<Login />} />
+							<Route path="/" element={<RequireAuth><AdminLayout><Dashboard /></AdminLayout></RequireAuth>} />
+							<Route path="/graphs" element={<RequireAuth><AdminLayout><GraphList /></AdminLayout></RequireAuth>} />
+							<Route path="/workshops" element={<RequireAuth><AdminLayout><Workshops /></AdminLayout></RequireAuth>} />
+						</Routes>
+					</AdminLayoutWrapper>
+				} />
+			</Routes>
 		</BrowserRouter>
 	)
 }

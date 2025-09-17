@@ -89,7 +89,10 @@ const Navbar = () => {
 				</div>
 				<div className="nav-right">
 					{isAuthenticated ? (
-						<button onClick={handleLogout} className="admin-btn">Déconnexion</button>
+						<>
+							<a href="/admin" className="admin-btn">Tableau de bord</a>
+							<button onClick={handleLogout} className="admin-btn logout-btn">Déconnexion</button>
+						</>
 					) : (
 						<a href="/admin" className="admin-btn">Connexion Admin</a>
 					)}

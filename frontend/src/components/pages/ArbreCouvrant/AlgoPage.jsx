@@ -1,5 +1,5 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 
 import AlgoVisualization from './AlgoVisualization';
 import GraphDisplay from './GraphDisplay';
@@ -28,7 +28,7 @@ const algoConfig = {
         "1. On commence par trier toutes les arrêtes par coût croissant",
         "2. On examine les arrêtes une par une, en commençant par la moins chère",
         "3. Pour chaque arrête, si elle ne crée pas de boucle dans le réseau, on l'ajoute, sinon on la rejette",
-        "4. On s'arrête quand tous les points sont connectés",
+        "4. On s'arrête quand tous les sommets sont connectés",
         "Cet algorithme est particulièrement utile quand on veut s'assurer d'utiliser les arrêtes les moins chères possibles tout en évitant les connexions redondantes."
       ]
     }
@@ -38,10 +38,10 @@ const algoConfig = {
     explanation: {
       title: "Algorithme de Boruvka",
       steps: [
-        "L'algorithme de Boruvka construit l'arbre couvrant de poids minimal en connectant progressivement des groupes de points entre eux.",
-        "1. Au début, chaque point forme son propre groupe",
-        "2. Pour chaque groupe de points, on sélectionne l'arrête la moins chère qui le connecte à un autre groupe",
-        "3. On fusionne les groupes de points connectés",
+        "L'algorithme de Boruvka construit l'arbre couvrant de poids minimal en connectant progressivement des groupes de sommets entre eux.",
+        "1. Au début, chaque sommet forme son propre groupe",
+        "2. Pour chaque groupe de sommets, on sélectionne l'arrête la moins chère qui le connecte à un autre groupe",
+        "3. On fusionne les groupes de sommets connectés",
         "4. On répète jusqu'à n'avoir qu'un seul groupe",
         "Cet algorithme est particulièrement efficace pour les grands réseaux car il peut traiter plusieurs connexions en parallèle à chaque étape."
       ]
@@ -89,8 +89,72 @@ const AlgoPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [disconnectedComponents, setDisconnectedComponents] = useState([]);
+  const [selectedEdges, setSelectedEdges] = useState([]);
 
   const config = algoConfig[algo];
+
+  // Fonction pour détecter les composantes connectées
+  const findConnectedComponents = useCallback((edges, nodes) => {
+    // Créer la liste d'adjacence
+    const adjacencyList = {};
+    nodes.forEach(node => {
+      adjacencyList[node.data.id] = [];
+    });
+    
+    edges.forEach(edge => {
+      adjacencyList[edge.data.source].push(edge.data.target);
+      adjacencyList[edge.data.target].push(edge.data.source);
+    });
+    
+    const visited = new Set();
+    const components = [];
+    
+    const dfs = (node, component) => {
+      visited.add(node);
+      component.push(node);
+      
+      for (const neighbor of adjacencyList[node]) {
+        if (!visited.has(neighbor)) {
+          dfs(neighbor, component);
+        }
+      }
+    };
+    
+    // Trouver toutes les composantes connectées
+    for (const node of nodes) {
+      if (!visited.has(node.data.id)) {
+        const component = [];
+        dfs(node.data.id, component);
+        components.push(component);
+      }
+    }
+    
+    return components;
+  }, []);
+
+  // Fonction pour formater les composantes selon le nouveau format
+  const formatComponents = useCallback((components, nodes) => {
+    if (components.length === 0) return '';
+    
+    // Trier les composantes : d'abord les composantes connectées (taille > 1), puis les isolées (taille = 1)
+    const sortedComponents = [...components].sort((a, b) => {
+      if (a.length > 1 && b.length === 1) return -1; // Composantes connectées en premier
+      if (a.length === 1 && b.length > 1) return 1;  // Composantes isolées en dernier
+      return a.length - b.length; // Sinon trier par taille
+    });
+    
+    // Convertir chaque composante en format (N1, N2, ...)
+    const formattedComponents = sortedComponents.map(component => {
+      const nodeLabels = component.map(nodeId => {
+        const node = nodes.find(n => n.data.id === nodeId);
+        return node ? node.data.label || nodeId : nodeId;
+      });
+      return `(${nodeLabels.join(', ')})`;
+    });
+    
+    return formattedComponents.join(' ~ ');
+  }, []);
 
   useEffect(() => {
     if (!graph && graphId) {
@@ -107,6 +171,19 @@ const AlgoPage = () => {
         });
     }
   }, [graph, graphId]);
+
+  // Calculer les composantes connectées basées sur les arêtes sélectionnées
+  useEffect(() => {
+    if (graph && graph.data) {
+      const components = findConnectedComponents(selectedEdges, graph.data.nodes);
+      setDisconnectedComponents(components);
+    }
+  }, [graph, selectedEdges, findConnectedComponents]);
+
+  // Callback pour recevoir les arêtes sélectionnées depuis AlgoVisualization
+  const handleSelectedEdgesChange = useCallback((edges) => {
+    setSelectedEdges(edges);
+  }, []);
 
   if (!config) return <div>Algorithme inconnu</div>;
   if (loading) return <div className="tree-mode-loading">Chargement...</div>;
@@ -160,13 +237,37 @@ const AlgoPage = () => {
         </div>
 
         <div className="algo-visualization-infos">
-          <AlgoVisualization algo={algo} graph={graph} cyRef={cyRef} />
+          <AlgoVisualization 
+            algo={algo} 
+            graph={graph} 
+            cyRef={cyRef} 
+            onSelectedEdgesChange={handleSelectedEdgesChange}
+          />
         </div>
       </div>
+      {disconnectedComponents.length > 0 && graph && (
+          <div className="tree-mode-components-error">
+            <div className="components-error-text">
+              <div style={{ marginTop: '0.5rem' }}>
+                <strong>Composantes :</strong> {formatComponents(disconnectedComponents, graph.data.nodes)}
+              </div>
+            </div>
+          </div>
+        )}
       <div className="algo-graph-centered">
-        <div className="tree-mode-graph-area">
+        <div className="mode-graph-area">
           <GraphDisplay graphData={graph} cyRef={cyRef} />
         </div>
+      </div>
+      <div className="algo-bottom-actions">
+        <button className="tree-mode-back-btn-large" onClick={() => navigate('/arbre-couvrant/try', {
+          state: {
+            selectedGraph: graphId,
+            weightType: weightType
+          }
+        })}>
+          &larr; Retour
+        </button>
       </div>
     </div>
   );
