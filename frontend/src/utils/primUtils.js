@@ -32,7 +32,7 @@ export const primAlgorithm = (nodes, edges) => {
         node: indexToNode[0],
         visitedNodes: [indexToNode[0]],
         componentColor: componentColor,
-        explanation: `On commence par le sommet ${indexToNode[0]}.`
+        explanation: `On commence par la composante ${indexToNode[0]}.`
     });
 
     for (let k = 0; k < nodeCount - 1; k++) {
@@ -75,7 +75,7 @@ export const primAlgorithm = (nodes, edges) => {
             action: 'add',
             visitedNodes: visitedNodes,
             componentColor: componentColor,
-            explanation: `Ajout de l'arête ${sourceId}-${targetId} (poids : ${edge.data.weight}) car c'est l'arête de poids minimal reliant un sommet visité à un sommet non visité. Le sommet ${targetId} rejoint maintenant la composante en construction.`
+            explanation: `Ajout de l'arête ${sourceId}-${targetId} (poids : ${edge.data.weight}) car c'est l'arête de poids minimal reliant une composante visitée à une composante non visitée. La composante ${targetId} rejoint maintenant la composante en construction.`
         });
     }
 

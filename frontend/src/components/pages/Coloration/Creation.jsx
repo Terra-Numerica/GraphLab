@@ -190,7 +190,7 @@ const Creation = () => {
             setValidationPopup({
                 type: 'warning',
                 title: 'Attention !',
-                message: "Tous les sommets ne sont pas colorés"
+                message: "Tous les sommets ne sont pas colorés."
             });
         } else if (!isValid) {
             setValidationPopup({
@@ -333,14 +333,15 @@ const Creation = () => {
                     <ul>
                         <li>Crée un graphe et colorie-le.</li>
                         <li>Deux sommets adjacents ne doivent jamais avoir la même couleur.</li>
-                        <li>Tu disposes d'un nombre limité de pastilles que tu dois placer correctement.</li>
+                        <li>Tu disposes d'un nombre illimité de pastilles que tu dois placer correctement.</li>
                     </ul>
 
                     <h3>🛠️ Comment créer un <strong>Graphe</strong></h3>
                     <ul>
                         <li>Clique sur le bouton <strong>Ajouter un sommet</strong> pour ajouter un sommet au graphe.</li>
-                        <li>Place le sommet en le faisant glisser là où tu le souhaites.</li>
+                        <li>Le sommet est déjà placé à un endroit aléatoire. Déplace le sommet en le faisant glisser là où tu le souhaites.</li>
                         <li>En faisant un clic gauche sur un sommet puis un autre clic gauche sur un autre sommet, tu peux ajouter une arête entre les deux sommets.</li>
+                        <li>Tu as la possibilité de choisir le nombre de couleurs que tu veux utiliser.</li>
                         <li>Dès que tu penses avoir terminé de créer ton graphe, clique sur le bouton <strong>Essayer le Graphe</strong> pour commencer à le colorer.</li>
                     </ul>
 

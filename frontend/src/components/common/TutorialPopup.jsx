@@ -40,7 +40,7 @@ const TutorialPopup = ({ onClose, onComplete, steps }) => {
                         alt={steps[currentStep].title}
                         className="tutorial-image"
                     />
-                    <p className="tutorial-description">{steps[currentStep].description}</p>
+                    <p className="tutorial-description" dangerouslySetInnerHTML={{ __html: steps[currentStep].description }}></p>
                 </div>
                 <div className="tutorial-popup-footer">
                     {isLastStep && (

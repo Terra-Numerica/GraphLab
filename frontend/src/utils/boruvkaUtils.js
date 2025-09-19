@@ -82,7 +82,7 @@ export const boruvkaAlgorithm = (nodes, edges) => {
 
     steps.push({
         action: 'start',
-        explanation: "Début de l'algorithme de Boruvka : chaque sommet forme d'abord sa propre composante. À chaque étape, on va chercher à relier les composantes entre elles en choisissant l'arête de poids minimal qui les connecte."
+        explanation: "Début de l'algorithme de Boruvka : chaque composante forme d'abord sa propre composante. À chaque étape, on va chercher à relier les composantes entre elles en choisissant l'arête de poids minimal qui les connecte."
     });
 
     while (numComponents > 1) {

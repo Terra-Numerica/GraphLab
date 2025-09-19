@@ -227,21 +227,22 @@ const Try = () => {
                 const newEdge = { ...edge };
                 if (newEdge.data) {
                     newEdge.data.controlPointDistance = newEdge.data.controlPointDistance ?? 0;
+                    
+                    // Sauvegarder le poids original seulement lors du premier chargement du graphe
+                    if (newEdge.data.originalWeight === undefined && newEdge.data.weight !== undefined) {
+                        newEdge.data.originalWeight = newEdge.data.weight;
+                    }
+                    
                     if (weightType === 'predefined') {
                         // Pour les poids prédéfinis, on utilise les poids originaux du graphe
-                        // Si pas de poids original, on génère un poids aléatoire
                         if (newEdge.data.originalWeight !== undefined) {
                             newEdge.data.weight = newEdge.data.originalWeight;
-                        } else if (newEdge.data.weight === undefined || newEdge.data.weight === null || newEdge.data.weight === "") {
+                        } else {
+                            // Si pas de poids original, on génère un poids aléatoire
                             const randomWeight = Math.floor(Math.random() * 10) + 1;
                             newEdge.data.weight = randomWeight;
-                            newEdge.data.originalWeight = randomWeight; // Sauvegarder comme poids original
+                            newEdge.data.originalWeight = randomWeight;
                             updated = true;
-                        } else {
-                            // Si on a déjà un poids mais pas de poids original, le sauvegarder
-                            if (newEdge.data.originalWeight === undefined) {
-                                newEdge.data.originalWeight = newEdge.data.weight;
-                            }
                         }
                     } else if (weightType === 'one') {
                         newEdge.data.weight = 1;
@@ -363,7 +364,7 @@ const Try = () => {
             setValidationPopup({
                 type: 'error',
                 title: 'Erreur',
-                message: "Tu dois sélectionner exactement le nombre d'arêtes nécessaires pour couvrir tous les sommets."
+                message: "Tu dois sélectionner exactement le nombre d'arêtes nécessaires pour couvrir toutes les composantes."
             });
             return;
         }
@@ -401,9 +402,9 @@ const Try = () => {
             if (components.length > 1) {
                 message += "Il y a " + components.length + " composantes séparées :\n\n";
                 message += formatComponents(components, nodes);
-                message += "\n\nTous les sommets doivent être connectés pour former un arbre couvrant.";
+                message += "\n\nToutes les composantes doivent être connectées pour former un arbre couvrant.";
             } else {
-                message += "Tous les sommets doivent être accessibles.";
+                message += "Toutes les composantes doivent être accessibles.";
             }
             
             setValidationPopup({
@@ -591,7 +592,7 @@ const Try = () => {
                     <h3>🎯 Objectif</h3>
                     <ul>
                         <li>Trouve l'arbre couvrant minimal du graphe en sélectionnant les arêtes appropriées.</li>
-                        <li>Minimise la somme des poids des arêtes sélectionnées tout en connectant tous les sommets.</li>
+                        <li>Minimise la somme des poids des arêtes sélectionnées tout en connectant toutes les composantes.</li>
                         <li>Évite la formation de cycles dans ta solution.</li>
                     </ul>
 
@@ -600,7 +601,7 @@ const Try = () => {
                         <li>Choisis un graphe prédéfini dans le menu déroulant.</li>
                         <li>Sélectionne le type de poids des arêtes : prédéfini, tous à 1 ou aléatoire.</li>
                         <li>Clique sur les arêtes pour les sélectionner ou les désélectionner.</li>
-                        <li>Vérifie que ta solution connecte tous les sommets sans former de cycle.</li>
+                        <li>Vérifie que ta solution connecte toutes les composantes sans former de cycle.</li>
                         <li>Valide ta solution pour vérifier si elle est optimale.</li>
                     </ul>
 

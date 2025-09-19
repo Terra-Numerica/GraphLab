@@ -38,16 +38,10 @@ const Main = () => {
                 <h2>L'Arbre Couvrant de Poids Minimal</h2>
                 <div className="explanation-text">
                     <p>
-                        Un arbre couvrant minimal est un sous-ensemble d'arêtes qui connecte tous les sommets d'un graphe en formant un arbre, tout en minimisant la somme des poids des arêtes utilisées.
+                        Un arbre couvrant minimal est un sous-ensemble d'arêtes qui connecte tous les sommets (composantes) d'un graphe en formant un arbre, tout en minimisant la somme des poids des arêtes utilisées.
                     </p>
                     <p>
-                        Pour illustrer ce concept, prenons l'exemple d'un réseau de villes à connecter. L'objectif est de relier toutes les villes entre elles en utilisant le minimum de routes possible, tout en minimisant le coût total de construction.
-                    </p>
-                    <p>
-                        Chaque arête du graphe possède un poids qui représente son coût. La solution optimale doit connecter tous les sommets sans former de cycle, tout en minimisant la somme des poids des arêtes sélectionnées.
-                    </p>
-                    <p>
-                        Ce problème d'optimisation trouve des applications concrètes dans la planification de réseaux, comme la conception de réseaux électriques, de réseaux de communication ou de systèmes de distribution.
+                        Chaque arête du graphe possède un poids qui représente son coût. La solution optimale doit connecter tous les composantes sans former de cycle, tout en minimisant la somme des poids des arêtes sélectionnées.
                     </p>
                 </div>
                 <button className="try-graph-button" onClick={handleTryGraph}>
@@ -59,24 +53,34 @@ const Main = () => {
                     steps={
                         [
                             {
-                                title: "Graphe (Arbre Couvrant)",
-                                description: "Voici un arbre couvrant (vide), il est composé de 5 sommets et 4 arêtes, chaque arrête possède un poids. Tu dois trouver l'arbre couvrant de poids minimal.",
-                                image: "/tutorial/ArbreCouvrant/graph.png"
+                                title: "Qu'est-ce qu'un arbre couvrant ?",
+                                description: "Un arbre couvrant est un sous-ensemble d'arêtes qui connecte tous les sommets (qu'on peut appeler composantes) d'un graphe sans former de cycle. Chaque arête possède un poids (coût). <br /> L'objectif est de trouver l'arbre couvrant de poids minimal.",
+                                image: "/tutorial/ArbreCouvrant/graph.png",
+                                status: "none"
                             },
                             {
-                                title: "Solution avec Cycle",
-                                description: "Ici, nous avons un arbre couvrant valide, mais il contient un cycle. Un arbre ne doit pas contenir de cycles.",
-                                image: "/tutorial/ArbreCouvrant/cycle.png"
+                                title: "Le principe de l'arbre couvrant",
+                                description: "Un arbre couvrant doit :<br />1) Connecter toutes les composantes<br />2) Ne pas former de cycle<br />3) Minimiser la somme des poids des arêtes sélectionnées",
+                                image: "/tutorial/ArbreCouvrant/graph.png",
+                                status: "none"
                             },
                             {
-                                title: "Arbre Couvrant Non Minimal",
-                                description: "Dans ce cas, nous avons un arbre couvrant valide, mais il n'est pas minimal car la somme des poids des arêtes n'est pas minimale.",
-                                image: "/tutorial/ArbreCouvrant/non-minimal.png"
+                                title: "Cycle détecté",
+                                description: "Ici, c'est incorrect ! Un cycle a été formé (boucle fermée). Un arbre ne peut pas contenir de cycles. Il faut retirer une arête pour casser le cycle.",
+                                image: "/tutorial/ArbreCouvrant/cycle.png",
+                                status: "no"
                             },
                             {
-                                title: "Arbre Couvrant Minimal",
-                                description: "Et enfin, un arbre couvrant minimal valide. Il connecte tous les sommets sans cycle et avec la somme des poids minimale.",
-                                image: "/tutorial/ArbreCouvrant/minimal.png"
+                                title: "Correct mais pas optimal",
+                                description: "Maintenant c'est correct : toutes les composantes sont connectées sans cycle. Mais la somme des poids n'est pas minimale. On peut faire mieux en choisissant des arêtes moins coûteuses.",
+                                image: "/tutorial/ArbreCouvrant/non-minimal.png",
+                                status: "no"
+                            },
+                            {
+                                title: "Parfait ! Solution optimale",
+                                description: "Excellent ! C'est l'arbre couvrant minimal : toutes les composantes sont connectées, aucun cycle, et la somme des poids est minimale. C'est exactement ce qu'il faut trouver !",
+                                image: "/tutorial/ArbreCouvrant/minimal.png",
+                                status: "yes"
                             }
                         ]
                     }

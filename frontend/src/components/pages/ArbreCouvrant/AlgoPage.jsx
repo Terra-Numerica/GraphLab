@@ -11,11 +11,11 @@ const algoConfig = {
     explanation: {
       title: "Algorithme de Prim",
       steps: [
-        "L'algorithme de Prim construit l'arbre couvrant de poids minimal en partant d'un point de départ et en s'étendant progressivement.",
-        "1. On commence par repérer le point de départ et on cherche l'arrête la moins chère qui le relie à un autre point",
-        "2. On répète cette opération jusqu'à ce que tous les points soient connectés (On prends en compte chaque arrête où les sommets sont déjà connectés)",
-        "3. On s'arrête quand tous les points sont connectés",
-        "Cet algorithme est particulièrement utile quand on veut s'assurer d'utiliser toutes les arrêtes les moins chères possibles, car il explore localement les meilleures connexions à chaque étape."
+        "L'algorithme de Prim construit l'arbre couvrant de poids minimal en partant d'une composante de départ et en s'étendant progressivement.",
+        "1. On commence par repérer la composante de départ et on cherche l'arête la moins chère qui le relie à une autre composante",
+        "2. On répète cette opération jusqu'à ce que toutes les composantes soient connectées (On prends en compte chaque arête où les composantes sont déjà connectés)",
+        "3. On s'arête quand toutes les composantes sont connectées",
+        "Cet algorithme est particulièrement utile quand on veut s'assurer d'utiliser toutes les arêtes les moins chères possibles, car il explore localement les meilleures connexions à chaque étape."
       ]
     }
   },
@@ -24,12 +24,12 @@ const algoConfig = {
     explanation: {
       title: "Algorithme de Kruskal",
       steps: [
-        "L'algorithme de Kruskal construit l'arbre couvrant de poids minimal en examinant toutes les arrêtes possibles, de la moins chère à la plus chère.",
-        "1. On commence par trier toutes les arrêtes par coût croissant",
-        "2. On examine les arrêtes une par une, en commençant par la moins chère",
-        "3. Pour chaque arrête, si elle ne crée pas de boucle dans le réseau, on l'ajoute, sinon on la rejette",
-        "4. On s'arrête quand tous les sommets sont connectés",
-        "Cet algorithme est particulièrement utile quand on veut s'assurer d'utiliser les arrêtes les moins chères possibles tout en évitant les connexions redondantes."
+        "L'algorithme de Kruskal construit l'arbre couvrant de poids minimal en examinant toutes les arêtes possibles, de la moins chère à la plus chère.",
+        "1. On commence par trier toutes les arêtes par coût croissant",
+        "2. On examine les arêtes une par une, en commençant par la moins chère",
+        "3. Pour chaque arête, si elle ne crée pas de boucle dans le réseau, on l'ajoute, sinon on la rejette",
+        "4. On s'arête quand toutes les composantes sont connectées",
+        "Cet algorithme est particulièrement utile quand on veut s'assurer d'utiliser les arêtes les moins chères possibles tout en évitant les connexions redondantes."
       ]
     }
   },
@@ -38,10 +38,10 @@ const algoConfig = {
     explanation: {
       title: "Algorithme de Boruvka",
       steps: [
-        "L'algorithme de Boruvka construit l'arbre couvrant de poids minimal en connectant progressivement des groupes de sommets entre eux.",
-        "1. Au début, chaque sommet forme son propre groupe",
-        "2. Pour chaque groupe de sommets, on sélectionne l'arrête la moins chère qui le connecte à un autre groupe",
-        "3. On fusionne les groupes de sommets connectés",
+        "L'algorithme de Boruvka construit l'arbre couvrant de poids minimal en connectant progressivement des groupes de composantes entre eux.",
+        "1. Au début, chaque composante forme son propre groupe",
+        "2. Pour chaque groupe de composantes, on sélectionne l'arête la moins chère qui le connecte à un autre groupe",
+        "3. On fusionne les groupes de composantes connectées",
         "4. On répète jusqu'à n'avoir qu'un seul groupe",
         "Cet algorithme est particulièrement efficace pour les grands réseaux car il peut traiter plusieurs connexions en parallèle à chaque étape."
       ]
