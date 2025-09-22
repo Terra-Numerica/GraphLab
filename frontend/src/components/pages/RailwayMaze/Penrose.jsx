@@ -140,7 +140,20 @@ const Penrose = () => {
     const handleRetry = useCallback(() => {
         if (!currentGraph) return;
         
-        // Reset the game to initial state
+        const resetEdges = currentGraph.data.edges.map(edge => ({
+            ...edge,
+            style: {}
+        }));
+        
+        setCurrentGraph(prev => ({
+            ...prev,
+            data: {
+                ...prev.data,
+                nodes: prev.data.nodes,
+                edges: resetEdges,
+            }
+        }));
+        
         initGame(currentGraph);
         
         // Reset timer
