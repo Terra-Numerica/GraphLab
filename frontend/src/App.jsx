@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import useWorkshopConfig from './hooks/useWorkshopConfig';
 
 // Components => Navigation
 import Navbar from './components/Navigation/Navbar';
@@ -47,6 +48,31 @@ function RequireAuth({ children }) {
 	if (!isAuthenticated) {
 		return <Navigate to="/admin/login" state={{ from: location }} replace />;
 	}
+	return children;
+}
+
+/**
+ * @description ProtectedWorkshopRoute is a component that checks if a workshop is available in the current environment
+ * @param {Object} param0 - The component to render if the workshop is available
+ * @param {string} param0.workshopType - The type of workshop to check (coloring, spanningTree, railwayMaze)
+ * @returns {React.ReactNode} The component to render if the workshop is available, or redirect to home
+*/
+function ProtectedWorkshopRoute({ children, workshopType }) {
+	const { isWorkshopAvailable, loading } = useWorkshopConfig();
+	const location = useLocation();
+
+	if (loading) {
+		return (
+			<div className="loading-container">
+				<p>Chargement...</p>
+			</div>
+		);
+	}
+
+	if (!isWorkshopAvailable(workshopType)) {
+		return <Navigate to="/" state={{ from: location }} replace />;
+	}
+
 	return children;
 }
 
@@ -99,15 +125,51 @@ function App() {
 					<PublicLayout>
 						<Routes>
 							<Route path="/" element={<Home />} />
-							<Route path="/coloration" element={<ColorationMain />} />
-							<Route path="/coloration/defi" element={<Defi />} />
-							<Route path="/coloration/libre" element={<Libre />} />
-							<Route path="/coloration/creation" element={<Creation />} />
-							<Route path="/arbre-couvrant" element={<ArbreCouvrantMain />} />
-							<Route path="/arbre-couvrant/try" element={<ArbreCouvrantTry />} />
-							<Route path="/arbre-couvrant/:algo/:graphId" element={<AlgoPage />} />
-							<Route path="/railway-maze" element={<RailwayMazeMain />} />
-							<Route path="/railway-maze/penrose" element={<Penrose />} />
+							<Route path="/coloration" element={
+								<ProtectedWorkshopRoute workshopType="coloring">
+									<ColorationMain />
+								</ProtectedWorkshopRoute>
+							} />
+							<Route path="/coloration/defi" element={
+								<ProtectedWorkshopRoute workshopType="coloring">
+									<Defi />
+								</ProtectedWorkshopRoute>
+							} />
+							<Route path="/coloration/libre" element={
+								<ProtectedWorkshopRoute workshopType="coloring">
+									<Libre />
+								</ProtectedWorkshopRoute>
+							} />
+							<Route path="/coloration/creation" element={
+								<ProtectedWorkshopRoute workshopType="coloring">
+									<Creation />
+								</ProtectedWorkshopRoute>
+							} />
+							<Route path="/arbre-couvrant" element={
+								<ProtectedWorkshopRoute workshopType="spanningTree">
+									<ArbreCouvrantMain />
+								</ProtectedWorkshopRoute>
+							} />
+							<Route path="/arbre-couvrant/try" element={
+								<ProtectedWorkshopRoute workshopType="spanningTree">
+									<ArbreCouvrantTry />
+								</ProtectedWorkshopRoute>
+							} />
+							<Route path="/arbre-couvrant/:algo/:graphId" element={
+								<ProtectedWorkshopRoute workshopType="spanningTree">
+									<AlgoPage />
+								</ProtectedWorkshopRoute>
+							} />
+							<Route path="/railway-maze" element={
+								<ProtectedWorkshopRoute workshopType="railwayMaze">
+									<RailwayMazeMain />
+								</ProtectedWorkshopRoute>
+							} />
+							<Route path="/railway-maze/penrose" element={
+								<ProtectedWorkshopRoute workshopType="railwayMaze">
+									<Penrose />
+								</ProtectedWorkshopRoute>
+							} />
 						</Routes>
 					</PublicLayout>
 				} />

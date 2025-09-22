@@ -11,6 +11,7 @@ import "dotenv/config";
 // Routes
 import graphRoute from "@/routes/graph.route";
 import authRoute from "@/routes/auth.route";
+import workshopRoute from "@/routes/workshop.route";
 
 try {
 
@@ -39,6 +40,7 @@ try {
 	// Use Routes
 	app.use("/api/graph", graphRoute);
 	app.use("/api/auth", authRoute);
+	app.use("/api/workshop", workshopRoute);
 
 	// Get port from environment or default to 3000
 	const port = process.env.PORT || 3000;
