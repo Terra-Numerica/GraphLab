@@ -1,0 +1,38 @@
+services:
+  graphlab-backend:
+    build: ./backend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.graphlab-backend.rule=Host(``)"
+      - "traefik.http.routers.graphlab-backend.entrypoints=websecure"
+      - "traefik.http.routers.graphlab-backend.service=graphlab-backend-service"
+      - "traefik.http.services.graphlab-backend-service.loadbalancer.server.port=3000"
+      - "traefik.http.routers.graphlab-backend.tls=true"
+    env_file:
+      - .env
+    restart: unless-stopped
+    volumes:
+      - ./.env:/app/.env
+    networks:
+      - web
+  graphlab-frontend:
+    build: ./frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.graphlab-frontend.rule=Host(``)"
+      - "traefik.http.routers.graphlab-frontend.entrypoints=websecure"
+      - "traefik.http.routers.graphlab-frontend.service=graphlab-frontend-service"
+      - "traefik.http.services.graphlab-frontend-service.loadbalancer.server.port=4173"
+      - "traefik.http.routers.graphlab-frontend.tls=true"
+    env_file:
+      - .env
+    volumes:
+      - ./.env:/app/.env
+    restart: unless-stopped
+    networks:
+      - web
+
+networks:
+  web:
+    name: web
+    external: true

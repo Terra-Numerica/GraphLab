@@ -20,15 +20,15 @@ const Workshops = () => {
     const [workshopInfo] = useState({
         coloring: {
             name: 'Coloration de Graphes',
-            description: 'Atelier d\'apprentissage de la coloration de graphes'
+            description: "Atelier de coloration de graphes"
         },
         spanningTree: {
             name: 'Arbre Couvrant Minimal',
-            description: 'Atelier sur les algorithmes d\'arbre couvrant minimal'
+            description: "Atelier de résolution d'arbre couvrant minimal"
         },
         railwayMaze: {
             name: 'Labyrinthe Voyageur',
-            description: 'Atelier de résolution de labyrinthes avec contraintes'
+            description: "Atelier de résolution de labyrinthes voyageur"
         }
     });
     const [loading, setLoading] = useState(false);
