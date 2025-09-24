@@ -10,7 +10,7 @@ import GraphDisplay from './PenroseGraphDisplay.jsx';
 import TimerDisplay from '../../common/TimerDisplay.jsx';
 
 // Style
-import '../../../styles/pages/RailwayMaze/GlobalMode.css';
+import '../../../styles/pages/RailwayMaze/RailwayMazeStyles.css';
 
 const GraphDisplayMemo = memo(GraphDisplay);
 
@@ -399,11 +399,11 @@ const Penrose = () => {
     //est affiché en tant que graph.
     return (
         <div className="penrose-container">
-            <button className="mode-back-btn" onClick={() => navigate('/railway-maze')}>&larr; Retour</button>
-            <h2 className="mode-title">Penrose Maze</h2>
-            <div className="mode-top-bar">
+            <button className="penrose-back-btn" onClick={() => navigate('/railway-maze')}>&larr; Retour</button>
+            <h2 className="workshop-title">Penrose Maze</h2>
+            <div className="workshop-top-bar">
                 <select
-                    className="mode-select"
+                    className="workshop-select"
                     value={selectedGraph}
                     onChange={handleGraphSelect}
                     disabled={graphsLoading}
@@ -420,15 +420,15 @@ const Penrose = () => {
                 {currentGraph && <TimerDisplay time={time} formatTime={formatTime} />}
             </div>
 
-            {currentGraph && !graphLoading && <div className="mode-buttons-row">
-                <button className="mode-btn mode-btn-reset" onClick={handleUndo}>Revenir en arrière</button>
-                <button className="mode-btn mode-btn-validate" onClick={handleRetry}>Réinitialiser</button>
-                <button className="mode-btn mode-btn-validate" onClick={handleShowSolution}>Solution</button>
+            {currentGraph && !graphLoading && <div className="workshop-buttons-row">
+                <button className="workshop-btn workshop-btn-reset" onClick={handleUndo}>Revenir en arrière</button>
+                <button className="workshop-btn workshop-btn-validate" onClick={handleRetry}>Réinitialiser</button>
+                <button className="workshop-btn workshop-btn-validate" onClick={handleShowSolution}>Solution</button>
             </div>}
 
             {currentGraph && <GraphDisplayMemo graphData={currentGraph} cyRef={cyRef} selectableNodes={selectableNodes} handleNextNode={handleNextNode} />}
             
-            <button className="mode-rules-btn" onClick={() => setShowRules(true)}>&#9432; Voir les règles</button>
+            <button className="workshop-rules-btn" onClick={() => setShowRules(true)}>&#9432; Voir les règles</button>
             {validationPopup && (
                 <ValidationPopup
                     type={validationPopup.type}

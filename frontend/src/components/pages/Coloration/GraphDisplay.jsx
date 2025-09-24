@@ -635,7 +635,7 @@ const GraphDisplay = ({ graphData, cyRef, modeLibre = false, modeCreation = fals
         <>
             <div
                 id="cy-predefined"
-                className="mode-graph-area"
+                className="workshop-graph-area"
                 ref={containerRef}
             />
             {deletePopup && (

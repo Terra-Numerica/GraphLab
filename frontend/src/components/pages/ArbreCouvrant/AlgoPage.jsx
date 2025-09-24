@@ -186,15 +186,15 @@ const AlgoPage = () => {
   }, []);
 
   if (!config) return <div>Algorithme inconnu</div>;
-  if (loading) return <div className="tree-mode-loading">Chargement...</div>;
-  if (error) return <div className="tree-mode-error">{error}</div>;
+  if (loading) return <div className="workshop-loading">Chargement...</div>;
+  if (error) return <div className="workshop-error">{error}</div>;
   if (!graph) {
     return (
-      <div className="tree-mode-container">
-        <div className="tree-mode-error">
+      <div className="arbre-couvrant-container">
+        <div className="workshop-error-message">
           Aucun graphe n'a été selectionné. Tu peux retourner à la page précédente pour en selectionner un.
         </div>
-        <button className="tree-mode-back-btn" onClick={() => navigate('/arbre-couvrant')}>
+        <button className="workshop-back-btn" onClick={() => navigate('/arbre-couvrant')}>
           Retour
         </button>
       </div>
@@ -202,8 +202,8 @@ const AlgoPage = () => {
   }
 
   return (
-    <div className="tree-mode-container">
-      <button className="tree-mode-back-btn" onClick={() => navigate('/arbre-couvrant/try', {
+    <div className="arbre-couvrant-container">
+      <button className="workshop-back-btn" onClick={() => navigate('/arbre-couvrant/try', {
         state: {
           selectedGraph: graphId,
           weightType: weightType
@@ -217,9 +217,9 @@ const AlgoPage = () => {
           onClose={() => setShowExplanation(false)}
         />
       )}
-      <h2 className="tree-mode-title">{config.title}</h2>
-      <div className={`tree-mode-top-bar algo-vertical`}>
-        <div className="graph-info">
+      <h2 className="workshop-title">{config.title}</h2>
+      <div className={`workshop-top-bar algo-vertical`}>
+        <div className="workshop-graph-info">
           <span><strong>Graphe :</strong> {graph.name.split(' ')[1]}</span>
           <span><strong>Type de poids :</strong> {
             weightType
@@ -229,7 +229,7 @@ const AlgoPage = () => {
           }</span>
 
           <button
-            className="tree-mode-btn"
+            className="workshop-btn"
             onClick={() => setShowExplanation(true)}
           >
             Comprendre l'algorithme
@@ -246,8 +246,8 @@ const AlgoPage = () => {
         </div>
       </div>
       {disconnectedComponents.length > 0 && graph && (
-          <div className="tree-mode-components-error">
-            <div className="components-error-text">
+          <div className="arbre-couvrant-components-error">
+            <div className="arbre-couvrant-components-error-text">
               <div style={{ marginTop: '0.5rem' }}>
                 <strong>Composantes :</strong> {formatComponents(disconnectedComponents, graph.data.nodes)}
               </div>
@@ -255,12 +255,12 @@ const AlgoPage = () => {
           </div>
         )}
       <div className="algo-graph-centered">
-        <div className="mode-graph-area">
+        <div className="workshop-graph-area">
           <GraphDisplay graphData={graph} cyRef={cyRef} />
         </div>
       </div>
       <div className="algo-bottom-actions">
-        <button className="tree-mode-back-btn-large" onClick={() => navigate('/arbre-couvrant/try', {
+        <button className="workshop-back-btn" onClick={() => navigate('/arbre-couvrant/try', {
           state: {
             selectedGraph: graphId,
             weightType: weightType

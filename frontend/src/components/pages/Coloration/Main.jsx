@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import TutorialPopup from '../../common/TutorialPopup';
 
-import '../../../styles/pages/Coloration/Main.css';
+import '../../../styles/pages/Coloration/ColorationStyles.css';
 
 const Main = () => {
 
@@ -31,10 +31,10 @@ const Main = () => {
     };
 
     return (
-        <div className="coloration-container">
-            <div className="explanation-section">
+        <div className="workshop-main-container">
+            <div className="workshop-explanation-section">
                 <h2>Coloration des Sommets</h2>
-                <div className="explanation-text">
+                <div className="workshop-explanation-text">
                     <p>
                         La coloration de graphe est un problème d'optimisation où chaque sommet doit recevoir une couleur distincte des sommets auxquels il est adjacent, c’est-à-dire relié par une arête. Ce problème trouve son application dans l'allocation de ressources, comme la planification de fréquences pour des antennes de communication.
                     </p>

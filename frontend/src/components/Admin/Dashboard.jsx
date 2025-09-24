@@ -23,13 +23,13 @@ const Dashboard = () => {
                             <h3>Actions rapides</h3>
                             <div className="action-buttons">
                                 <button 
-                                    className="btn-primary"
+                                    className="admin-btn-primary"
                                     onClick={() => navigate('/admin/graphs')}
                                 >
                                     📊 Gérer les Graphes
                                 </button>
                                 <button 
-                                    className="btn-secondary"
+                                    className="admin-btn-secondary"
                                     onClick={() => navigate('/admin/workshops')}
                                 >
                                     🎯 Gérer les Ateliers

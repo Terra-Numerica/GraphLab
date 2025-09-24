@@ -96,7 +96,7 @@ const GraphList = () => {
     if (loading) {
         return (
             <div className="graph-list">
-                <div className="loading-state">Chargement des graphes...</div>
+                <div className="admin-loading-state">Chargement des graphes...</div>
             </div>
         );
     }
@@ -104,7 +104,7 @@ const GraphList = () => {
     if (error) {
         return (
             <div className="graph-list">
-                <div className="error-state">{error}</div>
+                <div className="admin-error-state">{error}</div>
             </div>
         );
     }
@@ -113,8 +113,8 @@ const GraphList = () => {
         <div className="graph-list">
             <header className="list-header">
                 <h1>Gestion des Graphes</h1>
-                <div className="header-actions">
-                    <button className="btn-primary" onClick={handleCreate}>
+                <div className="admin-header-actions">
+                    <button className="admin-btn admin-btn-primary" onClick={handleCreate}>
                         Nouveau Graphe
                     </button>
                 </div>
@@ -122,13 +122,13 @@ const GraphList = () => {
 
             <main className="list-content">
                 <section className="graphs-section">
-                    <div className="section-header">
+                    <div className="admin-section-header">
                         <h2>Graphes</h2>
-                        <div className="filters">
+                        <div className="admin-filters">
                             <input 
                                 type="text" 
                                 placeholder="Rechercher un graphe..." 
-                                className="search-input"
+                                className="admin-search-input"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
@@ -137,22 +137,22 @@ const GraphList = () => {
 
                     <div className="graphs-grid">
                         {paginatedGraphs.length === 0 ? (
-                            <div className="no-graphs">Aucun graphe trouvé</div>
+                            <div className="admin-no-data">Aucun graphe trouvé</div>
                         ) : (
                             paginatedGraphs.map(graph => (
-                                <div key={graph._id} className="graph-card">
-                                    <div className="graph-info">
+                                <div key={graph._id} className="admin-graph-card">
+                                    <div className="admin-graph-info">
                                         <h3>{graph.name}</h3>
                                     </div>
-                                    <div className="graph-actions">
+                                    <div className="admin-graph-actions">
                                         <button 
-                                            className="btn-secondary"
+                                            className="admin-btn admin-btn-secondary"
                                             onClick={() => handleEdit(graph._id)}
                                         >
                                             Modifier
                                         </button>
                                         <button 
-                                            className="btn-danger"
+                                            className="admin-btn admin-btn-danger"
                                             onClick={() => handleDelete(graph._id)}
                                         >
                                             Supprimer
@@ -164,10 +164,10 @@ const GraphList = () => {
                     </div>
 
                     {totalPages > 1 && (
-                        <div className="pagination">
+                        <div className="admin-pagination">
                             <button
                                 key="prev"
-                                className="pagination-btn"
+                                className="admin-pagination-btn admin-pagination-btn"
                                 onClick={() => handlePageChange(currentPage - 1)}
                                 disabled={currentPage === 1}
                             >
@@ -176,7 +176,7 @@ const GraphList = () => {
                             {[...Array(totalPages)].map((_, i) => (
                                 <button
                                     key={`page-${i + 1}`}
-                                    className={`pagination-btn${currentPage === i + 1 ? ' active' : ''}`}
+                                    className={`admin-pagination-btn admin-pagination-btn${currentPage === i + 1 ? ' active' : ''}`}
                                     onClick={() => handlePageChange(i + 1)}
                                 >
                                     {i + 1}
@@ -184,7 +184,7 @@ const GraphList = () => {
                             ))}
                             <button
                                 key="next"
-                                className="pagination-btn"
+                                className="admin-pagination-btn admin-pagination-btn"
                                 onClick={() => handlePageChange(currentPage + 1)}
                                 disabled={currentPage === totalPages}
                             >

@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import TutorialPopup from '../../common/TutorialPopup';
 
-import '../../../styles/pages/ArbreCouvrant/Main.css';
+import '../../../styles/pages/ArbreCouvrant/ArbreCouvrantStyles.css';
 
 const Main = () => {
     const navigate = useNavigate();
@@ -33,10 +33,10 @@ const Main = () => {
     };
 
     return (
-        <div className="minimum-spanning-tree-container">
-            <div className="explanation-section">
+        <div className="workshop-main-container">
+            <div className="workshop-explanation-section">
                 <h2>L'Arbre Couvrant de Poids Minimal</h2>
-                <div className="explanation-text">
+                <div className="workshop-explanation-text">
                     <p>
                         Un arbre couvrant minimal est un sous-ensemble d'arêtes qui connecte tous les sommets (composantes) d'un graphe en formant un arbre, tout en minimisant la somme des poids des arêtes utilisées.
                     </p>
@@ -44,7 +44,7 @@ const Main = () => {
                         Chaque arête du graphe possède un poids qui représente son coût. La solution optimale doit connecter tous les composantes sans former de cycle, tout en minimisant la somme des poids des arêtes sélectionnées.
                     </p>
                 </div>
-                <button className="try-graph-button" onClick={handleTryGraph}>
+                <button className="workshop-btn workshop-btn-primary" onClick={handleTryGraph}>
                     Essayer un graphe
                 </button>
             </div>

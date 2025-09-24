@@ -10,7 +10,7 @@ import GraphDisplay from './GraphDisplay';
 import { useFetchGraphs, useFetchGraph } from '../../../hooks/useFetchGraphs';
 import { useTimer } from '../../../hooks/useTimer';
 
-import '../../../styles/pages/Coloration/GlobalMode.css';
+import '../../../styles/pages/Coloration/ColorationStyles.css';
 
 const Defi = () => {
 
@@ -339,12 +339,12 @@ const Defi = () => {
     }
 
     return (
-        <div className="mode-container">
-            <button className="mode-back-btn" onClick={() => navigate('/coloration')}>&larr; Retour</button>
-            <h2 className="mode-title">Mode Défi</h2>
-            <div className="mode-top-bar">
+        <div className="workshop-container">
+            <button className="workshop-back-btn" onClick={() => navigate('/coloration')}>&larr; Retour</button>
+            <h2 className="workshop-title">Mode Défi</h2>
+            <div className="workshop-top-bar">
                 <select
-                    className="mode-select"
+                    className="workshop-select"
                     value={selectedGraph}
                     onChange={handleGraphSelect}
                     disabled={graphsLoading}
@@ -364,14 +364,14 @@ const Defi = () => {
                         )
                     ))}
                 </select>
-                {error && <div className="error-message">{error}</div>}
+                {error && <div className="workshop-error-message">{error}</div>}
                 {currentGraph && <TimerDisplay time={time} formatTime={formatTime} />}
             </div>
-            {currentGraph && !graphLoading && <div className="mode-buttons-row">
-                <button className="mode-btn mode-btn-validate" onClick={validateGraph}>Valider la coloration</button>
-                <button className="mode-btn mode-btn-reset" onClick={resetColors}>Réinitialiser la coloration</button>
+            {currentGraph && !graphLoading && <div className="workshop-buttons-row">
+                <button className="workshop-btn workshop-btn-validate" onClick={validateGraph}>Valider la coloration</button>
+                <button className="workshop-btn workshop-btn-reset" onClick={resetColors}>Réinitialiser la coloration</button>
                 <button
-                    className="mode-btn mode-btn-impossible"
+                    className="workshop-btn workshop-btn-impossible"
                     onClick={handleImpossible}
                     disabled={!isImpossibleEnabled}
                 >
@@ -381,7 +381,7 @@ const Defi = () => {
 
             {currentGraph && !graphLoading && <GraphDisplay graphData={currentGraph} cyRef={cyRef} />}
 
-            <button className="mode-rules-btn" onClick={() => setShowRules(true)}>&#9432; Voir les règles</button>
+            <button className="workshop-rules-btn" onClick={() => setShowRules(true)}>&#9432; Voir les règles</button>
             {validationPopup && (
                 <ValidationPopup
                     type={validationPopup.type}

@@ -1,7 +1,7 @@
 // Imports
 import { useNavigate } from 'react-router-dom';
 
-import '../../../styles/pages/RailwayMaze/Main.css';
+import '../../../styles/pages/RailwayMaze/RailwayMazeStyles.css';
 
 const RailwayMazeMain = () => {
     const navigate = useNavigate();
@@ -11,10 +11,10 @@ const RailwayMazeMain = () => {
     };
 
     return (
-        <div className="railway-maze-container">
-            <div className="explanation-section">
+        <div className="workshop-main-container">
+            <div className="workshop-explanation-section">
                 <h2>Le problème du "Labyrinthe Voyageur"</h2>
-                <div className="explanation-text">
+                <div className="workshop-explanation-text">
                     <p>
                         ...
                     </p>

@@ -1,4 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+/* ========================================
+   STYLES SPÉCIFIQUES AUX ATELIERS ADMIN
+   ======================================== */
+
+/* Import des styles partagés admin */
+@import './AdminShared.css';
 
 .workshops {
     padding: 2rem;
@@ -28,49 +33,7 @@
     gap: 1rem;
 }
 
-.btn-primary {
-    background-color: var(--green);
-    color: #fff;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-family: inherit;
-    font-size: 1rem;
-    box-shadow: 0 2px 8px rgba(36,161,235,0.08);
-    transition: background 0.2s, box-shadow 0.2s;
-}
-
-.btn-primary:hover:not(:disabled) {
-    background-color: var(--blueHover);
-    color: #fff;
-}
-
-.btn-primary:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.error-message {
-    background-color: #fee;
-    color: var(--red);
-    border: 1px solid var(--red);
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    font-weight: 500;
-}
-
-.success-message {
-    background-color: #efe;
-    color: var(--green);
-    border: 1px solid var(--green);
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    font-weight: 500;
-}
+/* Les styles de boutons et messages sont maintenant dans AdminShared.css */
 
 .workshops-grid {
     display: grid;
@@ -274,30 +237,7 @@
     font-size: 0.9rem;
 }
 
-.loading-state {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 200px;
-    font-size: 1.2rem;
-    color: var(--darkBlue);
-}
-
-.loading-state::after {
-    content: '';
-    width: 30px;
-    height: 30px;
-    border: 3px solid var(--grey);
-    border-top: 3px solid var(--blue);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-left: 1rem;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+/* Les styles de chargement sont maintenant dans AdminShared.css */
 
 /* Responsive */
 @media (max-width: 768px) {

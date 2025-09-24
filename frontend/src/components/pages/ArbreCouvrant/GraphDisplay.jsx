@@ -180,7 +180,7 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
         <>
             <div
                 id="cy-predefined"
-                className="mode-graph-area"
+                className="workshop-graph-area"
                 ref={containerRef}
             />
         </>

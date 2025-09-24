@@ -862,10 +862,10 @@ const GraphEditor = ({ graphId = null, onClose }) => {
 
 
                         <div className="form-actions">
-                            <button type="button" className="btn-secondary" onClick={handleClose}>
+                            <button type="button" className="admin-btn admin-btn-secondary" onClick={handleClose}>
                                 Annuler
                             </button>
-                            <button type="submit" className="btn-primary">
+                            <button type="submit" className="admin-btn admin-btn-primary">
                                 {graphId ? 'Mettre à jour' : 'Créer'}
                             </button>
                         </div>

@@ -10,11 +10,11 @@ import RulesPopup from '../../common/RulesPopup';
 import GraphDisplay from './GraphDisplay';
 import config from '../../../config';
 
-import '../../../styles/pages/ArbreCouvrant/GlobalMode.css';
+import '../../../styles/pages/ArbreCouvrant/ArbreCouvrantStyles.css';
 
 const CostDisplay = memo(({ currentCost, optimalCost }) => {
     return (
-        <div className="mode-cost">
+        <div className="workshop-cost">
             Coût: {currentCost}/{optimalCost}
         </div>
     );
@@ -483,12 +483,12 @@ const Try = () => {
     }, [selectedEdges]);
 
     return (
-        <div className="tree-mode-container">
-            <button className="tree-mode-back-btn" onClick={() => navigate('/arbre-couvrant')}>&larr; Retour</button>
-            <h2 className="tree-mode-title">Trouve l'arbre couvrant de poids minimal</h2>
-            <div className="tree-mode-top-bar">
+        <div className="arbre-couvrant-container">
+            <button className="workshop-back-btn" onClick={() => navigate('/arbre-couvrant')}>&larr; Retour</button>
+            <h2 className="workshop-title">Trouve l'arbre couvrant de poids minimal</h2>
+            <div className="workshop-top-bar">
                 <select
-                    className="tree-mode-select"
+                    className="arbre-couvrant-select"
                     value={selectedGraph}
                     onChange={handleGraphSelect}
                     disabled={graphsLoading}
@@ -509,7 +509,7 @@ const Try = () => {
                     ))}
                 </select>
                 <select
-                    className="tree-mode-select"
+                    className="arbre-couvrant-select"
                     value={weightType}
                     onChange={handleWeightTypeSelect}
                     disabled={!selectedGraph}
@@ -519,58 +519,58 @@ const Try = () => {
                     <option value="one">Poids à 1</option>
                     <option value="random">Poids aléatoire</option>
                 </select>
-                {(graphsError || graphError) && <div className="tree-mode-error">{graphsError || graphError}</div>}
+                {(graphsError || graphError) && <div className="workshop-error-message">{graphsError || graphError}</div>}
                 {currentGraph && weightType && (
-                    <div className="mode-info">
+                    <>
                         <CostDisplay currentCost={currentCost} optimalCost={optimalCost} />
                         <TimerDisplay time={time} formatTime={formatTime} />
-                    </div>
+                    </>
                 )}
             </div>
             {disconnectedComponents.length > 0 && currentGraph && (
-                <div className="tree-mode-components-error">
-                    <div className="components-error-text">
+                <div className="arbre-couvrant-components-error">
+                    <div className="arbre-couvrant-components-error-text">
                         <div style={{ marginTop: '0.5rem' }}>
                             <strong>Composantes :</strong> {formatComponents(disconnectedComponents, currentGraph.data.nodes)}
                         </div>
                     </div>
                 </div>
             )}
-            {currentGraph && weightType && <div className="tree-mode-buttons-row">
-                <button className="tree-mode-btn tree-mode-btn-validate" onClick={validateGraph}>Valider l'arbre couvrant</button>
-                <button className="tree-mode-btn tree-mode-btn-reset" onClick={resetEdges}>Réinitialiser la sélection</button>
+            {currentGraph && weightType && <div className="workshop-buttons-row">
+                <button className="workshop-btn workshop-btn-validate" onClick={validateGraph}>Valider l'arbre couvrant</button>
+                <button className="workshop-btn workshop-btn-reset" onClick={resetEdges}>Réinitialiser la sélection</button>
             </div>}
             {currentGraph && weightType && <GraphDisplayMemo graphData={currentGraph} cyRef={cyRef} onSelectEdge={handleEdgeSelect} />}
             {hasCycle && (
-                <div className="tree-mode-cycle-error">
-                    <span className="cycle-error-text">⚠️ Vous avez créé un cycle</span>
+                <div className="arbre-couvrant-cycle-error">
+                    <span className="arbre-couvrant-cycle-error-text">⚠️ Vous avez créé un cycle</span>
                 </div>
             )}
 
             {currentGraph && weightType && (
-                <div className="tree-mode-algos-solutions-container">
-                    <span className="tree-mode-algos-solutions-title">Solutions :</span>
-                    <div className="tree-mode-algos-solutions-btn-row">
+                <div className="arbre-couvrant-algos-solutions-container">
+                    <span className="arbre-couvrant-algos-solutions-title">Solutions :</span>
+                    <div className="arbre-couvrant-algos-solutions-btn-row">
                         <button
-                            className="tree-mode-btn-algo tree-mode-btn-prim"
+                            className="arbre-couvrant-btn-algo arbre-couvrant-btn-prim"
                             onClick={showPrimSolution}
                         >
                             Selon l'algorithme de Prim
                         </button>
                         <button
-                            className="tree-mode-btn-algo tree-mode-btn-kruskal"
+                            className="arbre-couvrant-btn-algo arbre-couvrant-btn-kruskal"
                             onClick={showKruskalSolution}
                         >
                             Selon l'algorithme de Kruskal
                         </button>
                         <button
-                            className="tree-mode-btn-algo tree-mode-btn-boruvka"
+                            className="arbre-couvrant-btn-algo arbre-couvrant-btn-boruvka"
                             onClick={showBoruvkaSolution}
                         >
                             Selon l'algorithme de Boruvka
                         </button>
                         <button
-                            className="tree-mode-btn-algo tree-mode-btn-exchange"
+                            className="arbre-couvrant-btn-algo arbre-couvrant-btn-exchange"
                             onClick={showExchangePropertySolution}
                         >
                             Selon l'algorithme de la propriété d'échange
@@ -578,7 +578,7 @@ const Try = () => {
                     </div>
                 </div>
             )}
-            <button className="tree-mode-rules-btn" onClick={() => setShowRules(true)}>&#9432; Voir les règles</button>
+            <button className="workshop-rules-btn" onClick={() => setShowRules(true)}>&#9432; Voir les règles</button>
             {validationPopup && (
                 <ValidationPopup
                     type={validationPopup.type}

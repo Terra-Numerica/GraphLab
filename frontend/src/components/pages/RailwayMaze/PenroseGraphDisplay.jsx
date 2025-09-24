@@ -140,7 +140,7 @@ const GraphDisplay = ({graphData, cyRef, selectableNodes, handleNextNode}) => {
         <>
             <div
                 id="cy"
-                className="mode-graph-area"
+                className="workshop-graph-area"
                 ref={containerRef}
             />
         </>

@@ -1,4 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+/* ========================================
+   STYLES SPÉCIFIQUES AU DASHBOARD ADMIN
+   ======================================== */
+
+/* Import des styles partagés admin */
+@import './AdminShared.css';
 
 .admin-dashboard {
     padding: 0;
@@ -12,31 +17,12 @@
     width: 100%;
 }
 
-.btn-primary {
-    background-color: var(--green);
+.admin-btn-logout {
+    background-color: var(--admin-danger);
     color: #fff;
     border: none;
     padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-family: inherit;
-    font-size: 1rem;
-    box-shadow: 0 2px 8px rgba(36,161,235,0.08);
-    transition: background 0.2s, box-shadow 0.2s;
-}
-
-.btn-primary:hover {
-    background-color: var(--blueHover);
-    color: #fff;
-}
-
-.btn-logout {
-    background-color: var(--red);
-    color: #fff;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
+    border-radius: var(--admin-border-radius);
     cursor: pointer;
     font-weight: 600;
     font-family: inherit;
@@ -45,8 +31,8 @@
     transition: background 0.2s, box-shadow 0.2s;
 }
 
-.btn-logout:hover {
-    background-color: #c82333;
+.admin-btn-logout:hover {
+    background-color: var(--admin-danger-hover);
     box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
 }
 
@@ -101,8 +87,8 @@
     flex-wrap: wrap;
 }
 
-.action-buttons .btn-primary,
-.action-buttons .btn-secondary {
+.action-buttons .admin-btn-primary,
+.action-buttons .admin-btn-secondary {
     padding: 1rem 2rem;
     font-size: 1.1rem;
     border-radius: 12px;
@@ -251,114 +237,6 @@
     margin-top: 1rem;
 }
 
-.btn-secondary {
-    background-color: #fff;
-    color: var(--darkBlue);
-    border: 1.5px solid var(--darkBlue);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    font-family: inherit;
-    font-size: 1rem;
-    transition: background 0.2s, color 0.2s, border 0.2s;
-}
+/* Les styles de boutons et d'états sont maintenant dans AdminShared.css */
 
-.btn-secondary:hover {
-    background-color: var(--blue);
-    color: #fff;
-    border-color: var(--blue);
-}
-
-.btn-danger {
-    background-color: #fff;
-    color: var(--red);
-    border: 1.5px solid var(--red);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    font-family: inherit;
-    font-size: 1rem;
-    transition: background 0.2s, color 0.2s, border 0.2s;
-}
-
-.btn-danger:hover {
-    background-color: var(--red);
-    color: #fff;
-    border-color: var(--red);
-}
-
-.loading-state,
-.error-state,
-.no-graphs {
-    text-align: center;
-    padding: 2rem;
-    font-size: 1.2rem;
-    color: var(--darkBlue);
-    font-family: inherit;
-}
-
-.error-state {
-    color: #fff;
-    background-color: var(--red);
-    border-radius: 8px;
-    padding: 1rem;
-    margin: 1rem 0;
-}
-
-.loading-state {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 200px;
-}
-
-.loading-state::after {
-    content: '';
-    width: 30px;
-    height: 30px;
-    border: 3px solid var(--grey);
-    border-top: 3px solid var(--blue);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-left: 1rem;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 2rem 0 0 0;
-}
-
-.pagination-btn {
-    background: #fff;
-    border: 1.5px solid var(--blue);
-    color: var(--blue);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-    font-family: inherit;
-    font-weight: 500;
-    transition: background 0.2s, color 0.2s, border 0.2s;
-}
-
-.pagination-btn.active,
-.pagination-btn:hover:not(:disabled) {
-    background: var(--blue);
-    color: #fff;
-    border-color: var(--blue);
-}
-
-.pagination-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-} 
+/* Les styles de pagination sont maintenant dans AdminShared.css */ 

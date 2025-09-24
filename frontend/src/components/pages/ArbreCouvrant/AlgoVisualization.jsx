@@ -6,7 +6,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { getDarkerColor, getLighterColor } from '../../../utils/colorUtils';
 import ValidationPopup from '../../common/ValidationPopup';
 
-import '../../../styles/pages/ArbreCouvrant/AlgoVisualization.css';
+import '../../../styles/pages/ArbreCouvrant/ArbreCouvrantStyles.css';
 
 const algoMap = {
     prim: {
@@ -381,34 +381,34 @@ const AlgoVisualization = ({ algo, graph, cyRef, onSelectedEdgesChange }) => {
                         <div className="tree-mode-order-selector">
                             <label>Ordre de tri :</label>
                             <button
-                                className={`tree-mode-btn ${order === 'CROISSANT' ? 'active' : ''}`}
+                                className={`arbre-couvrant-btn ${order === 'CROISSANT' ? 'active' : ''}`}
                                 onClick={() => handleOrderChange('CROISSANT')}
                             >
                                 Croissant
                             </button>
                             <button
-                                className={`tree-mode-btn ${order === 'DECROISSANT' ? 'active' : ''}`}
+                                className={`arbre-couvrant-btn ${order === 'DECROISSANT' ? 'active' : ''}`}
                                 onClick={() => handleOrderChange('DECROISSANT')}
                             >
                                 Décroissant
                             </button>
                             <button
-                                className={`tree-mode-btn ${order === 'ALEATOIRE' ? 'active' : ''}`}
+                                className={`arbre-couvrant-btn ${order === 'ALEATOIRE' ? 'active' : ''}`}
                                 onClick={() => handleOrderChange('ALEATOIRE')}
                             >
                                 Aléatoire
                             </button>
                         </div>
                     )}
-                    <div className="tree-mode-selector">
+                    <div className="arbre-couvrant-selector">
                         <button
-                            className={`tree-mode-btn ${!isAutomatic ? 'active' : ''}`}
+                            className={`arbre-couvrant-btn ${!isAutomatic ? 'active' : ''}`}
                             onClick={() => handleModeChange('manual')}
                         >
                             Mode Manuel
                         </button>
                         <button
-                            className={`tree-mode-btn ${isAutomatic ? 'active' : ''}`}
+                            className={`arbre-couvrant-btn ${isAutomatic ? 'active' : ''}`}
                             onClick={() => handleModeChange('automatic')}
                         >
                             Mode Automatique
@@ -417,21 +417,21 @@ const AlgoVisualization = ({ algo, graph, cyRef, onSelectedEdgesChange }) => {
                     {!isAutomatic ? (
                         <div className="tree-mode-step-controls">
                             <button
-                                className="tree-mode-btn"
+                                className="arbre-couvrant-btn"
                                 onClick={handlePreviousStep}
                                 disabled={currentStep <= 0}
                             >
                                 ← Précédent
                             </button>
                             <button
-                                className="tree-mode-btn"
+                                className="arbre-couvrant-btn"
                                 onClick={handleReset}
                                 disabled={currentStep === -1}
                             >
                                 Réinitialiser
                             </button>
                             <button
-                                className="tree-mode-btn"
+                                className="arbre-couvrant-btn"
                                 onClick={handleNextStep}
                                 disabled={currentStep === steps.length - 1}
                             >
@@ -441,13 +441,13 @@ const AlgoVisualization = ({ algo, graph, cyRef, onSelectedEdgesChange }) => {
                     ) : (
                         <div className="tree-mode-speed-controls">
                             <button
-                                className={`tree-mode-btn ${isPlaying ? 'pause' : 'play'} tree-mode-btn-playpause`}
+                                className={`arbre-couvrant-btn ${isPlaying ? 'pause' : 'play'} arbre-couvrant-btn-playpause`}
                                 onClick={handlePlayPause}
                             >
                                 {isPlaying ? '⏸️ Pause' : '▶️ Démarrer'}
                             </button>
                             <button 
-                                className="tree-mode-btn speed-control-btn" 
+                                className="arbre-couvrant-btn speed-control-btn" 
                                 onClick={handleSpeedDown} 
                                 title="Ralentir"
                                 disabled={speed === 2000}
@@ -458,7 +458,7 @@ const AlgoVisualization = ({ algo, graph, cyRef, onSelectedEdgesChange }) => {
                                 {speed === 2000 ? '0.5x' : speed === 1000 ? '1x' : '2x'}
                             </div>
                             <button 
-                                className="tree-mode-btn speed-control-btn" 
+                                className="arbre-couvrant-btn speed-control-btn" 
                                 onClick={handleSpeedUp} 
                                 title="Accélérer"
                                 disabled={speed === 500}

@@ -9,7 +9,7 @@ import TimerDisplay from '../../common/TimerDisplay';
 import RulesPopup from '../../common/RulesPopup';
 import GraphDisplay from './GraphDisplay';
 
-import '../../../styles/pages/Coloration/GlobalMode.css';
+import '../../../styles/pages/Coloration/ColorationStyles.css';
 
 const Creation = () => {
     const navigate = useNavigate();
@@ -234,12 +234,12 @@ const Creation = () => {
     };
 
     return (
-        <div className="mode-container">
-            <button className="mode-back-btn" onClick={() => navigate('/coloration')}>&larr; Retour</button>
-            <h2 className="mode-title">Mode Création</h2>
+        <div className="workshop-container">
+            <button className="workshop-back-btn" onClick={() => navigate('/coloration')}>&larr; Retour</button>
+            <h2 className="workshop-title">Mode Création</h2>
 
-            <div className="mode-top-bar">
-                <div className="mode-color-input">
+            <div className="workshop-top-bar">
+                <div className="coloration-color-input">
                     <label htmlFor="colorCount">Nombre de couleurs :</label>
                     <input
                         type="number"
@@ -256,8 +256,8 @@ const Creation = () => {
             </div>
 
             {!isLibreMode ? (
-                <div className="mode-buttons-row">
-                    <button className="mode-btn mode-btn-add" onClick={() => {
+                <div className="workshop-buttons-row">
+                    <button className="workshop-btn workshop-btn-add" onClick={() => {
                         if (cyRef.current) {
                             const newNodeId = `node-${graphData.nodes.length}-${Date.now()}`;
                             const newNode = {
@@ -277,25 +277,25 @@ const Creation = () => {
                     }}>
                         Ajouter un sommet
                     </button>
-                    <button className="mode-btn mode-btn-reset" onClick={resetGraph}>
+                    <button className="workshop-btn workshop-btn-reset" onClick={resetGraph}>
                         Réinitialiser le graphe
                     </button>
-                    <button className="mode-btn mode-btn-rearrange" onClick={rearrangeGraph}>
+                    <button className="workshop-btn workshop-btn-rearrange" onClick={rearrangeGraph}>
                         Réarranger le graphe
                     </button>
-                    <button className="mode-btn mode-btn-try" onClick={tryGraph}>
+                    <button className="workshop-btn workshop-btn-try" onClick={tryGraph}>
                         Essayer le graphe
                     </button>
                 </div>
             ) : (
-                <div className="mode-buttons-row">
-                    <button className="mode-btn mode-btn-validate" onClick={validateColoration}>
+                <div className="workshop-buttons-row">
+                    <button className="workshop-btn workshop-btn-validate" onClick={validateColoration}>
                         Valider la coloration
                     </button>
-                    <button className="mode-btn mode-btn-reset" onClick={resetColoration}>
+                    <button className="workshop-btn workshop-btn-reset" onClick={resetColoration}>
                         Réinitialiser la coloration
                     </button>
-                    <button className="mode-btn mode-btn-back" onClick={returnToEditor}>
+                    <button className="workshop-btn workshop-btn-back" onClick={returnToEditor}>
                         Revenir à l'éditeur
                     </button>
                 </div>
@@ -315,7 +315,7 @@ const Creation = () => {
             />
 
             {!isLibreMode && (
-                <button className="mode-rules-btn" onClick={() => setShowRules(true)}>&#9432; Voir les règles</button>
+                <button className="workshop-rules-btn" onClick={() => setShowRules(true)}>&#9432; Voir les règles</button>
             )}
 
             {validationPopup && (

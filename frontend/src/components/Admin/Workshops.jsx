@@ -169,7 +169,7 @@ const Workshops = () => {
     if (loading && !workshopId) {
         return (
             <div className="workshops">
-                <div className="loading-state">Chargement de la configuration...</div>
+                <div className="admin-loading-state">Chargement de la configuration...</div>
             </div>
         );
     }
@@ -178,9 +178,9 @@ const Workshops = () => {
         <div className="workshops">
             <header className="workshops-header">
                 <h1>Gestion des Ateliers</h1>
-                <div className="header-actions">
+                <div className="admin-header-actions">
                     <button 
-                        className="btn-primary" 
+                        className="admin-btn admin-btn-primary" 
                         onClick={saveSettings}
                         disabled={loading}
                     >
@@ -191,64 +191,64 @@ const Workshops = () => {
 
             <main className="workshops-content">
                 {error && (
-                    <div className="error-message">
+                    <div className="admin-error-message">
                         {error}
                     </div>
                 )}
 
                 {success && (
-                    <div className="success-message">
+                    <div className="admin-success-message">
                         {success}
                     </div>
                 )}
 
-                <div className="workshops-grid">
+                <div className="admin-workshops-grid">
                     {Object.entries(workshopInfo).map(([key, info]) => {
                         const config = workshopConfig[key];
                         const isEnabled = isWorkshopEnabled(key);
                         
                         return (
-                            <div key={key} className="workshop-card">
-                                <div className="workshop-header">
+                            <div key={key} className="admin-workshop-card">
+                                <div className="admin-workshop-header">
                                     <h3>{info.name}</h3>
-                                    <div className="workshop-status">
-                                        <span className={`status-badge ${isEnabled ? 'enabled' : 'disabled'}`}>
+                                    <div className="admin-workshop-status">
+                                        <span className={`admin-status-badge ${isEnabled ? 'enabled' : 'disabled'}`}>
                                             {isEnabled ? 'Activé' : 'Désactivé'}
                                         </span>
                                     </div>
                                 </div>
 
-                                <div className="workshop-description">
+                                <div className="admin-workshop-description">
                                     <p>{info.description}</p>
                                 </div>
 
-                                <div className="workshop-controls">
-                                    <div className="control-group">
-                                        <label className="control-label">Environnements disponibles</label>
-                                        <div className="environment-selector">
-                                            <div className="environment-option">
-                                                <label className="environment-checkbox">
+                                <div className="admin-workshop-controls">
+                                    <div className="admin-control-group">
+                                        <label className="admin-control-label">Environnements disponibles</label>
+                                        <div className="admin-environment-selector">
+                                            <div className="admin-environment-option">
+                                                <label className="admin-environment-checkbox">
                                                     <input
                                                         type="checkbox"
                                                         checked={config.development}
                                                         onChange={() => toggleEnvironment(key, 'development')}
                                                     />
-                                                    <span className="environment-icon">🔧</span>
-                                                    <span className="environment-label">
+                                                    <span className="admin-environment-icon">🔧</span>
+                                                    <span className="admin-environment-label">
                                                         <strong>Développement</strong>
                                                         <small>Visible en dev</small>
                                                     </span>
                                                 </label>
                                             </div>
-                                            <div className="environment-option">
-                                                <label className="environment-checkbox">
+                                            <div className="admin-environment-option">
+                                                <label className="admin-environment-checkbox">
                                                     <input
                                                         type="checkbox"
                                                         checked={config.production}
                                                         onChange={() => toggleEnvironment(key, 'production')}
                                                     />
-                                                    <span className="environment-icon">🚀</span>
-                                                    <span className="environment-label">
+                                                    <span className="admin-environment-icon">🚀</span>
+                                                    <span className="admin-environment-label">
                                                         <strong>Production</strong>
                                                         <small>Visible en prod</small>
                                                     </span>
@@ -257,16 +257,16 @@ const Workshops = () => {
                                         </div>
                                     </div>
 
-                                    <div className="workshop-status-info">
-                                        <div className="status-summary">
+                                    <div className="admin-workshop-status-info">
+                                        <div className="admin-status-summary">
                                             {config.production && config.development ? (
-                                                <span className="status-text">✅ Disponible partout</span>
+                                                <span className="admin-status-text">✅ Disponible partout</span>
                                             ) : config.production ? (
-                                                <span className="status-text">🚀 Production uniquement</span>
+                                                <span className="admin-status-text">🚀 Production uniquement</span>
                                             ) : config.development ? (
-                                                <span className="status-text">🔧 Développement uniquement</span>
+                                                <span className="admin-status-text">🔧 Développement uniquement</span>
                                             ) : (
-                                                <span className="status-text">❌ Non disponible</span>
+                                                <span className="admin-status-text">❌ Non disponible</span>
                                             )}
                                         </div>
                                     </div>
@@ -276,26 +276,26 @@ const Workshops = () => {
                     })}
                 </div>
 
-                <div className="workshops-info">
+                <div className="admin-workshops-info">
                     <h3>Informations sur les environnements</h3>
-                    <div className="info-grid">
-                        <div className="info-card">
-                            <div className="info-icon">🔧</div>
-                            <div className="info-content">
+                    <div className="admin-info-grid">
+                        <div className="admin-info-card">
+                            <div className="admin-info-icon">🔧</div>
+                            <div className="admin-info-content">
                                 <h4>Environnement Développement</h4>
                                 <p>L'atelier sera visible et accessible uniquement quand l'application est lancée en mode développement (NODE_ENV=development).</p>
                             </div>
                         </div>
-                        <div className="info-card">
-                            <div className="info-icon">🚀</div>
-                            <div className="info-content">
+                        <div className="admin-info-card">
+                            <div className="admin-info-icon">🚀</div>
+                            <div className="admin-info-content">
                                 <h4>Environnement Production</h4>
                                 <p>L'atelier sera visible et accessible uniquement quand l'application est lancée en mode production (NODE_ENV=production).</p>
                             </div>
                         </div>
-                        <div className="info-card">
-                            <div className="info-icon">✅</div>
-                            <div className="info-content">
+                        <div className="admin-info-card">
+                            <div className="admin-info-icon">✅</div>
+                            <div className="admin-info-content">
                                 <h4>Les deux environnements</h4>
                                 <p>Si les deux environnements sont activés, l'atelier sera visible et accessible dans tous les environnements.</p>
                             </div>
