@@ -1,0 +1,80 @@
+/* ========================================
+   STYLES SPÉCIFIQUES À LA LISTE DE GRAPHES
+   ======================================== */
+
+/* Import des styles partagés admin */
+@import './AdminShared.css';
+
+.graph-list {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Poppins', Arial, sans-serif;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.list-header h1 {
+    font-size: 2.5rem;
+    color: var(--darkBlue);
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px rgba(36,161,235,0.08);
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Les styles de boutons sont maintenant dans AdminShared.css */
+
+/* Les styles d'en-tête et de recherche sont maintenant dans AdminShared.css */
+
+.graphs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.graph-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(36,161,235,0.10);
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+}
+
+.graph-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(36,161,235,0.15);
+}
+
+.graph-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.graph-info h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--darkBlue);
+    font-weight: 600;
+}
+
+.graph-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+/* Tous les styles de boutons, états et pagination sont maintenant dans AdminShared.css */

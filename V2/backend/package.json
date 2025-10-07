@@ -1,0 +1,38 @@
+{
+  "name": "graphlab-backend-v2",
+  "version": "2.0.0",
+  "description": "GraphLab Backend V2 with Hono",
+  "main": "dist/server.js",
+  "type": "module",
+  "author": "Megitsune",
+  "license": "ISC",
+  "scripts": {
+    "start": "node .",
+    "build": "tsc && tsc-alias",
+    "build:install": "npm i && tsc && tsc-alias",
+    "dev": "tsx watch src/server.ts",
+    "update": "ncu -u && npm install"
+  },
+  "dependencies": {
+    "hono": "^4.9.9",
+    "@hono/node-server": "^1.19.5",
+    "bcrypt": "^6.0.0",
+    "chalk": "^5.6.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.18.3",
+    "tsc-alias": "^1.8.16",
+    "zod": "^4.1.11",
+    "@hono/zod-validator": "^0.7.3"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.6.0",
+    "npm-check-updates": "^19.0.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.2"
+  }
+}
