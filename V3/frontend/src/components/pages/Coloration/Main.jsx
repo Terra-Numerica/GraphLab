@@ -52,20 +52,20 @@ const Main = () => {
                 <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6">
                     <Link
                         to="/coloration/defi"
-                        className="coloration-mode-btn inline-flex items-center justify-center rounded-xl bg-blue text-white font-semibold px-6 py-3 w-full sm:w-auto text-lg shadow hover:bg-blue-hover transition focus:outline-none focus:ring-2 focus:ring-blue/40"
+                        className="flex-1 px-6 py-3 text-[1.1rem] bg-white text-[#222] border-2 border-[var(--workshop-primary)] rounded-[var(--workshop-border-radius)] cursor-pointer text-center no-underline transition-colors duration-200 font-medium"
                     >
                         Mode défi
                     </Link>
                     <Link
                         to="/coloration/libre"
-                        className="coloration-mode-btn inline-flex items-center justify-center rounded-xl bg-green text-white font-semibold px-6 py-3 w-full sm:w-auto text-lg shadow hover:bg-green-hover transition focus:outline-none focus:ring-2 focus:ring-green/40"
-                    >
+                        className="flex-1 px-6 py-3 text-[1.1rem] bg-white text-[#222] border-2 border-[var(--workshop-primary)] rounded-[var(--workshop-border-radius)] cursor-pointer text-center no-underline transition-colors duration-200 font-medium"
+                        >
                         Mode libre
                     </Link>
                     <Link
                         to="/coloration/creation"
-                        className="coloration-mode-btn inline-flex items-center justify-center rounded-xl bg-yellow text-darkBlue font-semibold px-6 py-3 w-full sm:w-auto text-lg shadow hover:brightness-110 transition focus:outline-none focus:ring-2 focus:ring-yellow/40"
-                    >
+                        className="flex-1 px-6 py-3 text-[1.1rem] bg-white text-[#222] border-2 border-[var(--workshop-primary)] rounded-[var(--workshop-border-radius)] cursor-pointer text-center no-underline transition-colors duration-200 font-medium"
+                        >
                         Mode création
                     </Link>
                 </div>

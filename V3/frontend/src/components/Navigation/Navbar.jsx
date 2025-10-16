@@ -34,7 +34,7 @@ const Navbar = () => {
 
 	return (
 		<nav className="sticky top-0 z-50 w-full border-b border-darkBlue bg-darkBlue text-white text-base md:text-xl">
-			<div className="mx-auto flex max-w-screen-xl items-center justify-between px-4 py-3 sm:px-6 md:px-8">
+			<div className="mx-auto flex max-w-screen-2xl items-center justify-between px-4 py-3 sm:px-6 md:px-8">
 				{/* Left: Logo */}
 				<a href="/" className="flex items-center gap-2">
 					<span className="text-base font-semibold text-white md:text-xl">GraphLab par</span>
@@ -63,7 +63,7 @@ const Navbar = () => {
 						{/* Dropdown (hover desktop) */}
 						<div className="relative group leading-none after:absolute after:left-0 after:top-full after:h-2 after:w-full after:content-['']">
 							<button
-								className="inline-flex items-center gap-1 leading-none hover:text-lightBlue transition"
+								className="inline-flex items-center leading-none hover:text-lightBlue transition"
 								aria-haspopup="menu"
 								aria-expanded="false"
 							>
@@ -121,7 +121,7 @@ const Navbar = () => {
 						) : (
 							<a
 								href="/admin"
-								className="inline-flex items-center justify-center rounded-xl bg-lightBlue px-4 py-2 font-semibold text-darkBlue shadow hover:bg-blueHover focus:outline-none focus:ring-2 focus:ring-lightBlue/50"
+								className="inline-flex flex-1 px-6 py-3 text-[1.1rem] text-white border-2 border-white rounded-xl cursor-pointer text-center no-underline transition-colors duration-200 font-medium"
 							>
 								Connexion Admin
 							</a>
