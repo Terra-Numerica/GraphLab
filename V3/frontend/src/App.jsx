@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useState, useEffect, ReactNode } from 'react';
 import useWorkshopConfig from './hooks/useWorkshopConfig';
+// import { useState, useEffect } from 'react';
 
 import '@/styles/global.css';
 
@@ -39,28 +39,12 @@ import MobileWarning from './components/common/MobileWarning';
 // Styles
 import './styles/global.css'
 
-// Types
-import { WorkshopType } from './types';
-
-interface RequireAuthProps {
-	children: ReactNode;
-}
-
-interface ProtectedWorkshopRouteProps {
-	children: ReactNode;
-	workshopType: WorkshopType;
-}
-
-interface LayoutProps {
-	children: ReactNode;
-}
-
 /**
  * @description RequireAuth is a component that checks if the user is authenticated
- * @param {RequireAuthProps} props - The component to render if the user is authenticated
+ * @param {Object} param0 - The component to render if the user is authenticated
  * @returns {React.ReactNode} The component to render if the user is authenticated
 */
-function RequireAuth({ children }: RequireAuthProps) {
+function RequireAuth({ children }) {
 	const location = useLocation();
 	const isAuthenticated = !!sessionStorage.getItem('jwt');
 	if (!isAuthenticated) {
@@ -71,10 +55,11 @@ function RequireAuth({ children }: RequireAuthProps) {
 
 /**
  * @description ProtectedWorkshopRoute is a component that checks if a workshop is available in the current environment
- * @param {ProtectedWorkshopRouteProps} props - The component to render if the workshop is available
+ * @param {Object} param0 - The component to render if the workshop is available
+ * @param {string} param0.workshopType - The type of workshop to check (coloring, spanningTree, railwayMaze)
  * @returns {React.ReactNode} The component to render if the workshop is available, or redirect to home
 */
-function ProtectedWorkshopRoute({ children, workshopType }: ProtectedWorkshopRouteProps) {
+function ProtectedWorkshopRoute({ children, workshopType }) {
 	const { isWorkshopAvailable, loading } = useWorkshopConfig();
 	const location = useLocation();
 
@@ -94,7 +79,7 @@ function ProtectedWorkshopRoute({ children, workshopType }: ProtectedWorkshopRou
 }
 
 // Layout pour les pages publiques (avec navbar et footer)
-function PublicLayout({ children }: LayoutProps) {
+function PublicLayout({ children }) {
 	return (
 		<div className="app">
 			<Navbar />
@@ -107,7 +92,7 @@ function PublicLayout({ children }: LayoutProps) {
 }
 
 // Layout pour les pages admin (sans navbar et footer)
-function AdminLayoutWrapper({ children }: LayoutProps) {
+function AdminLayoutWrapper({ children }) {
 	return (
 		<div className="admin-app">
 			{children}
@@ -116,23 +101,23 @@ function AdminLayoutWrapper({ children }: LayoutProps) {
 }
 
 function App() {
-	const [isMobile, setIsMobile] = useState(false);
+	// const [isMobile, setIsMobile] = useState(false);
 
-	useEffect(() => {
-		const checkMobile = () => {
-			setIsMobile(window.innerWidth <= 768);
-		};
+	// useEffect(() => {
+	// 	const checkMobile = () => {
+	// 		setIsMobile(window.innerWidth <= 768);
+	// 	};
 
-		checkMobile();
+	// 	checkMobile();
 
-		window.addEventListener('resize', checkMobile);
+	// 	window.addEventListener('resize', checkMobile);
 
-		return () => window.removeEventListener('resize', checkMobile);
-	}, []);
+	// 	return () => window.removeEventListener('resize', checkMobile);
+	// }, []);
 
-	if (isMobile) {
-		return <MobileWarning />;
-	}
+	// if (isMobile) {
+	// 	return <MobileWarning />;
+	// }
 
 	return (
 		<BrowserRouter>
@@ -190,7 +175,7 @@ function App() {
 						</Routes>
 					</PublicLayout>
 				} />
-
+				
 				{/* Routes admin sans navbar et footer */}
 				<Route path="/admin/*" element={
 					<AdminLayoutWrapper>

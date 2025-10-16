@@ -1,0 +1,96 @@
+/* ========================================
+   STYLES SPÉCIFIQUES À RAILWAY MAZE
+   ======================================== */
+
+/* Import des styles partagés */
+@import '../../shared/WorkshopShared.css';
+
+/* ========================================
+   CONTENEUR PRINCIPAL
+   ======================================== */
+
+.railway-maze-container {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   BOUTON DE RÉSOLUTION
+   ======================================== */
+
+.railway-maze-resolve-button {
+    display: block;
+    margin: 2rem auto;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    background-color: var(--workshop-primary);
+    color: white;
+    border: none;
+    border-radius: var(--workshop-border-radius);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-family: inherit;
+    font-weight: 500;
+}
+
+.railway-maze-resolve-button:hover {
+    background-color: var(--workshop-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--workshop-shadow-hover);
+}
+
+/* ========================================
+   CONTENEUR PENROSE
+   ======================================== */
+
+.penrose-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   BOUTON RETOUR PENROSE
+   ======================================== */
+
+.penrose-back-btn {
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    background: var(--workshop-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--workshop-border-radius);
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--workshop-transition);
+    font-family: inherit;
+}
+
+.penrose-back-btn:hover {
+    background: var(--workshop-primary-hover);
+    transform: translateY(-1px);
+}
+
+/* ========================================
+   RESPONSIVE POUR RAILWAY MAZE
+   ======================================== */
+
+@media (max-width: 768px) {
+    .railway-maze-container,
+    .penrose-container {
+        padding: 1rem;
+    }
+    
+    .railway-maze-resolve-button {
+        width: 100%;
+        font-size: 1.1rem;
+        padding: 1.2rem;
+    }
+    
+    .penrose-back-btn {
+        width: 100%;
+        text-align: center;
+    }
+}

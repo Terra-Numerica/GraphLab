@@ -1,0 +1,242 @@
+/* ========================================
+   STYLES SPÉCIFIQUES AU DASHBOARD ADMIN
+   ======================================== */
+
+/* Import des styles partagés admin */
+@import './AdminShared.css';
+
+.admin-dashboard {
+    padding: 0;
+    width: 100%;
+    font-family: 'Poppins', Arial, sans-serif;
+}
+
+.dashboard-content {
+    padding: 2rem;
+    max-width: none;
+    width: 100%;
+}
+
+.admin-btn-logout {
+    background-color: var(--admin-danger);
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--admin-border-radius);
+    cursor: pointer;
+    font-weight: 600;
+    font-family: inherit;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.admin-btn-logout:hover {
+    background-color: var(--admin-danger-hover);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.welcome-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 93vh;
+}
+
+.welcome-card {
+    background: #fff;
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 4px 20px rgba(36,161,235,0.1);
+    text-align: center;
+    max-width: 1000px;
+    width: 100%;
+    border: 1px solid #e9ecef;
+}
+
+.welcome-card h2 {
+    font-size: 2.5rem;
+    color: var(--darkBlue);
+    margin: 0 0 1.5rem 0;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.welcome-card p {
+    font-size: 1.2rem;
+    color: #666;
+    margin: 0 0 2.5rem 0;
+    line-height: 1.6;
+}
+
+.quick-actions {
+    margin-bottom: 3rem;
+}
+
+.quick-actions h3 {
+    font-size: 1.5rem;
+    color: var(--darkBlue);
+    margin: 0 0 1.5rem 0;
+    font-weight: 600;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.action-buttons .admin-btn-primary,
+.action-buttons .admin-btn-secondary {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 12px;
+    min-width: 200px;
+}
+
+.admin-stats {
+    border-top: 1px solid #e9ecef;
+    padding-top: 2rem;
+}
+
+.admin-stats h3 {
+    font-size: 1.5rem;
+    color: var(--darkBlue);
+    margin: 0 0 1.5rem 0;
+    font-weight: 600;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(36,161,235,0.1);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    flex-shrink: 0;
+}
+
+.stat-content h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+    color: var(--darkBlue);
+    font-weight: 600;
+}
+
+.stat-content p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+    font-size: 1.7rem;
+    color: var(--darkBlue);
+    margin: 0;
+    font-weight: 600;
+}
+
+.filters {
+    display: flex;
+    gap: 1rem;
+}
+
+.filter-select,
+.search-input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.search-input {
+    padding: 0.6rem 1rem;
+    border: 1.5px solid var(--grey);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    background: #fff;
+    color: var(--darkBlue);
+    transition: border 0.2s;
+    min-width: 250px;
+}
+
+.search-input:focus {
+    border: 1.5px solid var(--blue);
+    outline: none;
+}
+
+.graphs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.graph-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 12px rgba(36,161,235,0.10);
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+}
+
+.graph-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(36,161,235,0.15);
+}
+
+.graph-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.graph-info h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--darkBlue);
+    font-weight: 600;
+}
+
+.graph-type {
+    color: #666;
+    margin: 0.5rem 0;
+}
+
+.graph-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+/* Les styles de boutons et d'états sont maintenant dans AdminShared.css */
+
+/* Les styles de pagination sont maintenant dans AdminShared.css */ 
