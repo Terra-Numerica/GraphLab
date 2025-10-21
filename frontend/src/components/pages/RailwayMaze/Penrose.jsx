@@ -400,7 +400,7 @@ const Penrose = () => {
     return (
         <div className="penrose-container">
             <button className="penrose-back-btn" onClick={() => navigate('/railway-maze')}>&larr; Retour</button>
-            <h2 className="workshop-title">Penrose Maze</h2>
+            <h2 className="workshop-title">Labyrinthe Voyageur</h2>
             <div className="workshop-top-bar">
                 <select
                     className="workshop-select"
@@ -439,12 +439,27 @@ const Penrose = () => {
             )}
             {showRules && (
                 <RulesPopup title="Règles du Jeu" onClose={() => setShowRules(false)}>
-                    <h3> PlaceholderCat1 </h3>
+                    <h3>🎯 Objectif</h3>
                     <ul>
-                        <li>PlaceholderLigne1</li>
-                        <li>PlaceholderLigne2</li>
+                        <li>Trouvez un trajet du point A au point B qui satisfait la contrainte suivante : lorsque l’on arrive sur un noeud du réseau par un lien d’une  certaine couleur (orange ou bleu), on ne peut partir de ce noeud que par un lien de l’autre couleur (bleu ou orange). </li>
+                        <li>Saurez-vous trouver un tel trajet qui utilise le moins de liens possible ?</li>
                     </ul>
-                    <h3> PlaceholderCat2 </h3>
+
+                    <h3>🛠️ Comment jouer au labyrinthe voyageur ?</h3>
+                    <ul>
+                        <li>Chaque lien entre deux noeuds a chacune de ses extrémités colorée orange ou bleu.</li>
+                        <li>Si vous arrivez sur un noeud par une extrémité bleue, vous ne pouvez en partir que par une extrémité orange (et vice versa).</li>
+                        <li>Le noeud en vert représente votre position courante et les noeuds en rouge sont les voisins de votre position auxquels vous pouvez accéder.</li>
+                        <li>Pour cela, cliquez sur le noeud rouge que vous voulez atteindre.</li>
+                        <li>Le chemin que vous avez suivi jusque là est décrit en vers (avec un dégradé de foncé au départ vers clair à votre position courante).</li>
+                    </ul>
+
+                    <h3>🔧 Fonctionnalités</h3>
+                    <ul>
+                        <li>Revenir en arrière : A tout moment, vous pouvez annuler votre dernier mouvement (et en répétant, vous pouvez revenir à n’importe quelle position que vous avez atteinte au préalable).</li>
+                        <li>Réinitialiser : Il est possible de recommencer depuis le début</li>
+                        <li>Solution : Enfin, une solution optimale peut être affichée.</li>
+                    </ul>
                 </RulesPopup>
             )}
         </div>
