@@ -52,20 +52,20 @@ const Main = () => {
                 <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6">
                     <Link
                         to="/coloration/defi"
-                        className="flex-1 px-6 py-3 text-[1.1rem] bg-white text-[#222] border-2 border-[var(--workshop-primary)] rounded-[var(--workshop-border-radius)] cursor-pointer text-center no-underline transition-colors duration-200 font-medium"
+                        className="flex-1 inline-flex items-center justify-center rounded-xl border-2 border-blue px-6 py-3 text-lg font-semibold text-blue hover:bg-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-blue/40 text-center no-underline"
                     >
                         Mode défi
                     </Link>
                     <Link
                         to="/coloration/libre"
-                        className="flex-1 px-6 py-3 text-[1.1rem] bg-white text-[#222] border-2 border-[var(--workshop-primary)] rounded-[var(--workshop-border-radius)] cursor-pointer text-center no-underline transition-colors duration-200 font-medium"
-                        >
+                        className="flex-1 inline-flex items-center justify-center rounded-xl border-2 border-blue px-6 py-3 text-lg font-semibold text-blue hover:bg-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-blue/40 text-center no-underline"
+                    >
                         Mode libre
                     </Link>
                     <Link
                         to="/coloration/creation"
-                        className="flex-1 px-6 py-3 text-[1.1rem] bg-white text-[#222] border-2 border-[var(--workshop-primary)] rounded-[var(--workshop-border-radius)] cursor-pointer text-center no-underline transition-colors duration-200 font-medium"
-                        >
+                        className="flex-1 inline-flex items-center justify-center rounded-xl border-2 border-blue px-6 py-3 text-lg font-semibold text-blue hover:bg-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-blue/40 text-center no-underline"
+                    >
                         Mode création
                     </Link>
                 </div>

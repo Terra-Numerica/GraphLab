@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import AlgoVisualization from './AlgoVisualization';
 import GraphDisplay from './GraphDisplay';
 import RulesPopup from '../../../components/common/RulesPopup';
+import config from '../../../config';
 
 const algoConfig = {
   prim: {
@@ -68,10 +69,10 @@ const AlgoExplanation = ({ algo, onClose }) => {
 
   return (
     <RulesPopup onClose={onClose} title={explanation?.title || "Explication de l'algorithme"}>
-      <div className="algo-explanation">
-        <div className="explanation-steps">
+      <div className="p-4">
+        <div className="flex flex-col gap-4">
           {explanation?.steps.map((step, index) => (
-            <p key={index}>{step}</p>
+            <p key={index} className="m-0 leading-relaxed text-astro">{step}</p>
           ))}
         </div>
       </div>
@@ -159,7 +160,7 @@ const AlgoPage = () => {
   useEffect(() => {
     if (!graph && graphId) {
       setLoading(true);
-      fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3000'}/graph/${graphId}`)
+      fetch(`${config.apiUrl}/graph/${graphId}`)
         .then(res => res.json())
         .then(data => {
           setGraph(data);
@@ -185,89 +186,97 @@ const AlgoPage = () => {
     setSelectedEdges(edges);
   }, []);
 
-  if (!config) return <div>Algorithme inconnu</div>;
-  if (loading) return <div className="workshop-loading">Chargement...</div>;
-  if (error) return <div className="workshop-error">{error}</div>;
+  if (!config) return <div className="p-4 text-center text-red">Algorithme inconnu</div>;
+  if (loading) return <div className="flex h-screen items-center justify-center text-lg text-gray-600">Chargement...</div>;
+  if (error) return <div className="flex h-screen items-center justify-center text-lg text-red">{error}</div>;
   if (!graph) {
     return (
-      <div className="arbre-couvrant-container">
-        <div className="workshop-error-message">
-          Aucun graphe n'a été selectionné. Tu peux retourner à la page précédente pour en selectionner un.
+      <div className="w-full bg-gray-100 px-4 sm:px-8 md:px-16 py-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="rounded-lg bg-red/10 px-3 py-2 text-sm font-medium text-red">
+            Aucun graphe n'a été selectionné. Tu peux retourner à la page précédente pour en selectionner un.
+          </div>
+          <button 
+            className="mt-4 inline-flex items-center gap-2 rounded-xl border-2 border-blue px-4 py-2 text-sm font-semibold text-blue hover:bg-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-blue/40"
+            onClick={() => navigate('/arbre-couvrant')}
+          >
+            <span aria-hidden="true">←</span> Retour
+          </button>
         </div>
-        <button className="workshop-back-btn" onClick={() => navigate('/arbre-couvrant')}>
-          Retour
-        </button>
       </div>
     );
   }
 
   return (
-    <div className="arbre-couvrant-container">
-      <button className="workshop-back-btn" onClick={() => navigate('/arbre-couvrant/try', {
-        state: {
-          selectedGraph: graphId,
-          weightType: weightType
-        }
-      })}>
-        &larr; Retour
-      </button>
-      {showExplanation && (
-        <AlgoExplanation
-          algo={algo}
-          onClose={() => setShowExplanation(false)}
-        />
-      )}
-      <h2 className="workshop-title">{config.title}</h2>
-      <div className={`workshop-top-bar algo-vertical`}>
-        <div className="workshop-graph-info">
-          <span><strong>Graphe :</strong> {graph.name.split(' ')[1]}</span>
-          <span><strong>Type de poids :</strong> {
-            weightType
-              ?.replace('predefined', 'prédéfinis')
-              .replace('random', 'aléatoire')
-              .replace('one', 'tous à 1')
-          }</span>
+    <div className="w-full bg-gray-100 px-4 sm:px-8 md:px-16 py-8">
+      <div className="mx-auto w-full max-w-full">
+        {/* Back button */}
+        <button 
+          className="inline-flex items-center gap-2 rounded-xl border-2 border-blue px-4 py-2 text-sm font-semibold text-blue hover:bg-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-blue/40"
+          onClick={() => navigate('/arbre-couvrant/try', {
+            state: {
+              selectedGraph: graphId,
+              weightType: weightType
+            }
+          })}
+        >
+          <span aria-hidden="true">←</span> Retour
+        </button>
 
-          <button
-            className="workshop-btn"
-            onClick={() => setShowExplanation(true)}
-          >
-            Comprendre l'algorithme
-          </button>
-        </div>
-
-        <div className="algo-visualization-infos">
-          <AlgoVisualization 
-            algo={algo} 
-            graph={graph} 
-            cyRef={cyRef} 
-            onSelectedEdgesChange={handleSelectedEdgesChange}
+        {/* Explanation popup */}
+        {showExplanation && (
+          <AlgoExplanation
+            algo={algo}
+            onClose={() => setShowExplanation(false)}
           />
-        </div>
-      </div>
-      {disconnectedComponents.length > 0 && graph && (
-          <div className="arbre-couvrant-components-error">
-            <div className="arbre-couvrant-components-error-text">
-              <div style={{ marginTop: '0.5rem' }}>
-                <strong>Composantes :</strong> {formatComponents(disconnectedComponents, graph.data.nodes)}
+        )}
+
+        {/* Title */}
+        <h2 className="mt-4 text-center text-3xl md:text-4xl font-bold text-darkBlue">{config.title}</h2>
+
+        {/* Top bar with graph info and visualization */}
+        <div className="mt-6 flex flex-col gap-4 rounded-2xl bg-white p-4 shadow">
+          {/* Graph info */}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            {/* Gauche : Graphe, Type de poids & Algorithme */}
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-darkBlue shadow-sm">
+                <strong>Graphe :</strong> <span className="font-semibold ml-1">{graph.name.split(' ')[1]}</span>
+              </div>
+              <div className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-darkBlue shadow-sm">
+                <strong>Type de poids :</strong> <span className="font-semibold ml-1">{
+                  weightType
+                    ?.replace('predefined', 'prédéfinis')
+                    .replace('random', 'aléatoire')
+                    .replace('one', 'tous à 1')
+                }</span>
+              </div>
+              <div className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-darkBlue shadow-sm">
+                Algorithme : <span className="font-semibold capitalize ml-1">{algo.replace('-', ' ')}</span>
               </div>
             </div>
+
+            {/* Droite : Comprendre l'algorithme */}
+            <button
+              className="inline-flex items-center justify-center rounded-xl border-2 border-blue px-5 py-2.5 text-sm font-semibold text-blue hover:bg-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-blue/40"
+              onClick={() => setShowExplanation(true)}
+            >
+              Comprendre l'algorithme
+            </button>
           </div>
-        )}
-      <div className="algo-graph-centered">
-        <div className="workshop-graph-area">
-          <GraphDisplay graphData={graph} cyRef={cyRef} />
+
+          {/* Visualization controls */}
+          <div className="mt-4 border-t border-gray-200 pt-4">
+            <AlgoVisualization 
+              algo={algo} 
+              graph={graph} 
+              cyRef={cyRef} 
+              onSelectedEdgesChange={handleSelectedEdgesChange}
+              graphDisplay={<GraphDisplay graphData={graph} cyRef={cyRef} />}
+              componentsInfo={graph && disconnectedComponents.length > 0 ? formatComponents(disconnectedComponents, graph.data.nodes) : null}
+            />
+          </div>
         </div>
-      </div>
-      <div className="algo-bottom-actions">
-        <button className="workshop-back-btn" onClick={() => navigate('/arbre-couvrant/try', {
-          state: {
-            selectedGraph: graphId,
-            weightType: weightType
-          }
-        })}>
-          &larr; Retour
-        </button>
       </div>
     </div>
   );

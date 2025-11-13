@@ -46,14 +46,3 @@
         @apply flex-1 p-4 mx-auto w-full max-w-screen-sm sm:p-6 md:p-8 md:max-w-screen-md lg:max-w-screen-lg xl:max-w-full;
     }
 }
-
-@keyframes popup-fade-in {
-    from {
-        opacity: 0;
-        transform: scale(0.97);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}

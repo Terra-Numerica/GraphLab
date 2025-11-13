@@ -9,8 +9,7 @@ import RulesPopup from '../../common/RulesPopup';
 import GraphDisplay from './PenroseGraphDisplay.jsx';
 import TimerDisplay from '../../common/TimerDisplay.jsx';
 
-// Style
-import '../../../styles/pages/RailwayMaze/RailwayMazeStyles.css';
+// ❌ supprimé : import '../../../styles/pages/RailwayMaze/RailwayMazeStyles.css';
 
 const GraphDisplayMemo = memo(GraphDisplay);
 
@@ -398,55 +397,118 @@ const Penrose = () => {
     //Le composant GraphDisplay depend du fichier PenroseGraphDisplay et correspond à ce qui
     //est affiché en tant que graph.
     return (
-        <div className="penrose-container">
-            <button className="penrose-back-btn" onClick={() => navigate('/railway-maze')}>&larr; Retour</button>
-            <h2 className="workshop-title">Penrose Maze</h2>
-            <div className="workshop-top-bar">
-                <select
-                    className="workshop-select"
-                    value={selectedGraph}
-                    onChange={handleGraphSelect}
-                    disabled={graphsLoading}
+        <div className="w-full bg-gray-100 px-4 sm:px-8 md:px-16 py-8">
+            <div className="mx-auto max-w-6xl">
+                {/* Back button */}
+                <button 
+                    className="inline-flex items-center gap-2 rounded-xl border-2 border-blue px-4 py-2 text-sm font-semibold text-blue hover:bg-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-blue/40"
+                    onClick={() => navigate('/railway-maze')}
                 >
-                    <option value="" disabled hidden>
-                        {graphsLoading ? "Chargement des graphes..." : "Choisis un graphe"}
-                    </option>
-                    {graphs.map((graph) => (
-                        <option key={graph._id} value={graph._id}>
-                            {graph.name}
-                        </option>
-                    ))}
-                </select>
-                {currentGraph && <TimerDisplay time={time} formatTime={formatTime} />}
+                    <span aria-hidden="true">←</span> Retour
+                </button>
+
+                {/* Title */}
+                <h2 className="mt-4 text-center text-3xl md:text-4xl font-bold text-darkBlue">Penrose Maze</h2>
+
+                {/* Top bar */}
+                <div className="mt-6 flex flex-col gap-3 rounded-2xl bg-white p-4 shadow md:flex-row md:items-center md:justify-between">
+                    <div className="flex w-full items-center gap-3 md:w-auto md:flex-row">
+                        <select
+                            className="w-full rounded-xl border border-grey bg-white px-3 py-2 text-astro shadow-sm focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/30 md:w-72"
+                            value={selectedGraph}
+                            onChange={handleGraphSelect}
+                            disabled={graphsLoading}
+                        >
+                            <option value="" disabled hidden>
+                                {graphsLoading ? "Chargement des graphes..." : "Choisis un graphe"}
+                            </option>
+                            {graphs.map((graph) => (
+                                <option key={graph._id} value={graph._id}>
+                                    {graph.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="flex items-center justify-end">
+                        {currentGraph && <TimerDisplay time={time} formatTime={formatTime} />}
+                    </div>
+                </div>
+
+                {/* Error messages */}
+                <div className="mt-4">
+                    {graphsError && (
+                        <div className="rounded-lg bg-red/10 px-3 py-2 text-sm font-medium text-red">
+                            {graphsError}
+                        </div>
+                    )}
+                    {graphError && !fetchedGraphs && (
+                        <div className="rounded-lg bg-red/10 px-3 py-2 text-sm font-medium text-red">
+                            {graphError}
+                        </div>
+                    )}
+                </div>
+
+                {/* Action buttons */}
+                {currentGraph && !graphLoading && (
+                    <div className="mt-6 flex flex-col items-stretch justify-center gap-3 sm:flex-row">
+                        <button 
+                            className="inline-flex items-center justify-center rounded-xl border-2 border-blue px-5 py-2.5 text-sm font-semibold text-blue hover:bg-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-blue/40"
+                            onClick={handleUndo}
+                        >
+                            Revenir en arrière
+                        </button>
+                        <button 
+                            className="inline-flex items-center justify-center rounded-xl border-2 border-red px-5 py-2.5 text-sm font-semibold text-red hover:bg-red hover:text-white transition focus:outline-none focus:ring-2 focus:ring-red/40"
+                            onClick={handleRetry}
+                        >
+                            Réinitialiser
+                        </button>
+                        <button 
+                            className="inline-flex items-center justify-center rounded-xl border-2 border-green px-5 py-2.5 text-sm font-semibold text-green hover:bg-green hover:text-white transition focus:outline-none focus:ring-2 focus:ring-green/40"
+                            onClick={handleShowSolution}
+                        >
+                            Solution
+                        </button>
+                    </div>
+                )}
+
+                {/* Graph display */}
+                {currentGraph && (
+                    <div className="mt-6 overflow-hidden rounded-2xl bg-white p-3 shadow">
+                        <GraphDisplayMemo graphData={currentGraph} cyRef={cyRef} selectableNodes={selectableNodes} handleNextNode={handleNextNode} />
+                    </div>
+                )}
+
+                {/* Floating rules button */}
+                <button 
+                    className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full bg-green px-5 py-3 text-base font-bold text-white shadow-xl hover:bg-green-hover hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green/40 transition-all duration-200"
+                    onClick={() => setShowRules(true)}
+                    aria-label="Voir les règles"
+                >
+                    &#9432; Voir les règles
+                </button>
+
+                {/* Popups */}
+                {validationPopup && (
+                    <ValidationPopup
+                        type={validationPopup.type}
+                        title={validationPopup.title}
+                        message={validationPopup.message}
+                        onClose={handleClosePopup}
+                    />
+                )}
+                {showRules && (
+                    <RulesPopup title="Règles du Jeu" onClose={() => setShowRules(false)}>
+                        <h3> PlaceholderCat1 </h3>
+                        <ul className="list-disc pl-5">
+                            <li>PlaceholderLigne1</li>
+                            <li>PlaceholderLigne2</li>
+                        </ul>
+                        <h3 className="mt-4"> PlaceholderCat2 </h3>
+                    </RulesPopup>
+                )}
             </div>
-
-            {currentGraph && !graphLoading && <div className="workshop-buttons-row">
-                <button className="workshop-btn workshop-btn-reset" onClick={handleUndo}>Revenir en arrière</button>
-                <button className="workshop-btn workshop-btn-validate" onClick={handleRetry}>Réinitialiser</button>
-                <button className="workshop-btn workshop-btn-validate" onClick={handleShowSolution}>Solution</button>
-            </div>}
-
-            {currentGraph && <GraphDisplayMemo graphData={currentGraph} cyRef={cyRef} selectableNodes={selectableNodes} handleNextNode={handleNextNode} />}
-            
-            <button className="workshop-rules-btn" onClick={() => setShowRules(true)}>&#9432; Voir les règles</button>
-            {validationPopup && (
-                <ValidationPopup
-                    type={validationPopup.type}
-                    title={validationPopup.title}
-                    message={validationPopup.message}
-                    onClose={handleClosePopup}
-                />
-            )}
-            {showRules && (
-                <RulesPopup title="Règles du Jeu" onClose={() => setShowRules(false)}>
-                    <h3> PlaceholderCat1 </h3>
-                    <ul>
-                        <li>PlaceholderLigne1</li>
-                        <li>PlaceholderLigne2</li>
-                    </ul>
-                    <h3> PlaceholderCat2 </h3>
-                </RulesPopup>
-            )}
         </div>
     )
 };

@@ -223,10 +223,7 @@ const Libre = () => {
 
                 {/* Top bar */}
                 <div className="mt-6 flex flex-col items-stretch gap-3 rounded-2xl bg-white p-4 shadow md:flex-row md:items-center md:justify-between">
-                    <div className="flex w-full items-center gap-3 md:max-w-xl">
-                        <label htmlFor="graph-select" className="whitespace-nowrap text-sm font-semibold text-darkBlue">
-                            Choisis un graphe :
-                        </label>
+                    <div className="flex w-64 items-center gap-3 md:max-w-xl">
                         <select
                             id="graph-select"
                             className="w-full rounded-xl border border-grey bg-white px-3 py-2 text-astro shadow-sm focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/30"
@@ -251,13 +248,13 @@ const Libre = () => {
                         </select>
                     </div>
 
-                    <div className="min-h-[2rem]">
-                        {error && <div className="rounded-lg bg-red/10 px-3 py-2 text-sm font-medium text-red">{error}</div>}
-                    </div>
-
                     <div className="flex items-center justify-end">
                         {currentGraph && <TimerDisplay time={time} formatTime={formatTime} />}
                     </div>
+                </div>
+
+                <div className="mt-6">
+                        {error && <div className="rounded-lg bg-red/10 px-3 py-2 text-sm font-medium text-red">{error}</div>}
                 </div>
 
                 {/* Action buttons (only if a graph is loaded) */}
@@ -288,7 +285,7 @@ const Libre = () => {
 
             {/* Floating rules button */}
             <button
-                className="fixed bottom-6 right-6 inline-flex items-center gap-2 rounded-full bg-darkBlue px-4 py-2 text-sm font-semibold text-white shadow hover:bg-blueHover focus:outline-none focus:ring-2 focus:ring-lightBlue/50"
+                className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full bg-green px-5 py-3 text-base font-bold text-white shadow-xl hover:bg-green-hover hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green/40 transition-all duration-200"
                 onClick={() => setShowRules(true)}
                 aria-label="Voir les règles"
             >

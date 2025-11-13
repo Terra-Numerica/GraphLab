@@ -6,7 +6,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { getDarkerColor, getLighterColor } from '../../../utils/colorUtils';
 import ValidationPopup from '../../common/ValidationPopup';
 
-import '../../../styles/pages/ArbreCouvrant/ArbreCouvrantStyles.css';
+// ❌ supprimé : import '../../../styles/pages/ArbreCouvrant/ArbreCouvrantStyles.css';
 
 const algoMap = {
     prim: {
@@ -37,7 +37,7 @@ const algoMap = {
     },
 };
 
-const AlgoVisualization = ({ algo, graph, cyRef, onSelectedEdgesChange }) => {
+const AlgoVisualization = ({ algo, graph, cyRef, onSelectedEdgesChange, graphDisplay, componentsInfo }) => {
     const [isAutomatic, setIsAutomatic] = useState(false);
     const [speed, setSpeed] = useState(1000);
     const [currentStep, setCurrentStep] = useState(-1);
@@ -54,14 +54,16 @@ const AlgoVisualization = ({ algo, graph, cyRef, onSelectedEdgesChange }) => {
         const newSteps = config.algorithm(graph.data.nodes, graph.data.edges, order);
         setSteps(newSteps);
         setCurrentStep(-1);
-        setExplanation(`Pour commencer la visualisation, clique sur "Démarrer" (en mode automatique) ou "Étape suivante" (en mode manuel)`);
+        setExplanation(
+            `Pour commencer la visualisation, clique sur "Démarrer" (en mode automatique) ou "Étape suivante" (en mode manuel)`
+        );
     }, [graph, config, order]);
 
     useEffect(() => {
         let interval;
         if (isAutomatic && isPlaying && currentStep < steps.length) {
             interval = setInterval(() => {
-                setCurrentStep(prev => {
+                setCurrentStep((prev) => {
                     if (prev >= steps.length - 1) {
                         setIsPlaying(false);
                         return prev;
@@ -73,69 +75,60 @@ const AlgoVisualization = ({ algo, graph, cyRef, onSelectedEdgesChange }) => {
         return () => clearInterval(interval);
     }, [isAutomatic, isPlaying, currentStep, steps.length, speed]);
 
-    // Show success popup when algorithm is completed
     useEffect(() => {
         if (steps.length > 0 && currentStep === steps.length - 1) {
             setShowSuccessPopup(true);
         }
     }, [currentStep, steps.length]);
 
-    // Calculate selected edges up to current step and notify parent
     useEffect(() => {
         if (!onSelectedEdgesChange || steps.length === 0) return;
-        
+
         const selectedEdges = [];
         if (currentStep >= 0) {
             for (let i = 0; i <= currentStep; i++) {
                 const step = steps[i];
-                
-                // Handle different action types
                 if (step.action === 'add' && step.edge) {
-                    // Prim, Kruskal: add edge
                     selectedEdges.push(step.edge);
                 } else if (step.action === 'select_edge' && step.edge) {
-                    // Boruvka: select edge
                     selectedEdges.push(step.edge);
                 } else if (step.action === 'exchange' && step.add) {
-                    // Exchange: add edge
                     selectedEdges.push(step.add);
                 } else if (step.action === 'exchange' && step.remove) {
-                    // Exchange: remove edge from selection
-                    const removeIndex = selectedEdges.findIndex(e => 
-                        e.data.id === step.remove.data.id
-                    );
-                    if (removeIndex !== -1) {
-                        selectedEdges.splice(removeIndex, 1);
-                    }
+                    const removeIndex = selectedEdges.findIndex((e) => e.data.id === step.remove.data.id);
+                    if (removeIndex !== -1) selectedEdges.splice(removeIndex, 1);
                 }
             }
         }
-        
         onSelectedEdgesChange(selectedEdges);
     }, [currentStep, steps, algo, onSelectedEdgesChange]);
 
     useEffect(() => {
         if (!cyRef.current || steps.length === 0) return;
-        
-        // Réinitialiser tous les styles
-        cyRef.current.edges().removeClass('algo-edge-selected algo-prim-selected algo-kruskal-selected algo-boruvka-selected algo-boruvka-min-edge algo-exchange-selected algo-exchange-excluded algo-exchange-cycle algo-exchange-removing algo-exchange-adding algo-exchange-tree-reached algo-exchange-done-processing')
+
+        cyRef.current
+            .edges()
+            .removeClass(
+                'algo-edge-selected algo-prim-selected algo-kruskal-selected algo-boruvka-selected algo-boruvka-min-edge algo-exchange-selected algo-exchange-excluded algo-exchange-cycle algo-exchange-removing algo-exchange-adding algo-exchange-tree-reached algo-exchange-done-processing'
+            )
             .style({
                 'line-color': '#666',
-                'width': 3,
-                'opacity': 1
+                width: 3,
+                opacity: 1,
             });
-        cyRef.current.nodes().removeClass('algo-node-start algo-prim-start algo-boruvka-component algo-exchange-component')
+        cyRef.current
+            .nodes()
+            .removeClass('algo-node-start algo-prim-start algo-boruvka-component algo-exchange-component')
             .style({
                 'background-color': '#b0b0b0',
                 'border-width': 1,
-                'border-color': '#444'
+                'border-color': '#444',
             });
-            
+
         if (currentStep >= 0) {
             for (let i = 0; i <= currentStep; i++) {
                 const step = steps[i];
-                
-                // Traiter les arêtes
+
                 if (step.edge) {
                     const edge = cyRef.current.getElementById(step.edge.data.id);
                     if (edge) {
@@ -144,27 +137,24 @@ const AlgoVisualization = ({ algo, graph, cyRef, onSelectedEdgesChange }) => {
                         } else {
                             edge.addClass(config.edgeClass);
                         }
-                        
-                        // Colorer l'arête selon l'algorithme
                         if (algo === 'prim' && step.componentColor) {
                             edge.style({
                                 'line-color': getLighterColor(step.componentColor),
-                                'width': 4,
-                                'opacity': 1
+                                width: 4,
+                                opacity: 1,
                             });
                         } else {
                             edge.style({
                                 'line-color': '#9400D3',
-                                'width': 4,
-                                'opacity': 1
+                                width: 4,
+                                opacity: 1,
                             });
                         }
                     }
                 }
-                
-                // Colorer les nœuds pour Prim
+
                 if (algo === 'prim' && step.visitedNodes) {
-                    step.visitedNodes.forEach(nodeId => {
+                    step.visitedNodes.forEach((nodeId) => {
                         const node = cyRef.current.getElementById(nodeId);
                         if (node) {
                             node.addClass(config.nodeStartClass);
@@ -172,133 +162,88 @@ const AlgoVisualization = ({ algo, graph, cyRef, onSelectedEdgesChange }) => {
                                 node.style({
                                     'background-color': step.componentColor,
                                     'border-color': getDarkerColor(step.componentColor),
-                                    'border-width': 2
+                                    'border-width': 2,
                                 });
                             }
                         }
                     });
                 }
-                
-                // Traitement spécifique pour le démarrage de Prim
+
                 if (algo === 'prim' && step.action === 'start' && step.node) {
                     const node = cyRef.current.getElementById(step.node);
-                    if (node) {
-                        node.addClass(config.nodeStartClass);
-                    }
+                    if (node) node.addClass(config.nodeStartClass);
                 }
-                
-                // Traitement spécifique pour Boruvka
+
                 if (algo === 'boruvka' && step.action === 'start') {
                     cyRef.current.nodes().addClass(config.componentClass);
                 }
-                
-                // Traitement spécifique pour Exchange Property
+
                 if (algo === 'exchange-property') {
-                    // Gérer les arêtes conservées
                     if (step.keptEdges) {
-                        step.keptEdges.forEach(keptEdge => {
+                        step.keptEdges.forEach((keptEdge) => {
                             const edge = cyRef.current.getElementById(keptEdge.data.id);
                             if (edge) {
                                 edge.addClass(config.edgeClass);
-                                edge.style({
-                                    'line-color': '#34db8a',
-                                    'width': 4,
-                                    'opacity': 1
-                                });
+                                edge.style({ 'line-color': '#34db8a', width: 4, opacity: 1 });
                             }
                         });
                     }
-                    
-                    // Gérer les arêtes rejetées
                     if (step.discardedEdges) {
-                        step.discardedEdges.forEach(discardedEdge => {
+                        step.discardedEdges.forEach((discardedEdge) => {
                             const edge = cyRef.current.getElementById(discardedEdge.data.id);
                             if (edge) {
                                 edge.addClass(config.discardedEdgeClass);
-                                edge.style({
-                                    'line-color': '#c0392b',
-                                    'width': 5,
-                                    'opacity': 0.8
-                                });
+                                edge.style({ 'line-color': '#c0392b', width: 5, opacity: 0.8 });
                             }
                         });
                     }
-                    
-                    // Gérer les arêtes du cycle
                     if (step.cycleEdges) {
-                        step.cycleEdges.forEach(cycleEdge => {
+                        step.cycleEdges.forEach((cycleEdge) => {
                             const edge = cyRef.current.getElementById(cycleEdge.data.id);
                             if (edge) {
                                 edge.addClass(config.cycleEdgeClass);
-                                edge.style({
-                                    'line-color': '#f39c12',
-                                    'width': 5,
-                                    'opacity': 0.8
-                                });
+                                edge.style({ 'line-color': '#f39c12', width: 5, opacity: 0.8 });
                             }
                         });
                     }
-                    
-                    // Gérer l'échange d'arêtes
                     if (step.action === 'exchange') {
                         if (step.add) {
                             const addEdge = cyRef.current.getElementById(step.add.data.id);
                             if (addEdge) {
                                 addEdge.addClass(config.addingEdgeClass);
-                                addEdge.style({
-                                    'line-color': '#00aa00',
-                                    'width': 5,
-                                    'opacity': 1
-                                });
+                                addEdge.style({ 'line-color': '#00aa00', width: 5, opacity: 1 });
                             }
                         }
                         if (step.remove) {
                             const removeEdge = cyRef.current.getElementById(step.remove.data.id);
                             if (removeEdge) {
                                 removeEdge.addClass(config.removingEdgeClass);
-                                removeEdge.style({
-                                    'line-color': '#aa0000',
-                                    'width': 5,
-                                    'opacity': 0.7
-                                });
+                                removeEdge.style({ 'line-color': '#aa0000', width: 5, opacity: 0.7 });
                             }
                         }
                     }
-                    
-                    // Gérer l'action 'tree-reached' - mettre en évidence l'arbre couvrant
                     if (step.action === 'tree-reached') {
-                        step.keptEdges.forEach(keptEdge => {
+                        step.keptEdges.forEach((keptEdge) => {
                             const edge = cyRef.current.getElementById(keptEdge.data.id);
                             if (edge) {
                                 edge.addClass(config.treeReachedClass);
-                                edge.style({
-                                    'line-color': '#2ecc71',
-                                    'width': 6,
-                                    'opacity': 1
-                                });
+                                edge.style({ 'line-color': '#2ecc71', width: 6, opacity: 1 });
                             }
                         });
                     }
-                    
-                    // Gérer l'action 'done-processing' - finaliser l'affichage
                     if (step.action === 'done-processing') {
-                        step.keptEdges.forEach(keptEdge => {
+                        step.keptEdges.forEach((keptEdge) => {
                             const edge = cyRef.current.getElementById(keptEdge.data.id);
                             if (edge) {
                                 edge.addClass(config.doneProcessingClass);
-                                edge.style({
-                                    'line-color': '#27ae60',
-                                    'width': 5,
-                                    'opacity': 1
-                                });
+                                edge.style({ 'line-color': '#27ae60', width: 5, opacity: 1 });
                             }
                         });
                     }
                 }
-                
             }
         }
-        
+
         if (currentStep >= 0 && steps[currentStep]) {
             setExplanation(steps[currentStep].explanation);
         } else {
@@ -307,15 +252,11 @@ const AlgoVisualization = ({ algo, graph, cyRef, onSelectedEdgesChange }) => {
     }, [currentStep, steps, cyRef, algo, config]);
 
     const handleNextStep = useCallback(() => {
-        if (currentStep < steps.length - 1) {
-            setCurrentStep(prev => prev + 1);
-        }
+        if (currentStep < steps.length - 1) setCurrentStep((prev) => prev + 1);
     }, [currentStep, steps.length]);
 
     const handlePreviousStep = useCallback(() => {
-        if (currentStep > 0) {
-            setCurrentStep(prev => prev - 1);
-        }
+        if (currentStep > 0) setCurrentStep((prev) => prev - 1);
     }, [currentStep]);
 
     const handlePlayPause = useCallback(() => {
@@ -341,21 +282,13 @@ const AlgoVisualization = ({ algo, graph, cyRef, onSelectedEdgesChange }) => {
     }, []);
 
     const handleSpeedUp = useCallback(() => {
-        if (speed === 2000) {
-            setSpeed(1000); // 0.5x -> 1x
-        } else if (speed === 1000) {
-            setSpeed(500); // 1x -> 2x
-        }
-        // Si déjà à 2x, on reste à 2x
+        if (speed === 2000) setSpeed(1000);
+        else if (speed === 1000) setSpeed(500);
     }, [speed]);
 
     const handleSpeedDown = useCallback(() => {
-        if (speed === 500) {
-            setSpeed(1000); // 2x -> 1x
-        } else if (speed === 1000) {
-            setSpeed(2000); // 1x -> 0.5x
-        }
-        // Si déjà à 0.5x, on reste à 0.5x
+        if (speed === 500) setSpeed(1000);
+        else if (speed === 1000) setSpeed(2000);
     }, [speed]);
 
     const handleModeChange = useCallback((mode) => {
@@ -375,106 +308,188 @@ const AlgoVisualization = ({ algo, graph, cyRef, onSelectedEdgesChange }) => {
 
     return (
         <>
-            <div className="tree-mode-visualization-panel">
-                <div className="tree-mode-controls">
-                    {algo === 'exchange-property' && (
-                        <div className="tree-mode-order-selector">
-                            <label>Ordre de tri :</label>
+            {/* Header résumé + actions haut de page — géré ailleurs dans ton app */}
+
+            {/* GRID 3 COLONNES COMME LA CAPTURE */}
+            <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-12">
+
+                {/* Colonne gauche : MODE + NAVIGATION */}
+                <div className="md:col-span-2 flex flex-col gap-4">
+                    {/* MODE */}
+                    <div className="rounded-2xl bg-white p-4 shadow">
+                        <div className="text-xs font-semibold uppercase tracking-wide text-gray-500">Mode</div>
+                        <div className="mt-3 flex flex-col gap-2">
                             <button
-                                className={`arbre-couvrant-btn ${order === 'CROISSANT' ? 'active' : ''}`}
-                                onClick={() => handleOrderChange('CROISSANT')}
+                                className={`w-full rounded-xl px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-blue/40 ${!isAutomatic
+                                        ? 'bg-blue text-white'
+                                        : 'border border-gray-200 text-darkBlue hover:bg-blue hover:text-white'
+                                    }`}
+                                onClick={() => handleModeChange('manual')}
                             >
-                                Croissant
+                                <span className="mr-2">🖱️</span> Manuel
                             </button>
                             <button
-                                className={`arbre-couvrant-btn ${order === 'DECROISSANT' ? 'active' : ''}`}
-                                onClick={() => handleOrderChange('DECROISSANT')}
+                                className={`w-full rounded-xl px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-blue/40 ${isAutomatic
+                                        ? 'bg-blue text-white'
+                                        : 'border border-gray-200 text-darkBlue hover:bg-blue hover:text-white'
+                                    }`}
+                                onClick={() => handleModeChange('automatic')}
                             >
-                                Décroissant
-                            </button>
-                            <button
-                                className={`arbre-couvrant-btn ${order === 'ALEATOIRE' ? 'active' : ''}`}
-                                onClick={() => handleOrderChange('ALEATOIRE')}
-                            >
-                                Aléatoire
+                                <span className="mr-2">▶️</span> Auto
                             </button>
                         </div>
-                    )}
-                    <div className="arbre-couvrant-selector">
-                        <button
-                            className={`arbre-couvrant-btn ${!isAutomatic ? 'active' : ''}`}
-                            onClick={() => handleModeChange('manual')}
-                        >
-                            Mode Manuel
-                        </button>
-                        <button
-                            className={`arbre-couvrant-btn ${isAutomatic ? 'active' : ''}`}
-                            onClick={() => handleModeChange('automatic')}
-                        >
-                            Mode Automatique
-                        </button>
                     </div>
-                    {!isAutomatic ? (
-                        <div className="tree-mode-step-controls">
-                            <button
-                                className="arbre-couvrant-btn"
-                                onClick={handlePreviousStep}
-                                disabled={currentStep <= 0}
-                            >
-                                ← Précédent
-                            </button>
-                            <button
-                                className="arbre-couvrant-btn"
-                                onClick={handleReset}
-                                disabled={currentStep === -1}
-                            >
-                                Réinitialiser
-                            </button>
-                            <button
-                                className="arbre-couvrant-btn"
-                                onClick={handleNextStep}
-                                disabled={currentStep === steps.length - 1}
-                            >
-                                Suivant →
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="tree-mode-speed-controls">
-                            <button
-                                className={`arbre-couvrant-btn ${isPlaying ? 'pause' : 'play'} arbre-couvrant-btn-playpause`}
-                                onClick={handlePlayPause}
-                            >
-                                {isPlaying ? '⏸️ Pause' : '▶️ Démarrer'}
-                            </button>
-                            <button 
-                                className="arbre-couvrant-btn speed-control-btn" 
-                                onClick={handleSpeedDown} 
-                                title="Ralentir"
-                                disabled={speed === 2000}
-                            >
-                                ⏪
-                            </button>
-                            <div className="tree-mode-speed-display">
-                                {speed === 2000 ? '0.5x' : speed === 1000 ? '1x' : '2x'}
+
+                    {/* NAVIGATION */}
+                    <div className="rounded-2xl bg-white p-4 shadow">
+                        <div className="text-xs font-semibold uppercase tracking-wide text-gray-500">Navigation</div>
+
+                        {!isAutomatic ? (
+                            <div className="mt-3 flex flex-col gap-3">
+                                <button
+                                    className="w-full rounded-xl border-2 border-blue px-4 py-2.5 text-sm font-semibold text-blue transition hover:bg-blue hover:text-white focus:outline-none focus:ring-2 focus:ring-blue/40 disabled:cursor-not-allowed disabled:opacity-50"
+                                    onClick={handlePreviousStep}
+                                    disabled={currentStep <= 0}
+                                >
+                                    ⏮️ Précédent
+                                </button>
+                                <button
+                                    className="w-full rounded-xl border-2 border-amber-500 px-4 py-2.5 text-sm font-semibold text-amber-600 transition hover:bg-amber-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-amber-400/40 disabled:cursor-not-allowed disabled:opacity-50"
+                                    onClick={handleReset}
+                                    disabled={currentStep === -1}
+                                >
+                                    🔁 Réinitialiser
+                                </button>
+                                <button
+                                    className="w-full rounded-xl border-2 border-green px-4 py-2.5 text-sm font-semibold text-green transition hover:bg-green hover:text-white focus:outline-none focus:ring-2 focus:ring-green/40 disabled:cursor-not-allowed disabled:opacity-50"
+                                    onClick={handleNextStep}
+                                    disabled={currentStep === steps.length - 1}
+                                >
+                                    ⏭️ Suivant
+                                </button>
                             </div>
-                            <button 
-                                className="arbre-couvrant-btn speed-control-btn" 
-                                onClick={handleSpeedUp} 
-                                title="Accélérer"
-                                disabled={speed === 500}
-                            >
-                                ⏩
-                            </button>
+                        ) : (
+                            <div className="mt-3 flex flex-col gap-3">
+                                <button
+                                    className={`w-full rounded-xl px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-blue/40 ${isPlaying
+                                            ? 'border-2 border-amber-500 text-amber-600 hover:bg-amber-500 hover:text-white'
+                                            : 'border-2 border-green text-green hover:bg-green hover:text-white'
+                                        }`}
+                                    onClick={handlePlayPause}
+                                >
+                                    {isPlaying ? '⏸️ Pause' : '▶️ Démarrer'}
+                                </button>
+
+                                <div className="grid grid-cols-3 items-center gap-2">
+                                    <button
+                                        className="rounded-xl border-2 border-blue px-3 py-2 text-sm font-semibold text-blue transition hover:bg-blue hover:text-white focus:outline-none focus:ring-2 focus:ring-blue/40 disabled:cursor-not-allowed disabled:opacity-50"
+                                        onClick={handleSpeedDown}
+                                        title="Ralentir"
+                                        disabled={speed === 2000}
+                                    >
+                                        ⏪
+                                    </button>
+                                    <div className="rounded-xl border border-gray-200 px-2 py-2 text-center text-sm font-semibold text-darkBlue">
+                                        {speed === 2000 ? '0.5x' : speed === 1000 ? '1x' : '2x'}
+                                    </div>
+                                    <button
+                                        className="rounded-xl border-2 border-blue px-3 py-2 text-sm font-semibold text-blue transition hover:bg-blue hover:text-white focus:outline-none focus:ring-2 focus:ring-blue/40 disabled:cursor-not-allowed disabled:opacity-50"
+                                        onClick={handleSpeedUp}
+                                        title="Accélérer"
+                                        disabled={speed === 500}
+                                    >
+                                        ⏩
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Option d’ordre (uniquement pour exchange-property) */}
+                        {algo === 'exchange-property' && (
+                            <div className="mt-4">
+                                <div className="text-xs font-semibold uppercase tracking-wide text-gray-500">Ordre de tri</div>
+                                <div className="mt-2 grid grid-cols-3 gap-2">
+                                    <button
+                                        className={`rounded-xl px-3 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-blue/40 ${order === 'CROISSANT'
+                                                ? 'bg-blue text-white'
+                                                : 'border border-gray-200 text-darkBlue hover:bg-blue hover:text-white'
+                                            }`}
+                                        onClick={() => handleOrderChange('CROISSANT')}
+                                    >
+                                        ⬆️
+                                    </button>
+                                    <button
+                                        className={`rounded-xl px-3 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-blue/40 ${order === 'DECROISSANT'
+                                                ? 'bg-blue text-white'
+                                                : 'border border-gray-200 text-darkBlue hover:bg-blue hover:text-white'
+                                            }`}
+                                        onClick={() => handleOrderChange('DECROISSANT')}
+                                    >
+                                        ⬇️
+                                    </button>
+                                    <button
+                                        className={`rounded-xl px-3 py-2 text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-blue/40 ${order === 'ALEATOIRE'
+                                                ? 'bg-blue text-white'
+                                                : 'border border-gray-200 text-darkBlue hover:bg-blue hover:text-white'
+                                            }`}
+                                        onClick={() => handleOrderChange('ALEATOIRE')}
+                                    >
+                                        🎲
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Panneau progression */}
+                    <div className="rounded-2xl bg-white p-4 shadow">
+                        <div className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-3">Progression</div>
+                        <div className="flex items-center justify-center">
+                            <div className="rounded-xl bg-gray-50 px-4 py-3 text-sm font-semibold text-darkBlue shadow-sm">
+                                Étape {currentStep >= 0 ? currentStep + 1 : 0} sur {steps.length}
+                            </div>
                         </div>
-                    )}
-                    <div className="tree-mode-progress">
-                        Étape {currentStep >= 0 ? currentStep + 1 : 0} sur {steps.length}
                     </div>
                 </div>
-                <div className="tree-mode-explanation-box">
-                    {currentStep >= 0 && explanation}
+
+                {/* Colonne centre : GraphDisplay */}
+                <div className="md:col-span-8 flex flex-col gap-4">
+                    {/* Graph Display */}
+                    {graphDisplay && (
+                        <div className="flex-1 overflow-hidden rounded-2xl bg-white p-3 shadow min-h-[400px]">
+                            {graphDisplay}
+                        </div>
+                    )}
+                </div>
+
+                {/* Colonne droite : Composantes + Explication */}
+                <div className="md:col-span-2 flex flex-col gap-4">
+                    {/* Composantes */}
+                    {componentsInfo && (
+                        <div className="rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                            <div className="font-semibold mb-2">Composantes :</div>
+                            <div className="text-xs">
+                                {componentsInfo}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Explication */}
+                    <div className="rounded-2xl bg-white p-4 shadow">
+                        <div className="flex items-center gap-2">
+                            <span>💡</span>
+                            <div className="text-sm font-semibold text-darkBlue">Explication</div>
+                        </div>
+                        <div className="mt-3 rounded-xl border border-gray-100 bg-gray-50 px-3 py-3 text-sm text-gray-700">
+                            {currentStep >= 0 ? explanation : (
+                                <>Sélectionnez un mode et commencez la visualisation pour voir les explications détaillées de chaque étape.</>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            {/* Popup succès */}
             {showSuccessPopup && (
                 <ValidationPopup
                     type="success"
@@ -485,6 +500,7 @@ const AlgoVisualization = ({ algo, graph, cyRef, onSelectedEdgesChange }) => {
             )}
         </>
     );
+
 };
 
-export default AlgoVisualization; 
+export default AlgoVisualization;

@@ -3,8 +3,7 @@ import { useState, useEffect } from 'react';
 import config from '../../config';
 import GraphEditor from './GraphEditor';
 
-// Styles
-import '../../styles/Admin/GraphList.css';
+// ❌ supprimé : import '../../styles/Admin/GraphList.css';
 
 const GRAPHS_PER_PAGE = 12;
 
@@ -95,64 +94,73 @@ const GraphList = () => {
 
     if (loading) {
         return (
-            <div className="graph-list">
-                <div className="admin-loading-state">Chargement des graphes...</div>
+            <div className="p-8 max-w-6xl mx-auto font-['Poppins',Arial,sans-serif]">
+                <div className="flex justify-center items-center min-h-[200px] text-xl text-darkBlue">
+                    Chargement des graphes...
+                </div>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="graph-list">
-                <div className="admin-error-state">{error}</div>
+            <div className="p-8 max-w-6xl mx-auto font-['Poppins',Arial,sans-serif]">
+                <div className="text-white bg-red rounded-lg p-4 my-4 font-medium">{error}</div>
             </div>
         );
     }
 
     return (
-        <div className="graph-list">
-            <header className="list-header">
-                <h1>Gestion des Graphes</h1>
-                <div className="admin-header-actions">
-                    <button className="admin-btn admin-btn-primary" onClick={handleCreate}>
+        <div className="p-8 max-w-6xl mx-auto font-['Poppins',Arial,sans-serif]">
+            <header className="flex justify-between items-center mb-8">
+                <h1 className="text-4xl text-darkBlue m-0 font-bold tracking-wide drop-shadow-sm">
+                    Gestion des Graphes
+                </h1>
+                <div className="flex gap-4 items-center">
+                    <button 
+                        className="px-6 py-3 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 border-none bg-gradient-to-r from-green to-blue text-white shadow-md hover:shadow-lg hover:-translate-y-0.5" 
+                        onClick={handleCreate}
+                    >
                         Nouveau Graphe
                     </button>
                 </div>
             </header>
 
-            <main className="list-content">
-                <section className="graphs-section">
-                    <div className="admin-section-header">
-                        <h2>Graphes</h2>
-                        <div className="admin-filters">
+            <main>
+                <section>
+                    <div className="flex justify-between items-center mb-6 flex-col sm:flex-row gap-4">
+                        <h2 className="text-2xl text-darkBlue m-0 font-semibold">Graphes</h2>
+                        <div className="flex gap-4 items-center">
                             <input 
                                 type="text" 
                                 placeholder="Rechercher un graphe..." 
-                                className="admin-search-input"
+                                className="px-4 py-2 border-[1.5px] border-grey rounded-lg text-base font-inherit bg-white text-darkBlue transition-all duration-200 min-w-[250px] focus:border-blue focus:outline-none"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </div>
                     </div>
 
-                    <div className="graphs-grid">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {paginatedGraphs.length === 0 ? (
-                            <div className="admin-no-data">Aucun graphe trouvé</div>
+                            <div className="col-span-full text-center py-8 text-xl text-darkBlue">
+                                Aucun graphe trouvé
+                            </div>
                         ) : (
                             paginatedGraphs.map(graph => (
-                                <div key={graph._id} className="admin-graph-card">
-                                    <div className="admin-graph-info">
-                                        <h3>{graph.name}</h3>
+                                <div key={graph._id} className="bg-white rounded-2xl p-6 shadow-md border border-grey transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg">
+                                    <div className="mb-4">
+                                        <h3 className="text-xl text-darkBlue m-0 mb-4 font-semibold">{graph.name}</h3>
                                     </div>
-                                    <div className="admin-graph-actions">
+                                    <div className="flex gap-3 flex-wrap">
                                         <button 
-                                            className="admin-btn admin-btn-secondary"
+                                            className="px-4 py-2 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 bg-white text-darkBlue border-[1.5px] border-darkBlue hover:bg-blue hover:text-white hover:border-blue"
                                             onClick={() => handleEdit(graph._id)}
                                         >
                                             Modifier
                                         </button>
                                         <button 
-                                            className="admin-btn admin-btn-danger"
+                                            className="px-4 py-2 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 bg-white text-red border-[1.5px] border-red hover:bg-red hover:text-white hover:border-red"
                                             onClick={() => handleDelete(graph._id)}
                                         >
                                             Supprimer
@@ -164,10 +172,10 @@ const GraphList = () => {
                     </div>
 
                     {totalPages > 1 && (
-                        <div className="admin-pagination">
+                        <div className="flex justify-center items-center gap-2 mt-8">
                             <button
                                 key="prev"
-                                className="admin-pagination-btn admin-pagination-btn"
+                                className="bg-white border-[1.5px] border-blue text-blue px-4 py-2 rounded-lg cursor-pointer text-base font-inherit font-medium transition-all duration-200 hover:bg-blue hover:text-white hover:border-blue disabled:opacity-50 disabled:cursor-not-allowed"
                                 onClick={() => handlePageChange(currentPage - 1)}
                                 disabled={currentPage === 1}
                             >
@@ -176,7 +184,11 @@ const GraphList = () => {
                             {[...Array(totalPages)].map((_, i) => (
                                 <button
                                     key={`page-${i + 1}`}
-                                    className={`admin-pagination-btn admin-pagination-btn${currentPage === i + 1 ? ' active' : ''}`}
+                                    className={`px-4 py-2 rounded-lg cursor-pointer text-base font-inherit font-medium transition-all duration-200 ${
+                                        currentPage === i + 1 
+                                            ? 'bg-blue text-white border-[1.5px] border-blue' 
+                                            : 'bg-white text-blue border-[1.5px] border-blue hover:bg-blue hover:text-white hover:border-blue'
+                                    }`}
                                     onClick={() => handlePageChange(i + 1)}
                                 >
                                     {i + 1}
@@ -184,7 +196,7 @@ const GraphList = () => {
                             ))}
                             <button
                                 key="next"
-                                className="admin-pagination-btn admin-pagination-btn"
+                                className="bg-white border-[1.5px] border-blue text-blue px-4 py-2 rounded-lg cursor-pointer text-base font-inherit font-medium transition-all duration-200 hover:bg-blue hover:text-white hover:border-blue disabled:opacity-50 disabled:cursor-not-allowed"
                                 onClick={() => handlePageChange(currentPage + 1)}
                                 disabled={currentPage === totalPages}
                             >

@@ -1,11 +1,11 @@
 import AdminSidebar from './AdminSidebar';
-import '../../styles/Admin/AdminLayout.css';
+// ❌ supprimé : import '../../styles/Admin/AdminLayout.css';
 
 const AdminLayout = ({ children }) => {
     return (
-        <div className="admin-layout">
+        <div className="flex min-h-screen font-['Poppins',Arial,sans-serif]">
             <AdminSidebar />
-            <div className="admin-main">
+            <div className="flex-1 ml-0 md:ml-[250px] bg-gray-50 min-h-screen overflow-y-auto">
                 {children}
             </div>
         </div>

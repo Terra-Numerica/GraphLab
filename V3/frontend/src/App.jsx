@@ -79,11 +79,11 @@ function ProtectedWorkshopRoute({ children, workshopType }) {
 }
 
 // Layout pour les pages publiques (avec navbar et footer)
-function PublicLayout({ children }) {
+function PublicLayout({ children, fullWidth = false }) {
 	return (
 		<div className="app">
 			<Navbar />
-			<main className="main-content">
+			<main className={fullWidth ? "main-content-full" : "main-content"}>
 				{children}
 			</main>
 			<Footer />
@@ -122,6 +122,15 @@ function App() {
 	return (
 		<BrowserRouter>
 			<Routes>
+				{/* Route spécifique pour AlgoPage avec fullWidth */}
+				<Route path="/arbre-couvrant/:algo/:graphId" element={
+					<PublicLayout fullWidth={true}>
+						<ProtectedWorkshopRoute workshopType="spanningTree">
+							<AlgoPage />
+						</ProtectedWorkshopRoute>
+					</PublicLayout>
+				} />
+				
 				{/* Routes publiques avec navbar et footer */}
 				<Route path="/*" element={
 					<PublicLayout>
@@ -155,11 +164,6 @@ function App() {
 							<Route path="/arbre-couvrant/try" element={
 								<ProtectedWorkshopRoute workshopType="spanningTree">
 									<ArbreCouvrantTry />
-								</ProtectedWorkshopRoute>
-							} />
-							<Route path="/arbre-couvrant/:algo/:graphId" element={
-								<ProtectedWorkshopRoute workshopType="spanningTree">
-									<AlgoPage />
 								</ProtectedWorkshopRoute>
 							} />
 							<Route path="/railway-maze" element={

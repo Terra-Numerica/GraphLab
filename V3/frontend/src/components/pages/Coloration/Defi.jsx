@@ -10,10 +10,9 @@ import GraphDisplay from './GraphDisplay';
 import { useFetchGraphs, useFetchGraph } from '../../../hooks/useFetchGraphs';
 import { useTimer } from '../../../hooks/useTimer';
 
-import '../../../styles/pages/Coloration/ColorationStyles.css';
+// ❌ supprimé : import '../../../styles/pages/Coloration/ColorationStyles.css';
 
 const Defi = () => {
-
     const [graphs, setGraphs] = useState({
         tresFacile: [],
         facile: [],
@@ -247,8 +246,8 @@ const Defi = () => {
             for (let i = 0; i < count; i++) {
                 cyRef.current.add({
                     group: 'nodes',
-                    data: { 
-                        id: `color-${color}-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`, 
+                    data: {
+                        id: `color-${color}-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`,
                         isColorNode: true,
                         color: color
                     },
@@ -339,49 +338,101 @@ const Defi = () => {
     }
 
     return (
-        <div className="workshop-container">
-            <button className="workshop-back-btn" onClick={() => navigate('/coloration')}>&larr; Retour</button>
-            <h2 className="workshop-title">Mode Défi</h2>
-            <div className="workshop-top-bar">
-                <select
-                    className="workshop-select"
-                    value={selectedGraph}
-                    onChange={handleGraphSelect}
-                    disabled={graphsLoading}
-                >
-                    <option value="" disabled hidden>
-                        {graphsLoading ? "Chargement des graphes..." : "Choisis un graphe"}
-                    </option>
-                    {Object.entries(graphs).map(([difficulty, graphList]) => (
-                        graphList.length > 0 && (
-                            <optgroup key={difficulty} label={difficultyLabels[difficulty]}>
-                                {graphList.map((graph) => (
-                                    <option key={graph._id} value={graph._id}>
-                                        {graph.name}
-                                    </option>
-                                ))}
-                            </optgroup>
-                        )
-                    ))}
-                </select>
-                {error && <div className="workshop-error-message">{error}</div>}
-                {currentGraph && <TimerDisplay time={time} formatTime={formatTime} />}
-            </div>
-            {currentGraph && !graphLoading && <div className="workshop-buttons-row">
-                <button className="workshop-btn workshop-btn-validate" onClick={validateGraph}>Valider la coloration</button>
-                <button className="workshop-btn workshop-btn-reset" onClick={resetColors}>Réinitialiser la coloration</button>
+        <div className="w-full bg-gray-100 px-4 sm:px-8 md:px-16 py-8">
+            <div className="mx-auto max-w-6xl">
+                {/* Back */}
                 <button
-                    className="workshop-btn workshop-btn-impossible"
-                    onClick={handleImpossible}
-                    disabled={!isImpossibleEnabled}
+                    className="inline-flex items-center gap-2 rounded-xl border-2 border-blue px-4 py-2 text-sm font-semibold text-blue hover:bg-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-blue/40"
+                    onClick={() => navigate('/coloration')}
                 >
-                    Je pense qu'il est impossible
+                    <span aria-hidden="true">←</span> Retour
                 </button>
-            </div>}
 
-            {currentGraph && !graphLoading && <GraphDisplay graphData={currentGraph} cyRef={cyRef} />}
+                {/* Title */}
+                <h2 className="mt-4 text-center text-3xl md:text-4xl font-bold text-darkBlue">Mode Défi</h2>
 
-            <button className="workshop-rules-btn" onClick={() => setShowRules(true)}>&#9432; Voir les règles</button>
+                {/* Top bar */}
+                <div className="mt-6 flex flex-col items-stretch gap-3 rounded-2xl bg-white p-4 shadow md:flex-row md:items-center md:justify-between">
+                    <div className="flex w-64 items-center gap-3 md:max-w-xl">
+                        <select
+                            className="w-full rounded-xl border border-grey bg-white px-3 py-2 text-astro shadow-sm focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/30"
+                            value={selectedGraph}
+                            onChange={handleGraphSelect}
+                            disabled={graphsLoading}
+                        >
+                            <option value="" disabled hidden>
+                                {graphsLoading ? "Chargement des graphes..." : "Choisis un graphe"}
+                            </option>
+                            {Object.entries(graphs).map(([difficulty, graphList]) => (
+                                graphList.length > 0 && (
+                                    <optgroup key={difficulty} label={difficultyLabels[difficulty]}>
+                                        {graphList.map((graph) => (
+                                            <option key={graph._id} value={graph._id}>
+                                                {graph.name}
+                                            </option>
+                                        ))}
+                                    </optgroup>
+                                )
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="flex-1">
+                        {error && (
+                            <div className="rounded-lg bg-red/10 px-3 py-2 text-sm font-medium text-red">
+                                {error}
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex items-center justify-end">
+                        {currentGraph && <TimerDisplay time={time} formatTime={formatTime} />}
+                    </div>
+                </div>
+
+                {/* Buttons row */}
+                {currentGraph && !graphLoading && (
+                    <div className="mt-6 flex flex-col items-stretch justify-center gap-3 sm:flex-row">
+                        <button
+                            className="inline-flex items-center justify-center rounded-xl border-2 border-green px-5 py-2.5 text-sm font-semibold text-green hover:bg-green hover:text-white transition focus:outline-none focus:ring-2 focus:ring-green/40"
+                            onClick={validateGraph}
+                        >
+                            Valider la coloration
+                        </button>
+                        <button
+                            className="inline-flex items-center justify-center rounded-xl border-2 border-red px-5 py-2.5 text-sm font-semibold text-red hover:bg-red hover:text-white transition focus:outline-none focus:ring-2 focus:ring-red/40"
+                            onClick={resetColors}
+                        >
+                            Réinitialiser la coloration
+                        </button>
+                        <button
+                            className="inline-flex items-center justify-center rounded-xl border-2 border-orange-500 px-5 py-2.5 text-sm font-semibold text-orange-600 hover:bg-orange-500 hover:text-white transition focus:outline-none focus:ring-2 focus:ring-orange-400/40 disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={handleImpossible}
+                            disabled={!isImpossibleEnabled}
+                        >
+                            Je pense qu'il est impossible
+                        </button>
+                    </div>
+                )}
+
+                {/* Graph area */}
+                {currentGraph && !graphLoading && (
+                    <div className="mt-6 overflow-hidden rounded-2xl bg-white p-3 shadow">
+                        <GraphDisplay graphData={currentGraph} cyRef={cyRef} />
+                    </div>
+                )}
+            </div>
+
+            {/* Floating rules button */}
+            <button
+                className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full bg-green px-5 py-3 text-base font-bold text-white shadow-xl hover:bg-green-hover hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green/40 transition-all duration-200"
+                onClick={() => setShowRules(true)}
+                aria-label="Voir les règles"
+            >
+                &#9432; Voir les règles
+            </button>
+
+            {/* Popups */}
             {validationPopup && (
                 <ValidationPopup
                     type={validationPopup.type}
@@ -394,21 +445,21 @@ const Defi = () => {
             {showRules && (
                 <RulesPopup title="Règles du mode Défi" onClose={() => setShowRules(false)}>
                     <h3>🎯 Objectif</h3>
-                    <ul>
+                    <ul className="list-disc pl-5">
                         <li>Deux sommets adjacents ne doivent jamais avoir la même couleur.</li>
                         <li>Tu disposes d'un nombre limité de pastilles que tu dois placer correctement.</li>
                     </ul>
 
-                    <h3>🛠️ Comment jouer à la <strong>Coloration d'un Graphe</strong></h3>
-                    <ul>
+                    <h3 className="mt-4">🛠️ Comment jouer à la <strong>Coloration d'un Graphe</strong></h3>
+                    <ul className="list-disc pl-5">
                         <li>Choisis un graphe prédéfini dans le menu déroulant.</li>
                         <li>Attrape une pastille de couleur, fais-la glisser vers un sommet et relâche-la pour lui attribuer cette couleur.</li>
                         <li>Colorie entièrement le graphe en respectant les règles de coloration.</li>
                         <li>Quand tu penses avoir réussi, clique sur le bouton <strong>Valider la Coloration</strong> pour vérifier si le graphe est correctement coloré.</li>
                     </ul>
 
-                    <h3>🔧 Fonctionnalités</h3>
-                    <ul>
+                    <h3 className="mt-4">🔧 Fonctionnalités</h3>
+                    <ul className="list-disc pl-5">
                         <li>Si tu penses avoir fait une erreur, tu peux faire un clic droit sur un sommet pour lui retirer sa couleur.</li>
                         <li>Si tu veux recommencer, clique sur <strong>Réinitialiser la Coloration</strong> pour remettre tous les sommets dans leur état initial.</li>
                     </ul>
@@ -418,4 +469,4 @@ const Defi = () => {
     );
 };
 
-export default Defi; 
+export default Defi;
