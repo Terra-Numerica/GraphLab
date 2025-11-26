@@ -1,6 +1,5 @@
 // Imports
 import mongoose from "mongoose";
-import fs from "fs/promises";
 
 import { z } from "zod";
 
@@ -19,23 +18,6 @@ export const checkConfig = async (): Promise<void> => {
 		envSchema.parse(process.env);
 
 		await mongoose.connect(process.env.MONGODB_URL!);
-
-		if (process.env.NODE_ENV === "production") {
-
-			const files = await fs.readdir("./dist");
-
-			if (files.length === 0) {
-				throw new Error("No files found in the dist folder.");
-			};
-
-			if (process.argv[1].endsWith("index.ts")) {
-				throw new Error("You are running the bot in production mode, please run the bot in development mode.");
-			};
-		};
-
-		if (process.env.NODE_ENV === "development" && process.argv[1].endsWith("index.js")) {
-			throw new Error("You are running the bot in development mode, please run the bot bot in production mode.");
-		};
 
 		if (mongoose.connection.readyState === 1) {
 			await mongoose.disconnect();

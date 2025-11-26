@@ -5,19 +5,19 @@ import chalk from "chalk";
 export default class Logger {
 
 	static info(content: string) {
-		console.log(`${chalk.magenta("{GraphLab-V2}")} ${content}`);
+		console.log(`${chalk.magenta("{GraphLab}")} ${content}`);
 	};
 
 	static success(content: string) {
-		console.log(`${chalk.green("{GraphLab-V2}")} ${content}`);
+		console.log(`${chalk.green("{GraphLab}")} ${content}`);
 	};
 
 	static error(content: string) {
-		console.log(`${chalk.red("{GraphLab-V2}")} ${content}`);
+		console.log(`${chalk.red("{GraphLab}")} ${content}`);
 	};
 
 	static debug(content: string) {
-		console.log(`${chalk.yellow("{GraphLab-V2}")} ${content}`);
+		console.log(`${chalk.yellow("{GraphLab}")} ${content}`);
 	};
 
 	static separator() {

@@ -1,13 +1,17 @@
 services:
-  graphlab-backend:
-    build: ./backend
+  graphlab:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.graphlab-backend.rule=Host(`portail.terra-numerica.org`) && PathPrefix(`/graphlab`)"
-      - "traefik.http.routers.graphlab-backend.entrypoints=web, websecure"
-      - "traefik.http.routers.graphlab-backend.service=graphlab-backend-service"
-      - "traefik.http.services.graphlab-backend-service.loadbalancer.server.port=3000"
-      - "traefik.http.routers.graphlab-backend.tls=true"
+      - "traefik.http.routers.graphlab.tls=true"
+      - "traefik.http.routers.graphlab.service=graphlab-service"
+      - "traefik.http.routers.graphlab.entrypoints=web,websecure"
+      - "traefik.http.routers.graphlab.middlewares=graphlab-stripprefix"
+      - "traefik.http.routers.graphlab.rule=Host(`portail.terra-numerica.org`) && PathPrefix(`/graphlab`)"
+      - "traefik.http.services.graphlab-service.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.graphlab-stripprefix.stripprefix.prefixes=/graphlab"
     env_file:
       - .env
     restart: unless-stopped
@@ -15,27 +19,7 @@ services:
       - ./.env:/app/.env
     networks:
       - traefik
-      - tnresa
-  graphlab-frontend:
-    build: ./frontend
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.graphlab-frontend.rule=Host(`portail.terra-numerica.org`) && PathPrefix(`/graphlab`)"
-      - "traefik.http.routers.graphlab-frontend.entrypoints=web, websecure"
-      - "traefik.http.routers.graphlab-frontend.service=graphlab-frontend-service"
-      - "traefik.http.services.graphlab-frontend-service.loadbalancer.server.port=4173"
-      - "traefik.http.routers.graphlab-frontend.tls=true"
-    env_file:
-      - .env
-    volumes:
-      - ./.env:/app/.env
-    restart: unless-stopped
-    networks:
-      - traefik
-      - tnresa
 
 networks:
   traefik:
-    external: true
-  tnresa:
     external: true

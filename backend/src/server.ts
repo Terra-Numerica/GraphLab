@@ -1,5 +1,4 @@
 // Imports
-import { backendKeepAlive, frontendKeepAlive, getCurrentHour, isWeekend } from "@/utils/functions";
 import { connectDatabase } from "@/base/Database";
 import { checkConfig } from "@/utils/config";
 
@@ -7,6 +6,7 @@ import Logger from "@/base/Logger";
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { serve } from '@hono/node-server';
+import { serveStatic } from '@hono/node-server/serve-static';
 import "dotenv/config";
 
 // Routes
@@ -30,6 +30,17 @@ try {
         allowMethods: ["GET", "POST", "PUT", "DELETE"],
         allowHeaders: ["Content-Type", "Authorization"]
     }));
+
+    if (process.env.NODE_ENV === "production") {
+        app.use("*", serveStatic({
+            root: "./public/"
+        }));
+
+        app.use("/*", serveStatic({
+            root: "./public/",
+            path: "index.html"
+        }));
+    }
 
     // Initialize Database Connection
     Logger.info("Connecting to the database...");
@@ -72,27 +83,6 @@ try {
     }, (info) => {
         Logger.success(`Hono server is running on port ${info.port}`);
     });
-
-    if (process.env.NODE_ENV === "production") {
-        let isServiceActive = false;
-
-        setInterval(async () => {
-
-            const parisHour = parseInt(getCurrentHour(), 10);
-            const shouldBeActive = (parisHour >= 8 && parisHour < 17) || isWeekend();
-
-            await backendKeepAlive();
-
-            if (shouldBeActive && !isServiceActive) {
-                isServiceActive = true;
-                await frontendKeepAlive();
-            } else if (!shouldBeActive && isServiceActive) {
-                isServiceActive = false;
-            } else if (shouldBeActive) {
-                await frontendKeepAlive();
-            }
-        }, 30000);
-    };
 
 } catch (error: any) {
     Logger.error("Failed to start server:");
