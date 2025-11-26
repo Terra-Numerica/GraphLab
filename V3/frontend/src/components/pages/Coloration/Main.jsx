@@ -29,7 +29,7 @@ const Main = () => {
         <div className="w-full bg-gray-100 flex items-center justify-center px-4 sm:px-8 md:px-16 py-8">
             <div className="max-w-4xl w-full bg-white rounded-2xl shadow p-6 md:p-8">
                 <h2 className="text-3xl md:text-4xl font-bold text-darkBlue mb-6 text-center">
-                    Coloration des Sommets
+                    Coloration de Graphe
                 </h2>
 
                 <div className="space-y-5 text-astro text-base md:text-lg leading-relaxed">

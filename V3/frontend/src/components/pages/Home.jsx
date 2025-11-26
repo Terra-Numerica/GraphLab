@@ -76,7 +76,7 @@ const Home = () => {
                         <div className="workshop-card-vertical group flex flex-col items-start gap-3 rounded-2xl border border-grey bg-white p-6 shadow-sm transition hover:shadow-md">
                             <div className="workshop-icon-vertical text-3xl">🎨</div>
                             <div className="workshop-title-vertical text-lg font-semibold text-darkBlue">
-                                Coloration des Sommets
+                                Coloration de Graphe
                             </div>
                             <div className="workshop-desc-vertical text-sm text-astro/80">
                                 Explore le problème de coloration des graphes : attribue des couleurs aux sommets en respectant la contrainte d&apos;adjacence.
@@ -112,11 +112,11 @@ const Home = () => {
                         <div className="workshop-card-vertical group flex flex-col items-start gap-3 rounded-2xl border border-grey bg-white p-6 shadow-sm transition hover:shadow-md">
                             <div className="workshop-icon-vertical text-3xl">🚂</div>
                             <div className="workshop-title-vertical text-lg font-semibold text-darkBlue">
-                                Railway Maze
+                                Labyrinthe Voyageur
                             </div>
-                            <div className="workshop-desc-vertical text-sm text-astro/80">
-                                Résous le labyrinthe ferroviaire en suivant les règles de couleur des rails.
-                            </div>
+                        <div className="workshop-desc-vertical text-sm text-astro/80">
+                            Trouvez un chemin du point A au point B en respectant les contraintes de transitions : arrivée par une couleur, départ par l'autre.
+                        </div>
                             <Link
                                 to="/railway-maze"
                                 className="workshop-play-btn mt-1 inline-flex items-center justify-center rounded-xl bg-blue px-4 py-2 font-semibold text-white shadow transition hover:bg-blue-hover focus:outline-none focus:ring-2 focus:ring-blue/40"

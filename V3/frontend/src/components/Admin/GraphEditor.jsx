@@ -653,8 +653,9 @@ const GraphEditor = ({ graphId = null, onClose }) => {
     if (loading) {
         return (
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000] flex items-center justify-center p-8">
-                <div className="text-center p-8 text-xl text-darkBlue bg-white rounded-lg shadow-2xl">
-                    Chargement...
+                <div className="bg-white rounded-2xl p-8 shadow-2xl text-center">
+                    <div className="w-8 h-8 border-4 border-blue/30 border-t-blue rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-xl text-darkBlue font-medium">Chargement du graphe...</p>
                 </div>
             </div>
         );
@@ -663,8 +664,22 @@ const GraphEditor = ({ graphId = null, onClose }) => {
     if (error) {
         return (
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000] flex items-center justify-center p-8">
-                <div className="text-center p-8 text-xl text-white bg-red rounded-lg shadow-2xl">
-                    {error}
+                <div className="bg-white rounded-2xl p-8 shadow-2xl">
+                    <div className="flex items-center gap-4 p-6 bg-red/10 border border-red/20 rounded-xl">
+                        <div className="text-3xl">⚠️</div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-red mb-1">Erreur</h3>
+                            <p className="text-red/80">{error}</p>
+                        </div>
+                    </div>
+                    <div className="flex justify-center mt-6">
+                        <button 
+                            onClick={onClose}
+                            className="inline-flex items-center justify-center rounded-xl bg-red px-6 py-3 font-semibold text-white shadow transition hover:bg-red-hover focus:outline-none focus:ring-2 focus:ring-red/40"
+                        >
+                            Fermer
+                        </button>
+                    </div>
                 </div>
             </div>
         );

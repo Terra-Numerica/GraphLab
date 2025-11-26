@@ -439,7 +439,7 @@ const AlgoVisualization = ({ algo, graph, cyRef, onSelectedEdgesChange, graphDis
                                 </div>
                             </div>
                         )}
-                    </div>
+                </div>
 
                     {/* Panneau progression */}
                     <div className="rounded-2xl bg-white p-4 shadow">

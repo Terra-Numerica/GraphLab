@@ -12,10 +12,15 @@ export default {
                     hover: '#117DBD',
                     light: '#95D1F5',
                 },
+                lightBlue: '#95D1F5',
+                blueHover: '#117DBD',
                 darkBlue: '#1A182D',
                 darkCyan: '#40E0D0',
                 darkRed: '#B22222',
-                yellow: '#F9BB12',
+                yellow: {
+                    DEFAULT: '#F9BB12',
+                    hover: '#E6A610',
+                },
                 astro: '#2A233E',
                 green: {
                     DEFAULT: '#00A19A',

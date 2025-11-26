@@ -408,31 +408,31 @@ const Penrose = () => {
                 </button>
 
                 {/* Title */}
-                <h2 className="mt-4 text-center text-3xl md:text-4xl font-bold text-darkBlue">Penrose Maze</h2>
+                <h2 className="mt-4 text-center text-3xl md:text-4xl font-bold text-darkBlue">Labyrinthe Voyageur</h2>
 
                 {/* Top bar */}
                 <div className="mt-6 flex flex-col gap-3 rounded-2xl bg-white p-4 shadow md:flex-row md:items-center md:justify-between">
                     <div className="flex w-full items-center gap-3 md:w-auto md:flex-row">
-                        <select
+                <select
                             className="w-full rounded-xl border border-grey bg-white px-3 py-2 text-astro shadow-sm focus:border-blue focus:outline-none focus:ring-2 focus:ring-blue/30 md:w-72"
-                            value={selectedGraph}
-                            onChange={handleGraphSelect}
-                            disabled={graphsLoading}
-                        >
-                            <option value="" disabled hidden>
-                                {graphsLoading ? "Chargement des graphes..." : "Choisis un graphe"}
-                            </option>
-                            {graphs.map((graph) => (
-                                <option key={graph._id} value={graph._id}>
-                                    {graph.name}
-                                </option>
-                            ))}
-                        </select>
+                    value={selectedGraph}
+                    onChange={handleGraphSelect}
+                    disabled={graphsLoading}
+                >
+                    <option value="" disabled hidden>
+                        {graphsLoading ? "Chargement des graphes..." : "Choisis un graphe"}
+                    </option>
+                    {graphs.map((graph) => (
+                        <option key={graph._id} value={graph._id}>
+                            {graph.name}
+                        </option>
+                    ))}
+                </select>
                     </div>
 
                     <div className="flex items-center justify-end">
-                        {currentGraph && <TimerDisplay time={time} formatTime={formatTime} />}
-                    </div>
+                {currentGraph && <TimerDisplay time={time} formatTime={formatTime} />}
+            </div>
                 </div>
 
                 {/* Error messages */}
@@ -479,7 +479,7 @@ const Penrose = () => {
                         <GraphDisplayMemo graphData={currentGraph} cyRef={cyRef} selectableNodes={selectableNodes} handleNextNode={handleNextNode} />
                     </div>
                 )}
-
+            
                 {/* Floating rules button */}
                 <button 
                     className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full bg-green px-5 py-3 text-base font-bold text-white shadow-xl hover:bg-green-hover hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green/40 transition-all duration-200"
@@ -490,24 +490,41 @@ const Penrose = () => {
                 </button>
 
                 {/* Popups */}
-                {validationPopup && (
-                    <ValidationPopup
-                        type={validationPopup.type}
-                        title={validationPopup.title}
-                        message={validationPopup.message}
-                        onClose={handleClosePopup}
-                    />
-                )}
-                {showRules && (
-                    <RulesPopup title="Règles du Jeu" onClose={() => setShowRules(false)}>
-                        <h3> PlaceholderCat1 </h3>
-                        <ul className="list-disc pl-5">
-                            <li>PlaceholderLigne1</li>
-                            <li>PlaceholderLigne2</li>
-                        </ul>
-                        <h3 className="mt-4"> PlaceholderCat2 </h3>
-                    </RulesPopup>
-                )}
+            {validationPopup && (
+                <ValidationPopup
+                    type={validationPopup.type}
+                    title={validationPopup.title}
+                    message={validationPopup.message}
+                    onClose={handleClosePopup}
+                />
+            )}
+            {showRules && (
+                <RulesPopup title="Règles du Jeu" onClose={() => setShowRules(false)}>
+                    <h3>🎯 Objectif</h3>
+                    <p>
+                        Trouvez un trajet du point A au point B qui satisfait la contrainte suivante : lorsque l'on arrive sur un nœud du réseau par un lien d'une certaine couleur (orange ou bleu), on ne peut partir de ce nœud que par un lien de l'autre couleur (bleu ou orange).
+                    </p>
+                    <p>
+                        <strong>Saurez-vous trouver un tel trajet qui utilise le moins de liens possible ?</strong>
+                    </p>
+
+                    <h3 className="mt-4">🛠️ Comment jouer au labyrinthe voyageur ?</h3>
+                    <ul className="list-disc pl-5">
+                        <li>Chaque lien entre deux nœuds a chacune de ses extrémités colorée orange ou bleu.</li>
+                        <li>Si vous arrivez sur un nœud par une extrémité bleue, vous ne pouvez en partir que par une extrémité orange (et vice versa).</li>
+                        <li>Le nœud en vert représente votre position courante et les nœuds en rouge sont les voisins de votre position auxquels vous pouvez accéder.</li>
+                        <li>Pour cela, cliquez sur le nœud rouge que vous voulez atteindre.</li>
+                        <li>Le chemin que vous avez suivi jusque là est décrit en vert (avec un dégradé de foncé au départ vers clair à votre position courante).</li>
+                    </ul>
+
+                    <h3 className="mt-4">🔧 Fonctionnalités</h3>
+                    <ul className="list-disc pl-5">
+                        <li><strong>Revenir en arrière :</strong> À tout moment, vous pouvez annuler votre dernier mouvement (et en répétant, vous pouvez revenir à n'importe quelle position que vous avez atteinte au préalable).</li>
+                        <li><strong>Réinitialiser :</strong> Il est possible de recommencer depuis le début.</li>
+                        <li><strong>Solution :</strong> Enfin, une solution optimale peut être affichée.</li>
+                    </ul>
+                </RulesPopup>
+            )}
             </div>
         </div>
     )

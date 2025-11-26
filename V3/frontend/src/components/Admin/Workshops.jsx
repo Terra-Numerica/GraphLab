@@ -168,161 +168,187 @@ const Workshops = () => {
 
     if (loading && !workshopId) {
         return (
-            <div className="p-8 max-w-6xl mx-auto font-['Poppins',Arial,sans-serif]">
-                <div className="flex justify-center items-center min-h-[200px] text-xl text-darkBlue">
-                    Chargement de la configuration...
-                </div>
+            <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 md:px-8 py-10">
+                <section className="rounded-2xl bg-white p-8 shadow-sm">
+                    <div className="flex justify-center items-center min-h-[200px] flex-col gap-4">
+                        <div className="w-8 h-8 border-4 border-blue/30 border-t-blue rounded-full animate-spin"></div>
+                        <p className="text-xl text-darkBlue font-medium">Chargement de la configuration...</p>
+                    </div>
+                </section>
             </div>
         );
     }
 
     return (
-        <div className="p-8 max-w-6xl mx-auto font-['Poppins',Arial,sans-serif]">
-            <header className="flex justify-between items-center mb-8">
-                <h1 className="text-4xl text-darkBlue m-0 font-bold tracking-wide drop-shadow-sm">
-                    Gestion des Ateliers
-                </h1>
-                <div className="flex gap-4 items-center">
+        <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 md:px-8 py-10">
+            {/* En-tête */}
+            <section className="rounded-2xl bg-white p-8 shadow-sm mb-10">
+                <div className="flex justify-between items-center mb-6 flex-col sm:flex-row gap-4">
+                    <div>
+                        <h1 className="text-darkBlue mb-3 text-3xl md:text-4xl font-bold tracking-wide drop-shadow-sm">
+                            Configuration des Ateliers
+                        </h1>
+                        <p className="text-astro leading-relaxed">
+                            Gérez la disponibilité des ateliers selon les environnements de déploiement.
+                        </p>
+                    </div>
                     <button 
-                        className="px-6 py-3 rounded-lg text-base font-semibold cursor-pointer transition-all duration-200 border-none bg-gradient-to-r from-green to-blue text-white shadow-md hover:shadow-lg hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed" 
+                        className="inline-flex items-center justify-center rounded-xl bg-green px-6 py-3 font-semibold text-white shadow transition hover:bg-green-hover focus:outline-none focus:ring-2 focus:ring-green/40 disabled:opacity-60 disabled:cursor-not-allowed" 
                         onClick={saveSettings}
                         disabled={loading}
                     >
-                        {loading ? 'Sauvegarde...' : 'Sauvegarder'}
+                        {loading ? (
+                            <>
+                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
+                                Sauvegarde...
+                            </>
+                        ) : (
+                            <>💾 Sauvegarder</>
+                        )}
                     </button>
                 </div>
-            </header>
 
-            <main>
+                {/* Messages d'état */}
                 {error && (
-                    <div className="bg-red-50 border border-red-200 text-red-800 rounded-lg p-4 mb-6 font-medium">
-                        {error}
+                    <div className="flex items-center gap-4 p-6 bg-red/10 border border-red/20 rounded-xl mb-6">
+                        <div className="text-3xl">⚠️</div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-red mb-1">Erreur</h3>
+                            <p className="text-red/80">{error}</p>
+                        </div>
                     </div>
                 )}
 
                 {success && (
-                    <div className="bg-green-50 border border-green-200 text-green-800 rounded-lg p-4 mb-6 font-medium">
-                        {success}
+                    <div className="flex items-center gap-4 p-6 bg-green/10 border border-green/20 rounded-xl mb-6">
+                        <div className="text-3xl">✅</div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-green mb-1">Succès</h3>
+                            <p className="text-green/80">{success}</p>
+                        </div>
                     </div>
                 )}
+            </section>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            {/* Configuration des ateliers */}
+            <section className="rounded-2xl bg-white p-8 shadow-sm mb-10">
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                     {Object.entries(workshopInfo).map(([key, info]) => {
                         const config = workshopConfig[key];
                         const isEnabled = isWorkshopEnabled(key);
                         
+                        // Icônes pour chaque atelier
+                        const workshopIcons = {
+                            coloring: '🎨',
+                            spanningTree: '🌳',
+                            railwayMaze: '🚂'
+                        };
+                        
                         return (
-                            <div key={key} className="bg-white rounded-2xl p-8 shadow-md border border-grey transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg">
-                                <div className="flex justify-between items-center mb-4">
-                                    <h3 className="text-2xl text-darkBlue m-0 font-semibold">{info.name}</h3>
-                                    <div>
-                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ${
-                                            isEnabled 
-                                                ? 'bg-green-100 text-green-800' 
-                                                : 'bg-red-100 text-red-800'
-                                        }`}>
-                                            {isEnabled ? 'Activé' : 'Désactivé'}
-                                        </span>
+                            <div key={key} className="group flex flex-col gap-4 rounded-2xl border border-grey bg-gray-50 p-6 shadow-sm transition hover:shadow-md">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="text-3xl">{workshopIcons[key]}</div>
+                                        <h3 className="text-lg font-semibold text-darkBlue">{info.name}</h3>
                                     </div>
+                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                        isEnabled 
+                                            ? 'bg-green/10 text-green' 
+                                            : 'bg-red/10 text-red'
+                                    }`}>
+                                        {isEnabled ? 'Activé' : 'Désactivé'}
+                                    </span>
                                 </div>
 
-                                <div className="mb-6">
-                                    <p className="text-gray-600 m-0 leading-relaxed">{info.description}</p>
+                                <p className="text-sm text-astro/80 leading-relaxed">{info.description}</p>
+
+                                <div className="space-y-3">
+                                    <h4 className="font-semibold text-darkBlue text-sm">Environnements :</h4>
+                                    
+                                    <label className="flex items-center gap-3 p-3 bg-white rounded-xl border border-grey cursor-pointer hover:bg-blue/5 transition">
+                                        <input
+                                            type="checkbox"
+                                            checked={config.development}
+                                            onChange={() => toggleEnvironment(key, 'development')}
+                                            className="w-4 h-4 text-blue border-2 border-grey rounded focus:ring-2 focus:ring-blue/20"
+                                        />
+                                        <span className="text-lg">🔧</span>
+                                        <div className="flex-1">
+                                            <div className="font-medium text-darkBlue">Développement</div>
+                                            <div className="text-xs text-astro/60">Visible en mode dev</div>
+                                        </div>
+                                    </label>
+
+                                    <label className="flex items-center gap-3 p-3 bg-white rounded-xl border border-grey cursor-pointer hover:bg-blue/5 transition">
+                                        <input
+                                            type="checkbox"
+                                            checked={config.production}
+                                            onChange={() => toggleEnvironment(key, 'production')}
+                                            className="w-4 h-4 text-blue border-2 border-grey rounded focus:ring-2 focus:ring-blue/20"
+                                        />
+                                        <span className="text-lg">🚀</span>
+                                        <div className="flex-1">
+                                            <div className="font-medium text-darkBlue">Production</div>
+                                            <div className="text-xs text-astro/60">Visible en mode prod</div>
+                                        </div>
+                                    </label>
                                 </div>
 
-                                <div className="flex flex-col gap-6">
-                                    <div>
-                                        <label className="block font-semibold text-darkBlue mb-2 text-sm">
-                                            Environnements disponibles
-                                        </label>
-                                        <div className="flex flex-col gap-3">
-                                            <div className="flex items-center p-3 bg-gray-50 rounded-lg border border-grey transition-all duration-200 hover:bg-gray-100">
-                                                <label className="flex items-center gap-3 cursor-pointer w-full">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={config.development}
-                                                        onChange={() => toggleEnvironment(key, 'development')}
-                                                        className="w-5 h-5 cursor-pointer"
-                                                    />
-                                                    <span className="text-xl w-6 text-center">🔧</span>
-                                                    <span className="flex flex-col gap-1">
-                                                        <strong className="text-base text-darkBlue font-semibold">Développement</strong>
-                                                        <small className="text-sm text-gray-600">Visible en dev</small>
-                                                    </span>
-                                                </label>
-                                            </div>
-                                            <div className="flex items-center p-3 bg-gray-50 rounded-lg border border-grey transition-all duration-200 hover:bg-gray-100">
-                                                <label className="flex items-center gap-3 cursor-pointer w-full">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={config.production}
-                                                        onChange={() => toggleEnvironment(key, 'production')}
-                                                        className="w-5 h-5 cursor-pointer"
-                                                    />
-                                                    <span className="text-xl w-6 text-center">🚀</span>
-                                                    <span className="flex flex-col gap-1">
-                                                        <strong className="text-base text-darkBlue font-semibold">Production</strong>
-                                                        <small className="text-sm text-gray-600">Visible en prod</small>
-                                                    </span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-grey">
-                                        <div className="text-center">
-                                            {config.production && config.development ? (
-                                                <span className="font-semibold text-darkBlue text-sm">✅ Disponible partout</span>
-                                            ) : config.production ? (
-                                                <span className="font-semibold text-darkBlue text-sm">🚀 Production uniquement</span>
-                                            ) : config.development ? (
-                                                <span className="font-semibold text-darkBlue text-sm">🔧 Développement uniquement</span>
-                                            ) : (
-                                                <span className="font-semibold text-darkBlue text-sm">❌ Non disponible</span>
-                                            )}
-                                        </div>
-                                    </div>
+                                <div className="mt-4 p-3 bg-white rounded-xl border border-grey text-center">
+                                    {config.production && config.development ? (
+                                        <span className="text-sm font-medium text-green">✅ Disponible partout</span>
+                                    ) : config.production ? (
+                                        <span className="text-sm font-medium text-blue">🚀 Production uniquement</span>
+                                    ) : config.development ? (
+                                        <span className="text-sm font-medium text-yellow">🔧 Développement uniquement</span>
+                                    ) : (
+                                        <span className="text-sm font-medium text-red">❌ Non disponible</span>
+                                    )}
                                 </div>
                             </div>
                         );
                     })}
                 </div>
+            </section>
 
-                <div className="mt-12 bg-white rounded-2xl p-8 shadow-md border border-grey">
-                    <h3 className="m-0 mb-6 text-2xl text-darkBlue font-semibold text-center">
-                        Informations sur les environnements
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="flex items-start gap-4 p-6 bg-gray-50 rounded-xl border border-grey">
-                            <div className="text-3xl flex-shrink-0">🔧</div>
-                            <div>
-                                <h4 className="m-0 mb-2 text-lg text-darkBlue font-semibold">Environnement Développement</h4>
-                                <p className="m-0 text-gray-600 leading-relaxed text-sm">
-                                    L'atelier sera visible et accessible uniquement quand l'application est lancée en mode développement (NODE_ENV=development).
-                                </p>
-                            </div>
+            {/* Informations sur les environnements */}
+            <section className="rounded-2xl bg-white p-8 shadow-sm">
+
+                <h2 className="mb-6 text-2xl font-semibold text-darkBlue">Guide des Environnements</h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="flex items-center gap-4 rounded-xl border border-grey bg-gray-50 p-4">
+                        <div className="text-4xl">🔧</div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-darkBlue mb-1">Développement</h3>
+                            <p className="text-sm text-astro/80 leading-relaxed">
+                                Visible uniquement en mode développement (NODE_ENV=development)
+                            </p>
                         </div>
-                        <div className="flex items-start gap-4 p-6 bg-gray-50 rounded-xl border border-grey">
-                            <div className="text-3xl flex-shrink-0">🚀</div>
-                            <div>
-                                <h4 className="m-0 mb-2 text-lg text-darkBlue font-semibold">Environnement Production</h4>
-                                <p className="m-0 text-gray-600 leading-relaxed text-sm">
-                                    L'atelier sera visible et accessible uniquement quand l'application est lancée en mode production (NODE_ENV=production).
-                                </p>
-                            </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 rounded-xl border border-grey bg-gray-50 p-4">
+                        <div className="text-4xl">🚀</div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-darkBlue mb-1">Production</h3>
+                            <p className="text-sm text-astro/80 leading-relaxed">
+                                Visible uniquement en mode production (NODE_ENV=production)
+                            </p>
                         </div>
-                        <div className="flex items-start gap-4 p-6 bg-gray-50 rounded-xl border border-grey">
-                            <div className="text-3xl flex-shrink-0">✅</div>
-                            <div>
-                                <h4 className="m-0 mb-2 text-lg text-darkBlue font-semibold">Les deux environnements</h4>
-                                <p className="m-0 text-gray-600 leading-relaxed text-sm">
-                                    Si les deux environnements sont activés, l'atelier sera visible et accessible dans tous les environnements.
-                                </p>
-                            </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 rounded-xl border border-grey bg-gray-50 p-4">
+                        <div className="text-4xl">✅</div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-darkBlue mb-1">Les deux</h3>
+                            <p className="text-sm text-astro/80 leading-relaxed">
+                                Visible dans tous les environnements si les deux sont activés
+                            </p>
                         </div>
                     </div>
                 </div>
-            </main>
+            </section>
         </div>
     );
 };

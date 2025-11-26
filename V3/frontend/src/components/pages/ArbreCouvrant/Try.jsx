@@ -270,11 +270,22 @@ const Try = () => {
         const selectedIds = Array.from(selectedEdges);
         const selectedEdgesData = edges.filter(edge => selectedIds.includes(edge.data.id));
 
+        // Vérifier d'abord s'il y a un cycle
+        const cycleDetected = detectCycle(selectedEdgesData, nodes);
+        if (cycleDetected) {
+            setValidationPopup({
+                type: 'error',
+                title: 'Erreur',
+                message: "Vous avez créé un cycle"
+            });
+            return;
+        }
+
         if (selectedEdgesData.length !== nodeCount - 1) {
             setValidationPopup({
                 type: 'error',
                 title: 'Erreur',
-                message: "Tu dois sélectionner exactement le nombre d'arêtes nécessaires pour couvrir toutes les composantes."
+                message: "Tu dois sélectionner suffisamment d'arêtes pour qu'il n'y ait qu'une seule composante."
             });
             return;
         }
@@ -536,7 +547,7 @@ const Try = () => {
                         <h3>🎯 Objectif</h3>
                         <ul className="list-disc pl-5">
                             <li>Trouve l'arbre couvrant minimal du graphe en sélectionnant les arêtes appropriées.</li>
-                            <li>Minimise la somme des poids des arêtes sélectionnées tout en connectant toutes les composantes.</li>
+                            <li>Minimise la somme des poids des arêtes sélectionnées tout en ayant une seule composante.</li>
                             <li>Évite la formation de cycles dans ta solution.</li>
                         </ul>
 
@@ -545,7 +556,7 @@ const Try = () => {
                             <li>Choisis un graphe prédéfini dans le menu déroulant.</li>
                             <li>Sélectionne le type de poids des arêtes : prédéfini, tous à 1 ou aléatoire.</li>
                             <li>Clique sur les arêtes pour les sélectionner ou les désélectionner.</li>
-                            <li>Vérifie que ta solution connecte toutes les composantes sans former de cycle.</li>
+                            <li>Vérifie que ta solution forme une seule composante sans cycle.</li>
                             <li>Valide ta solution pour vérifier si elle est optimale.</li>
                         </ul>
 
