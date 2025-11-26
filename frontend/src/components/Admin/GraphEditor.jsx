@@ -3,7 +3,7 @@ import cytoscape from 'cytoscape';
 import config from '../../config';
 import { colors } from '../../utils/colorPalette';
 
-import '../../styles/Admin/GraphEditor.css';
+// ❌ supprimé : import '../../styles/Admin/GraphEditor.css';
 
 const GraphEditor = ({ graphId = null, onClose }) => {
     const [graphData, setGraphData] = useState({
@@ -651,11 +651,38 @@ const GraphEditor = ({ graphId = null, onClose }) => {
     };
 
     if (loading) {
-        return <div className="editor-loading">Chargement...</div>;
+        return (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000] flex items-center justify-center p-8">
+                <div className="bg-white rounded-2xl p-8 shadow-2xl text-center">
+                    <div className="w-8 h-8 border-4 border-blue/30 border-t-blue rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-xl text-darkBlue font-medium">Chargement du graphe...</p>
+                </div>
+            </div>
+        );
     }
 
     if (error) {
-        return <div className="editor-error">{error}</div>;
+        return (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000] flex items-center justify-center p-8">
+                <div className="bg-white rounded-2xl p-8 shadow-2xl">
+                    <div className="flex items-center gap-4 p-6 bg-red/10 border border-red/20 rounded-xl">
+                        <div className="text-3xl">⚠️</div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-red mb-1">Erreur</h3>
+                            <p className="text-red/80">{error}</p>
+                        </div>
+                    </div>
+                    <div className="flex justify-center mt-6">
+                        <button 
+                            onClick={onClose}
+                            className="inline-flex items-center justify-center rounded-xl bg-red px-6 py-3 font-semibold text-white shadow transition hover:bg-red-hover focus:outline-none focus:ring-2 focus:ring-red/40"
+                        >
+                            Fermer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     const handleOverlayClick = (e) => {
@@ -677,58 +704,65 @@ const GraphEditor = ({ graphId = null, onClose }) => {
     };
 
     return (
-        <div className="graph-editor-overlay" onClick={handleOverlayClick}>
-            <div className="graph-editor">
-                <div className="editor-header">
-                    <h2>{graphId ? 'Modifier le Graphe' : 'Créer un Graphe'}</h2>
-                    <button type="button" className="btn-close" onClick={handleClose}>&times;</button>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000] flex items-center justify-center p-8 overflow-hidden" onClick={handleOverlayClick}>
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[1400px] max-h-full overflow-hidden font-['Poppins',Arial,sans-serif] flex flex-col">
+                <div className="flex justify-between items-center px-8 pt-8 pb-4 border-b border-grey bg-white rounded-t-2xl">
+                    <h2 className="text-3xl text-darkBlue m-0 font-semibold">{graphId ? 'Modifier le Graphe' : 'Créer un Graphe'}</h2>
+                    <button type="button" className="bg-none border-none text-3xl text-darkBlue cursor-pointer p-2 leading-none transition-all duration-200 rounded-full w-10 h-10 flex items-center justify-center hover:text-red hover:bg-red/10 hover:scale-110" onClick={handleClose}>&times;</button>
                 </div>
 
-            <div className="editor-layout">
+            <div className="flex flex-1 overflow-hidden">
                 {/* Sidebar */}
-                <div className="editor-sidebar">
-                <div className="sidebar-section">
-                        <h3>Ateliers disponibles</h3>
-                        <div className="workshop-selection">
-                            <div className="workshop-item">
-                                <label className="workshop-checkbox">
+                <div className="w-[300px] bg-gray-50 border-r border-grey p-6 overflow-y-auto flex-shrink-0">
+                <div className="mb-8">
+                        <h3 className="m-0 mb-4 text-lg text-darkBlue font-semibold border-b-2 border-blue pb-2">Ateliers disponibles</h3>
+                        <div className="flex flex-col gap-3 mt-2">
+                            <div className="flex items-center">
+                                <label className="flex items-center gap-2 cursor-pointer font-medium text-darkBlue">
                                     <input
                                         type="checkbox"
                                         checked={graphData.workshopData.coloring.enabled}
                                         onChange={() => toggleWorkshop('coloring')}
+                                        className="w-5 h-5 cursor-pointer"
                                     />
-                                    <span>Coloration de graphes</span>
+                                    <span className="select-none">Coloration de graphes</span>
                                 </label>
                             </div>
-                            <div className="workshop-item">
-                                <label className="workshop-checkbox">
+                            <div className="flex items-center">
+                                <label className="flex items-center gap-2 cursor-pointer font-medium text-darkBlue">
                                     <input
                                         type="checkbox"
                                         checked={graphData.workshopData.spanningTree.enabled}
                                         onChange={() => toggleWorkshop('spanningTree')}
+                                        className="w-5 h-5 cursor-pointer"
                                     />
-                                    <span>Arbre couvrant minimal</span>
+                                    <span className="select-none">Arbre couvrant minimal</span>
                                 </label>
                             </div>
-                            <div className="workshop-item">
-                                <label className="workshop-checkbox">
+                            <div className="flex items-center">
+                                <label className="flex items-center gap-2 cursor-pointer font-medium text-darkBlue">
                                     <input
                                         type="checkbox"
                                         checked={graphData.workshopData.railwayMaze.enabled}
                                         onChange={() => toggleWorkshop('railwayMaze')}
+                                        className="w-5 h-5 cursor-pointer"
                                     />
-                                    <span>Labyrinthe Voyageur</span>
+                                    <span className="select-none">Labyrinthe Voyageur</span>
                                 </label>
                             </div>
                         </div>
                     </div>
 
-                    <div className="sidebar-section">
-                        <h3>Navigation</h3>
-                        <div className="sidebar-nav">
+                    <div className="mb-8">
+                        <h3 className="m-0 mb-4 text-lg text-darkBlue font-semibold border-b-2 border-blue pb-2">Navigation</h3>
+                        <div className="flex flex-col gap-2">
                             <button 
                                 type="button"
-                                className={`sidebar-nav-item ${activeTab === 'graph' ? 'active' : ''}`}
+                                className={`border rounded-lg px-4 py-3 cursor-pointer text-sm font-medium transition-all duration-200 text-left font-inherit ${
+                                    activeTab === 'graph' 
+                                        ? 'bg-blue text-white border-blue shadow-md' 
+                                        : 'bg-white text-darkBlue border-grey hover:bg-blue hover:text-white hover:border-blue'
+                                }`}
                                 onClick={() => handleTabChange('graph')}
                             >
                                 📊 Graphe
@@ -737,7 +771,11 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                             {graphData.workshopData.coloring.enabled && (
                                 <button 
                                     type="button"
-                                    className={`sidebar-nav-item ${activeTab === 'coloring' ? 'active' : ''}`}
+                                    className={`border rounded-lg px-4 py-3 cursor-pointer text-sm font-medium transition-all duration-200 text-left font-inherit ${
+                                        activeTab === 'coloring' 
+                                            ? 'bg-blue text-white border-blue shadow-md' 
+                                            : 'bg-white text-darkBlue border-grey hover:bg-blue hover:text-white hover:border-blue'
+                                    }`}
                                     onClick={() => handleTabChange('coloring')}
                                 >
                                     🎨 Coloration
@@ -749,59 +787,61 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                 </div>
 
                 {/* Contenu principal */}
-                <div className="editor-content">
+                <div className="flex-1 p-8 overflow-y-auto bg-white">
                     <form onSubmit={handleSubmit}>
                         {/* Onglet Graphe */}
                         {activeTab === 'graph' && (
-                            <div className="tab-content">
-                                <div className="form-group">
-                                    <label htmlFor="name">Nom du Graphe</label>
+                            <div className="min-h-[400px]">
+                                <div className="mb-6">
+                                    <label htmlFor="name" className="block mb-2 text-darkBlue font-medium">Nom du Graphe</label>
                                     <input
                                         type="text"
                                         id="name"
                                         value={graphData.name}
                                         onChange={(e) => setGraphData(prev => ({ ...prev, name: e.target.value }))}
                                         required
+                                        className="w-full px-3 py-3 border-[1.5px] border-grey rounded-lg text-base font-inherit text-darkBlue transition-all duration-200 focus:border-blue focus:outline-none"
                                     />
                                 </div>
 
-                                <div className="admin-buttons-row">
-                                    <button type="button" className="admin-btn admin-btn-add" onClick={handleAddNode}>
+                                <div className="flex gap-4 mb-4 flex-wrap">
+                                    <button type="button" className="px-6 py-3 rounded-lg text-base font-medium cursor-pointer transition-all duration-200 border-none bg-green text-white hover:bg-green-hover" onClick={handleAddNode}>
                                         Ajouter un sommet
                                     </button>
-                                    <button type="button" className="admin-btn admin-btn-reset" onClick={resetGraph}>
+                                    <button type="button" className="px-6 py-3 rounded-lg text-base font-medium cursor-pointer transition-all duration-200 border-none bg-red text-white flex-1 hover:bg-red-hover" onClick={resetGraph}>
                                         Réinitialiser le graphe
                                     </button>
-                                    <button type="button" className="admin-btn admin-btn-rearrange" onClick={rearrangeGraph}>
+                                    <button type="button" className="px-6 py-3 rounded-lg text-base font-medium cursor-pointer transition-all duration-200 border-none bg-blue text-white flex-1 hover:bg-blue-hover" onClick={rearrangeGraph}>
                                         Réarranger le graphe
                                     </button>
                                 </div>
 
                                 <div
                                     ref={containerRef}
-                                    className="cytoscape-container"
+                                    className="w-full min-w-0 max-w-full h-[60vh] min-h-[350px] border border-gray-300 rounded-xl bg-gray-50 shadow-lg box-border transition-all duration-300"
                                 ></div>
 
-                                <div className="editor-instructions">
-                                    <p>Cliquez sur "Ajouter un sommet" pour créer un nouveau sommet</p>
-                                    <p>Cliquez sur un sommet puis un autre pour créer une arête</p>
-                                    <p>Clic droit sur un sommet ou une arête pour le supprimer</p>
+                                <div className="text-center text-darkBlue my-4 p-4 bg-gray-50 rounded-lg">
+                                    <p className="m-2 text-sm text-gray-600">Cliquez sur "Ajouter un sommet" pour créer un nouveau sommet</p>
+                                    <p className="m-2 text-sm text-gray-600">Cliquez sur un sommet puis un autre pour créer une arête</p>
+                                    <p className="m-2 text-sm text-gray-600">Clic droit sur un sommet ou une arête pour le supprimer</p>
                                 </div>
                             </div>
                         )}
 
                         {/* Onglet Configuration - Coloration */}
                         {activeTab === 'coloring' && (
-                            <div className="tab-content">
-                                <div className="workshop-config">
-                                    <h4>Configuration - Coloration</h4>
+                            <div className="min-h-[400px]">
+                                <div className="bg-gray-50 border border-grey rounded-lg p-6 mt-0">
+                                    <h4 className="m-0 mb-4 text-darkBlue text-xl font-semibold">Configuration - Coloration</h4>
                                     
-                                    <div className="form-group">
-                                        <label htmlFor="coloring-difficulty">Difficulté</label>
+                                    <div className="mb-6">
+                                        <label htmlFor="coloring-difficulty" className="block mb-2 text-darkBlue font-medium">Difficulté</label>
                                         <select
                                             id="coloring-difficulty"
                                             value={graphData.workshopData.coloring.difficulty}
                                             onChange={(e) => updateWorkshopConfig('coloring', 'difficulty', e.target.value)}
+                                            className="w-full px-3 py-3 border-[1.5px] border-grey rounded-lg text-base font-inherit text-darkBlue transition-all duration-200 focus:border-blue focus:outline-none"
                                         >
                                             <option value="Très facile">Très facile</option>
                                             <option value="Facile">Facile</option>
@@ -812,35 +852,36 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                                         </select>
                                     </div>
 
-                                    <div className="form-group">
-                                        <label htmlFor="optimal-count">Nombre optimal de couleurs</label>
+                                    <div className="mb-6">
+                                        <label htmlFor="optimal-count" className="block mb-2 text-darkBlue font-medium">Nombre optimal de couleurs</label>
                                         <input
                                             type="number"
                                             id="optimal-count"
                                             min="0"
                                             value={graphData.workshopData.coloring.optimalCount}
                                             onChange={(e) => updateWorkshopConfig('coloring', 'optimalCount', parseInt(e.target.value) || 0)}
+                                            className="w-full px-3 py-3 border-[1.5px] border-grey rounded-lg text-base font-inherit text-darkBlue transition-all duration-200 focus:border-blue focus:outline-none"
                                         />
                                     </div>
 
                                     {graphData.workshopData.coloring.optimalCount > 0 && (
-                                        <div className="form-group">
-                                            <label>Compteurs de pastilles par couleur</label>
-                                            <div className="tablet-counts-info">
-                                                <p className="tablet-counts-summary">
+                                        <div className="mb-6">
+                                            <label className="block mb-2 text-darkBlue font-medium">Compteurs de pastilles par couleur</label>
+                                            <div className="mb-4">
+                                                <p className="text-sm text-darkBlue m-0 p-2 bg-gray-50 rounded-md border-l-4 border-blue">
                                                     Total: {getTotalTablets()} / {graphData.data.nodes.length} pastilles
                                                     {getTotalTablets() > graphData.data.nodes.length && (
-                                                        <span className="error-text"> (Dépassement!)</span>
+                                                        <span className="text-red font-semibold"> (Dépassement!)</span>
                                                     )}
                                                 </p>
                                             </div>
-                                            <div className="tablet-counts">
+                                            <div className="grid grid-cols-[repeat(auto-fit,minmax(180px,1fr))] gap-4 mt-2">
                                                 {getAvailableColors().map((colorHex, index) => {
                                                     const colorName = ['Rouge', 'Bleu', 'Vert', 'Jaune', 'Orange', 'Violet', 'Rose', 'Vert lime', 'Gris foncé', 'Marron', 'Cyan clair', 'Orange vif', 'Vert néon', 'Bleu clair'][index] || `Couleur ${index + 1}`;
                                                     return (
-                                                        <div key={colorHex} className="tablet-count-item">
-                                                            <div className="color-preview" style={{ backgroundColor: colorHex }}></div>
-                                                            <label htmlFor={`tablet-${index}`}>{colorName}</label>
+                                                        <div key={colorHex} className="flex flex-col gap-2 p-4 bg-white border border-grey rounded-lg transition-all duration-200 hover:border-blue">
+                                                            <div className="w-full h-5 rounded border border-gray-300 mb-1" style={{ backgroundColor: colorHex }}></div>
+                                                            <label htmlFor={`tablet-${index}`} className="text-sm font-medium text-darkBlue text-center">{colorName}</label>
                                                             <input
                                                                 type="number"
                                                                 id={`tablet-${index}`}
@@ -848,6 +889,7 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                                                                 max={graphData.data.nodes.length}
                                                                 value={graphData.workshopData.coloring.tabletCounts[colorName] || 0}
                                                                 onChange={(e) => updateTabletCount(colorName, e.target.value)}
+                                                                className="px-2 py-2 border-[1.5px] border-grey rounded-md text-sm font-inherit text-darkBlue transition-all duration-200 text-center focus:border-blue focus:outline-none invalid:border-red"
                                                             />
                                                         </div>
                                                     );
@@ -861,11 +903,11 @@ const GraphEditor = ({ graphId = null, onClose }) => {
 
 
 
-                        <div className="form-actions">
-                            <button type="button" className="admin-btn admin-btn-secondary" onClick={handleClose}>
+                        <div className="flex justify-end gap-4 mt-8 px-8 py-6 border-t border-grey bg-gray-50 rounded-b-2xl">
+                            <button type="button" className="px-6 py-3 rounded-lg text-base font-medium cursor-pointer transition-all duration-200 bg-white text-darkBlue border-[1.5px] border-darkBlue hover:bg-blue hover:text-white hover:border-blue" onClick={handleClose}>
                                 Annuler
                             </button>
-                            <button type="submit" className="admin-btn admin-btn-primary">
+                            <button type="submit" className="px-6 py-3 rounded-lg text-base font-medium cursor-pointer transition-all duration-200 border-none bg-gradient-to-r from-green to-blue text-white shadow-md hover:shadow-lg hover:-translate-y-0.5">
                                 {graphId ? 'Mettre à jour' : 'Créer'}
                             </button>
                         </div>

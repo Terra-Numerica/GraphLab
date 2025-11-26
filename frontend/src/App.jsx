@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import useWorkshopConfig from './hooks/useWorkshopConfig';
+// import { useState, useEffect } from 'react';
+
+import '@/styles/global.css';
 
 // Components => Navigation
 import Navbar from './components/Navigation/Navbar';
@@ -77,11 +79,11 @@ function ProtectedWorkshopRoute({ children, workshopType }) {
 }
 
 // Layout pour les pages publiques (avec navbar et footer)
-function PublicLayout({ children }) {
+function PublicLayout({ children, fullWidth = false }) {
 	return (
 		<div className="app">
 			<Navbar />
-			<main className="main-content">
+			<main className={fullWidth ? "main-content-full" : "main-content"}>
 				{children}
 			</main>
 			<Footer />
@@ -99,27 +101,36 @@ function AdminLayoutWrapper({ children }) {
 }
 
 function App() {
-	const [isMobile, setIsMobile] = useState(false);
+	// const [isMobile, setIsMobile] = useState(false);
 
-	useEffect(() => {
-		const checkMobile = () => {
-			setIsMobile(window.innerWidth <= 768);
-		};
+	// useEffect(() => {
+	// 	const checkMobile = () => {
+	// 		setIsMobile(window.innerWidth <= 768);
+	// 	};
 
-		checkMobile();
+	// 	checkMobile();
 
-		window.addEventListener('resize', checkMobile);
+	// 	window.addEventListener('resize', checkMobile);
 
-		return () => window.removeEventListener('resize', checkMobile);
-	}, []);
+	// 	return () => window.removeEventListener('resize', checkMobile);
+	// }, []);
 
-	if (isMobile) {
-		return <MobileWarning />;
-	}
+	// if (isMobile) {
+	// 	return <MobileWarning />;
+	// }
 
 	return (
 		<BrowserRouter>
 			<Routes>
+				{/* Route spécifique pour AlgoPage avec fullWidth */}
+				<Route path="/arbre-couvrant/:algo/:graphId" element={
+					<PublicLayout fullWidth={true}>
+						<ProtectedWorkshopRoute workshopType="spanningTree">
+							<AlgoPage />
+						</ProtectedWorkshopRoute>
+					</PublicLayout>
+				} />
+				
 				{/* Routes publiques avec navbar et footer */}
 				<Route path="/*" element={
 					<PublicLayout>
@@ -153,11 +164,6 @@ function App() {
 							<Route path="/arbre-couvrant/try" element={
 								<ProtectedWorkshopRoute workshopType="spanningTree">
 									<ArbreCouvrantTry />
-								</ProtectedWorkshopRoute>
-							} />
-							<Route path="/arbre-couvrant/:algo/:graphId" element={
-								<ProtectedWorkshopRoute workshopType="spanningTree">
-									<AlgoPage />
 								</ProtectedWorkshopRoute>
 							} />
 							<Route path="/railway-maze" element={

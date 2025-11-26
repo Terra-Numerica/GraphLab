@@ -1,8 +1,11 @@
 import React from 'react';
-import '../../styles/common/TimerDisplay.css';
 
 const TimerDisplay = ({ time, formatTime }) => {
-    return <div className="mode-timer">Temps: {formatTime(time)}</div>;
+    return (
+        <div className="text-xl font-semibold text-gray-700 ml-auto bg-gray-50 py-3 px-4 rounded-lg shadow-sm">
+            Temps: {formatTime(time)}
+        </div>
+    );
 };
 
 export default TimerDisplay; 

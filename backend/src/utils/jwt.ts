@@ -1,9 +1,6 @@
 // Imports
 import jwt from 'jsonwebtoken';
 
-// Types
-import type { Request } from 'express';
-
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 export const generateToken = (userId: string): string => {
@@ -18,10 +15,9 @@ export const verifyToken = (token: string): any => {
     }
 };
 
-export const getTokenFromRequest = (req: Request): string | null => {
-    const authHeader = req.headers.authorization;
+export const getTokenFromRequest = (authHeader: string | undefined): string | null => {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return null;
     }
     return authHeader.split(' ')[1];
-}; 
+};

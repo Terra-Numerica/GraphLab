@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import AlgoVisualization from './AlgoVisualization';
 import GraphDisplay from './GraphDisplay';
 import RulesPopup from '../../../components/common/RulesPopup';
+import config from '../../../config';
 
 const algoConfig = {
   prim: {
@@ -11,11 +12,10 @@ const algoConfig = {
     explanation: {
       title: "Algorithme de Prim",
       steps: [
-        "L'algorithme de Prim construit l'arbre couvrant de poids minimal en partant d'une composante de départ et en s'étendant progressivement.",
-        "1. On commence par repérer la composante de départ et on cherche l'arête la moins chère qui le relie à une autre composante",
-        "2. On répète cette opération jusqu'à ce que toutes les composantes soient connectées (On prends en compte chaque arête où les composantes sont déjà connectés)",
-        "3. On s'arête quand toutes les composantes sont connectées",
-        "Cet algorithme est particulièrement utile quand on veut s'assurer d'utiliser toutes les arêtes les moins chères possibles, car il explore localement les meilleures connexions à chaque étape."
+        "L'algorithme de Prim construit l'arbre couvrant de poids minimal en faisant grandir progressivement une composante à laquelle on ajoute un sommet à chaque étape.",
+        "1. On commence par mettre un sommet quelconque dans la composante en construction.",
+        "2. À chaque étape, on repère l'arête la moins chère reliant la composante en construction à un sommet hors de cette composante. On ajoute cette arête et son extrémité dans la composante en construction.",
+        "3. On s'arrête quand tous les sommets sont dans la composante en construction."
       ]
     }
   },
@@ -24,12 +24,11 @@ const algoConfig = {
     explanation: {
       title: "Algorithme de Kruskal",
       steps: [
-        "L'algorithme de Kruskal construit l'arbre couvrant de poids minimal en examinant toutes les arêtes possibles, de la moins chère à la plus chère.",
+        "L'algorithme de Kruskal construit l'arbre couvrant de poids minimal en examinant toutes les arêtes de la moins chère à la plus chère, et en les ajoutant ensuite une à une si nécessaire.",
         "1. On commence par trier toutes les arêtes par coût croissant",
         "2. On examine les arêtes une par une, en commençant par la moins chère",
-        "3. Pour chaque arête, si elle ne crée pas de boucle dans le réseau, on l'ajoute, sinon on la rejette",
-        "4. On s'arête quand toutes les composantes sont connectées",
-        "Cet algorithme est particulièrement utile quand on veut s'assurer d'utiliser les arêtes les moins chères possibles tout en évitant les connexions redondantes."
+        "3. Pour chaque arête, si elle ne crée pas de cycle dans le réseau, on l'ajoute, sinon on la rejette",
+        "4. On s'arrête quand toutes les arêtes ont été examinées."
       ]
     }
   },
@@ -38,11 +37,10 @@ const algoConfig = {
     explanation: {
       title: "Algorithme de Boruvka",
       steps: [
-        "L'algorithme de Boruvka construit l'arbre couvrant de poids minimal en connectant progressivement des groupes de composantes entre eux.",
-        "1. Au début, chaque composante forme son propre groupe",
-        "2. Pour chaque groupe de composantes, on sélectionne l'arête la moins chère qui le connecte à un autre groupe",
-        "3. On fusionne les groupes de composantes connectées",
-        "4. On répète jusqu'à n'avoir qu'un seul groupe",
+        "L'algorithme de Boruvka construit l'arbre couvrant de poids minimal en connectant progressivement des composantes entre elles.",
+        "1. Au début, chaque sommet forme sa propre composante.",
+        "2. À chaque étape, on sélectionne pour chaque composante l'arête la moins chère qui la connecte à une autre composante, et on ajoute ces arêtes.",
+        "3. On s'arrête quand il n'y a plus qu'une composante.",
         "Cet algorithme est particulièrement efficace pour les grands réseaux car il peut traiter plusieurs connexions en parallèle à chaque étape."
       ]
     }
@@ -53,11 +51,11 @@ const algoConfig = {
       title: "Algorithme de la propriété d'échange",
       steps: [
         "L'algorithme de la propriété d'échange construit l'arbre couvrant de poids minimal en ajoutant les arêtes une par une et en appliquant la propriété d'échange dès qu'un cycle est détecté.",
-        "1. On commence par trier toutes les arêtes par poids croissant",
-        "2. On ajoute les arêtes une par une dans l'ordre croissant",
-        "3. Dès qu'un cycle est détecté, on applique la propriété d'échange : on retire l'arête la plus lourde du cycle",
-        "4. On continue jusqu'à avoir n-1 arêtes (arbre couvrant complet)",
-        "Cet algorithme illustre parfaitement la propriété d'échange : dans tout cycle, l'arête la plus lourde ne peut pas faire partie d'un arbre couvrant minimal."
+        "1. On commence par faire une liste des arêtes (dans un ordre arbitraire).",
+        "2. On ajoute les arêtes une par une dans l'arbre couvrant suivant l'ordre de la liste.",
+        "3. À chaque étape, si l'ajout de l'arête crée un cycle, on cherche l'arête la plus lourde de ce cycle et on l'enlève de l'arbre couvrant.",
+        "4. On continue quand on a fini la liste.",
+        "Cet algorithme est basé sur la propriété d'échange : dans tout cycle, l'arête la plus lourde ne peut pas faire partie d'un arbre couvrant minimal."
       ]
     }
   }
@@ -68,10 +66,10 @@ const AlgoExplanation = ({ algo, onClose }) => {
 
   return (
     <RulesPopup onClose={onClose} title={explanation?.title || "Explication de l'algorithme"}>
-      <div className="algo-explanation">
-        <div className="explanation-steps">
+      <div className="p-4">
+        <div className="flex flex-col gap-4">
           {explanation?.steps.map((step, index) => (
-            <p key={index}>{step}</p>
+            <p key={index} className="m-0 leading-relaxed text-astro">{step}</p>
           ))}
         </div>
       </div>
@@ -159,7 +157,7 @@ const AlgoPage = () => {
   useEffect(() => {
     if (!graph && graphId) {
       setLoading(true);
-      fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:3000'}/graph/${graphId}`)
+      fetch(`${config.apiUrl}/graph/${graphId}`)
         .then(res => res.json())
         .then(data => {
           setGraph(data);
@@ -185,89 +183,97 @@ const AlgoPage = () => {
     setSelectedEdges(edges);
   }, []);
 
-  if (!config) return <div>Algorithme inconnu</div>;
-  if (loading) return <div className="workshop-loading">Chargement...</div>;
-  if (error) return <div className="workshop-error">{error}</div>;
+  if (!config) return <div className="p-4 text-center text-red">Algorithme inconnu</div>;
+  if (loading) return <div className="flex h-screen items-center justify-center text-lg text-gray-600">Chargement...</div>;
+  if (error) return <div className="flex h-screen items-center justify-center text-lg text-red">{error}</div>;
   if (!graph) {
     return (
-      <div className="arbre-couvrant-container">
-        <div className="workshop-error-message">
+      <div className="w-full bg-gray-100 px-4 sm:px-8 md:px-16 py-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="rounded-lg bg-red/10 px-3 py-2 text-sm font-medium text-red">
           Aucun graphe n'a été selectionné. Tu peux retourner à la page précédente pour en selectionner un.
+          </div>
+          <button 
+            className="mt-4 inline-flex items-center gap-2 rounded-xl border-2 border-blue px-4 py-2 text-sm font-semibold text-blue hover:bg-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-blue/40"
+            onClick={() => navigate('/arbre-couvrant')}
+          >
+            <span aria-hidden="true">←</span> Retour
+          </button>
         </div>
-        <button className="workshop-back-btn" onClick={() => navigate('/arbre-couvrant')}>
-          Retour
-        </button>
       </div>
     );
   }
 
   return (
-    <div className="arbre-couvrant-container">
-      <button className="workshop-back-btn" onClick={() => navigate('/arbre-couvrant/try', {
+    <div className="w-full bg-gray-100 px-4 sm:px-8 md:px-16 py-8">
+      <div className="mx-auto w-full max-w-full">
+        {/* Back button */}
+        <button 
+          className="inline-flex items-center gap-2 rounded-xl border-2 border-blue px-4 py-2 text-sm font-semibold text-blue hover:bg-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-blue/40"
+          onClick={() => navigate('/arbre-couvrant/try', {
         state: {
           selectedGraph: graphId,
           weightType: weightType
         }
-      })}>
-        &larr; Retour
+          })}
+        >
+          <span aria-hidden="true">←</span> Retour
       </button>
+
+        {/* Explanation popup */}
       {showExplanation && (
         <AlgoExplanation
           algo={algo}
           onClose={() => setShowExplanation(false)}
         />
       )}
-      <h2 className="workshop-title">{config.title}</h2>
-      <div className={`workshop-top-bar algo-vertical`}>
-        <div className="workshop-graph-info">
-          <span><strong>Graphe :</strong> {graph.name.split(' ')[1]}</span>
-          <span><strong>Type de poids :</strong> {
+
+        {/* Title */}
+        <h2 className="mt-4 text-center text-3xl md:text-4xl font-bold text-darkBlue">{config.title}</h2>
+
+        {/* Top bar with graph info and visualization */}
+        <div className="mt-6 flex flex-col gap-4 rounded-2xl bg-white p-4 shadow">
+          {/* Graph info */}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            {/* Gauche : Graphe, Type de poids & Algorithme */}
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-darkBlue shadow-sm">
+                <strong>Graphe :</strong> <span className="font-semibold ml-1">{graph.name.split(' ')[1]}</span>
+              </div>
+              <div className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-darkBlue shadow-sm">
+                <strong>Type de poids :</strong> <span className="font-semibold ml-1">{
             weightType
               ?.replace('predefined', 'prédéfinis')
               .replace('random', 'aléatoire')
               .replace('one', 'tous à 1')
           }</span>
+              </div>
+              <div className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-darkBlue shadow-sm">
+                Algorithme : <span className="font-semibold capitalize ml-1">{algo.replace('-', ' ')}</span>
+              </div>
+            </div>
 
+            {/* Droite : Comprendre l'algorithme */}
           <button
-            className="workshop-btn"
+              className="inline-flex items-center justify-center rounded-xl border-2 border-blue px-5 py-2.5 text-sm font-semibold text-blue hover:bg-blue hover:text-white transition focus:outline-none focus:ring-2 focus:ring-blue/40"
             onClick={() => setShowExplanation(true)}
           >
             Comprendre l'algorithme
           </button>
         </div>
 
-        <div className="algo-visualization-infos">
+          {/* Visualization controls */}
+          <div className="mt-4 border-t border-gray-200 pt-4">
           <AlgoVisualization 
             algo={algo} 
             graph={graph} 
             cyRef={cyRef} 
             onSelectedEdgesChange={handleSelectedEdgesChange}
-          />
-        </div>
-      </div>
-      {disconnectedComponents.length > 0 && graph && (
-          <div className="arbre-couvrant-components-error">
-            <div className="arbre-couvrant-components-error-text">
-              <div style={{ marginTop: '0.5rem' }}>
-                <strong>Composantes :</strong> {formatComponents(disconnectedComponents, graph.data.nodes)}
-              </div>
-            </div>
+              graphDisplay={<GraphDisplay graphData={graph} cyRef={cyRef} />}
+              componentsInfo={graph && disconnectedComponents.length > 0 ? formatComponents(disconnectedComponents, graph.data.nodes) : null}
+            />
           </div>
-        )}
-      <div className="algo-graph-centered">
-        <div className="workshop-graph-area">
-          <GraphDisplay graphData={graph} cyRef={cyRef} />
         </div>
-      </div>
-      <div className="algo-bottom-actions">
-        <button className="workshop-back-btn" onClick={() => navigate('/arbre-couvrant/try', {
-          state: {
-            selectedGraph: graphId,
-            weightType: weightType
-          }
-        })}>
-          &larr; Retour
-        </button>
       </div>
     </div>
   );

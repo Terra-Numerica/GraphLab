@@ -1,15 +1,13 @@
 // Imports
+import { Hono } from 'hono';
 import * as controller from '@/controllers/graph.controller';
 
-import { Router } from 'express';
+const graphRoute = new Hono();
 
-const router = Router();
+graphRoute.get('/', controller.getGraphs);
+graphRoute.get('/:id', controller.getGraph);
+graphRoute.post('/', controller.addGraph);
+graphRoute.put('/:id', controller.editGraph);
+graphRoute.delete('/:id', controller.deleteGraph);
 
-router.get('/', controller.getGraphs);
-router.get('/:id', controller.getGraph);
-router.post('/', controller.addGraph);
-router.put('/:id', controller.editGraph);
-router.delete('/:id', controller.deleteGraph);
-
-// Export
-export default router;
+export default graphRoute;

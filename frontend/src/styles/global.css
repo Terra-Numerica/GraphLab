@@ -1,127 +1,72 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
-:root {
-    --blueHover: #117DBD;
-    --lightBlue: #95D1F5;
-    --darkBlue: #1A182D;
-    --darkCyan: #40E0D0;
-    --darkRed: #B22222;
-    --yellow: #F9BB12;
-    --astro: #2A233E;
-    --green: #00A19A;
-    --greenHover: #008080;
-    --grey: #EBEBEC;
-    --cyan: #00FFFF;
-    --blue: #24A1EB;
-    --red: #DC143C;
-    --redHover: #B22222;
-    
-    /* Breakpoints */
-    --mobile: 480px;
-    --tablet: 768px;
-    --laptop: 1024px;
-    --desktop: 1200px;
+/* Import Tailwind layers */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Font family setup */
+@layer base {
+    html {
+        @apply scroll-smooth;
+    }
+
+    body {
+        @apply font-[Poppins] text-base text-astro bg-gray-100 min-h-screen flex flex-col;
+    }
+
+    a {
+        @apply no-underline text-inherit;
+    }
+
+    h1 {
+        @apply text-darkBlue mb-4 text-2xl font-bold tracking-wide drop-shadow-sm;
+    }
+
+    p {
+        @apply text-astro text-base leading-relaxed font-medium;
+    }
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* Example layout helpers */
+@layer components {
+    .app {
+        @apply min-h-screen flex flex-col;
+    }
 
-body {
-    font-family: 'Poppins', Arial, sans-serif;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background-color: whitesmoke;
-    font-size: 16px;
-}
+    .admin-app {
+        @apply min-h-screen flex flex-col bg-gray-50;
+    }
 
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.app {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-.admin-app {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background-color: #f8f9fa;
-}
-
-.main-content {
-    flex: 1;
-    padding: 1rem;
-    max-width: 100%;
-    margin: 0 auto;
-    width: 100%;
-}
-
-.main-content h1 {
-    color: var(--darkBlue);
-    margin-bottom: 1rem;
-    font-size: 1.8rem;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-shadow: 0 2px 8px rgba(36,161,235,0.08);
-}
-
-.main-content p {
-    color: var(--astro);
-    font-size: 1rem;
-    line-height: 1.6;
-    font-weight: 500;
-}
-
-/* Media Queries */
-@media screen and (min-width: 480px) {
     .main-content {
-        padding: 1.5rem;
+        @apply flex-1 p-4 mx-auto w-full max-w-screen-sm sm:p-6 md:p-8 md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl;
     }
-    
-    .main-content h1 {
-        font-size: 2rem;
+
+    .main-content-full {
+        @apply flex-1 p-4 mx-auto w-full max-w-screen-sm sm:p-6 md:p-8 md:max-w-screen-md lg:max-w-screen-lg xl:max-w-full;
     }
-    
-    .main-content p {
-        font-size: 1.1rem;
+
+    .navbar-gradient {
+        background: linear-gradient(135deg, #F9BB12 0%, #00A19A 25%, #24A1EB 50%, #1A182D 100%);
     }
+
+    .navbar-gradient * {
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    }
+
+    .login-gradient {
+        background: linear-gradient(135deg, #F9BB12 0%, #00A19A 25%, #24A1EB 50%, #1A182D 100%);
+    }
+
 }
 
-@media screen and (min-width: 768px) {
-    .main-content {
-        padding: 2rem;
-        max-width: 720px;
+@keyframes popup-fade-in {
+    from {
+        opacity: 0;
+        transform: scale(0.97);
     }
-    
-    .main-content h1 {
-        font-size: 2.2rem;
-    }
-}
-
-@media screen and (min-width: 1024px) {
-    .main-content {
-        max-width: 960px;
-    }
-    
-    .main-content h1 {
-        font-size: 2.5rem;
-    }
-    
-    .main-content p {
-        font-size: 1.2rem;
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 }
-
-@media screen and (min-width: 1200px) {
-    .main-content {
-        max-width: 1200px;
-    }
-} 

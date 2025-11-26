@@ -1,52 +1,110 @@
 // Imports
 import WorkshopModel from '@/models/workshop.model';
+import { z } from 'zod';
 
-// Types
-import type { Request, Response } from 'express';
+// Validation schemas
+const workshopSchema = z.object({
+	coloring: z.object({
+		production: z.boolean(),
+		development: z.boolean()
+	}),
+	spanningTree: z.object({
+		production: z.boolean(),
+		development: z.boolean()
+	}),
+	railwayMaze: z.object({
+		production: z.boolean(),
+		development: z.boolean()
+	})
+});
 
-export const getWorkshops = async (req: Request, res: Response) => {
+export const getWorkshops = async (c: any) => {
 	try {
 		const workshops = await WorkshopModel.find().sort({ createdAt: 1 });
-		res.json(workshops);
+		return c.json(workshops);
 	} catch (error: any) {
-		res.status(500).json({ error: error.stack });
+		console.error('Error fetching workshops:', error);
+		return c.json({ error: error.message }, 500);
 	}
 };
 
-export const getWorkshop = async (req: Request, res: Response) => {
+export const getWorkshop = async (c: any) => {
 	try {
-		const workshop = await WorkshopModel.findById(req.params.id);
-		res.json(workshop);
+		const { id } = c.req.param();
+		const workshop = await WorkshopModel.findById(id);
+		
+		if (!workshop) {
+			return c.json({ message: 'Workshop not found' }, 404);
+		}
+		
+		return c.json(workshop);
 	} catch (error: any) {
-		res.status(500).json({ error: error.stack });
+		console.error('Error fetching workshop:', error);
+		return c.json({ error: error.message }, 500);
 	}
 };
 
-export const addWorkshop = async (req: Request, res: Response) => {
+export const addWorkshop = async (c: any) => {
 	try {
-		const workshop = new WorkshopModel(req.body);
+		const body = await c.req.json();
+		
+		// Validate input
+		const validatedData = workshopSchema.parse(body);
+		
+		const workshop = new WorkshopModel(validatedData);
 		await workshop.save();
-		res.status(201).json(workshop);
+		
+		return c.json(workshop, 201);
 	} catch (error: any) {
-		console.log(error);
-		res.status(500).json({ error: error.stack });
+		console.error('Error creating workshop:', error);
+		
+		if (error instanceof z.ZodError) {
+			return c.json({ message: 'Invalid input data', errors: error.issues }, 400);
+		}
+		
+		return c.json({ error: error.message }, 500);
 	}
 };
 
-export const editWorkshop = async (req: Request, res: Response) => {
+export const editWorkshop = async (c: any) => {
 	try {
-		const updatedWorkshop = await WorkshopModel.findByIdAndUpdate(req.params.id, req.body, { new: true });
-		res.json(updatedWorkshop);
+		const { id } = c.req.param();
+		const body = await c.req.json();
+		
+		// Validate input
+		const validatedData = workshopSchema.parse(body);
+		
+		const updatedWorkshop = await WorkshopModel.findByIdAndUpdate(id, validatedData, { new: true });
+		
+		if (!updatedWorkshop) {
+			return c.json({ message: 'Workshop not found' }, 404);
+		}
+		
+		return c.json(updatedWorkshop);
 	} catch (error: any) {
-		res.status(500).json({ error: error.stack });
+		console.error('Error updating workshop:', error);
+		
+		if (error instanceof z.ZodError) {
+			return c.json({ message: 'Invalid input data', errors: error.issues }, 400);
+		}
+		
+		return c.json({ error: error.message }, 500);
 	}
 };
 
-export const deleteWorkshop = async (req: Request, res: Response) => {
+export const deleteWorkshop = async (c: any) => {
 	try {
-		await WorkshopModel.findByIdAndDelete(req.params.id);
-		res.json({ message: 'Workshop deleted successfully' });
+		const { id } = c.req.param();
+		
+		const deletedWorkshop = await WorkshopModel.findByIdAndDelete(id);
+		
+		if (!deletedWorkshop) {
+			return c.json({ message: 'Workshop not found' }, 404);
+		}
+		
+		return c.json({ message: 'Workshop deleted successfully' });
 	} catch (error: any) {
-		res.status(500).json({ error: error.stack });
+		console.error('Error deleting workshop:', error);
+		return c.json({ error: error.message }, 500);
 	}
 };

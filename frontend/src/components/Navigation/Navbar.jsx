@@ -1,24 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../styles/Navigation/Navbar.css';
 
 const Navbar = () => {
-	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
 	const navigate = useNavigate();
-
-	const handleDropdown = (open) => {
-		if (window.innerWidth > 768) {
-			setIsDropdownOpen(open);
-		}
-	};
 
 	useEffect(() => {
 		const handleResize = () => {
 			if (window.innerWidth > 768) {
 				setIsMobileMenuOpen(false);
-				setIsDropdownOpen(false);
 			}
 		};
 		window.addEventListener('resize', handleResize);
@@ -42,64 +33,172 @@ const Navbar = () => {
 	};
 
 	return (
-		<nav className="navbar">
-			<div className="nav-mobile-header">
-				<button className="hamburger" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-					<span className="bar"></span>
-					<span className="bar"></span>
-					<span className="bar"></span>
-				</button>
-				<div className="nav-mobile-logo">
-					<a href="/" className="logo">
-						<span className="logo-text">GraphLab par </span>
-						<img src="/logo_tn.png" alt="Terra Numerica Logo" className="logo-img" />
+		<nav className="sticky top-0 z-50 w-full border-b border-darkBlue navbar-gradient text-white">
+			<div className="mx-auto flex max-w-screen-2xl items-center justify-between px-4 py-3 sm:px-6 md:px-8 md:py-4">
+				{/* Mobile: Hamburger + Logo */}
+				<div className="flex items-center gap-3 md:hidden">
+					<button
+						className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-white/20 hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-lightBlue/60 transition-colors"
+						onClick={() => setIsMobileMenuOpen((v) => !v)}
+						aria-label="Ouvrir le menu"
+						aria-expanded={isMobileMenuOpen}
+					>
+						<span className={`block h-0.5 w-5 bg-white transition-all ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : 'mb-1.5'}`}></span>
+						<span className={`block h-0.5 w-5 bg-white transition-all ${isMobileMenuOpen ? 'opacity-0' : 'mb-1.5'}`}></span>
+						<span className={`block h-0.5 w-5 bg-white transition-all ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
+					</button>
+					<a href="/" className="flex items-center gap-1.5">
+						<span className="text-base font-semibold text-white">GraphLab par</span>
+						<img src="/logo_tn.png" alt="Terra Numerica Logo" className="h-7 w-auto" />
 					</a>
 				</div>
-			</div>
-			<div className={`nav-content${isMobileMenuOpen ? ' open' : ''}`}>
-				<div className="nav-left">
-					<a href="/" className="nav-link">Accueil</a>
-					<div className="dropdown">
+
+				{/* Desktop: Left Nav */}
+				<div className="hidden md:flex md:items-center md:gap-6">
+					<a href="/" className="text-lg font-medium hover:text-lightBlue transition-colors">
+						Accueil
+					</a>
+
+					{/* Dropdown (hover desktop) - avec zone de transition invisible */}
+					<div className="relative group">
 						<button
-							className="dropdown-trigger"
-							onMouseEnter={() => handleDropdown(true)}
-							onMouseLeave={() => handleDropdown(false)}
-							onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+							className="inline-flex items-center gap-1.5 text-lg font-medium hover:text-lightBlue transition-colors"
+							aria-haspopup="menu"
+							aria-expanded="false"
 						>
-							Ateliers <span className="dropdown-arrow">▼</span>
-						</button>
-						{isDropdownOpen && (
-							<div
-								className="dropdown-content"
-								onMouseEnter={() => handleDropdown(true)}
-								onMouseLeave={() => handleDropdown(false)}
+							Ateliers
+							<svg
+								className="h-4 w-4 transition-transform group-hover:rotate-180"
+								viewBox="0 0 20 20"
+								fill="currentColor"
+								aria-hidden="true"
 							>
-								<a href="/coloration">Coloration des sommets</a>
-								<a href="/arbre-couvrant">Arbre Couvrant</a>
-								<a href="/railway-maze">Labyrinthe Voyageur</a>
+								<path d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.94l3.71-3.71a.75.75 0 1 1 1.06 1.06l-4.24 4.24a.75.75 0 0 1-1.06 0L5.21 8.29a.75.75 0 0 1 .02-1.08z" />
+							</svg>
+						</button>
+
+						{/* Zone invisible pour permettre le passage du curseur */}
+						<div className="absolute left-0 top-full h-2 w-full"></div>
+
+						{/* Dropdown Menu */}
+						<div className="absolute left-0 top-full pt-2 w-56 opacity-0 pointer-events-none translate-y-1 transition-all group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto">
+							<div className="rounded-xl border border-grey/30 bg-white text-astro shadow-lg">
+								<a href="/coloration" className="block rounded-lg px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors">
+									Coloration de graphe
+								</a>
+								<a href="/arbre-couvrant" className="block rounded-lg px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors">
+									Arbre Couvrant
+								</a>
+								<a href="/railway-maze" className="block rounded-lg px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors">
+									Labyrinthe Voyageur
+								</a>
 							</div>
-						)}
+						</div>
 					</div>
 				</div>
-				<div className="nav-center desktop-logo">
-					<a href="/" className="logo">
-						<span className="logo-text">GraphLab par </span>
-						<img src="/logo_tn.png" alt="Terra Numerica Logo" className="logo-img" />
+
+				{/* Desktop: Center Logo */}
+				<div className="hidden md:flex md:absolute md:left-1/2 md:-translate-x-1/2">
+					<a href="/" className="flex items-center gap-2">
+						<span className="text-lg font-semibold text-white">GraphLab par</span>
+						<img src="/logo_tn.png" alt="Terra Numerica Logo" className="h-10 w-auto" />
 					</a>
 				</div>
-				<div className="nav-right">
+
+				{/* Desktop: Right actions */}
+				<div className="hidden md:flex md:items-center md:gap-3">
 					{isAuthenticated ? (
 						<>
-							<a href="/admin" className="admin-btn">Tableau de bord</a>
-							<button onClick={handleLogout} className="admin-btn logout-btn">Déconnexion</button>
+							<a
+								href="/admin"
+								className="inline-flex items-center justify-center rounded-lg border border-white/30 px-5 py-2.5 text-base font-medium hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-lightBlue/50 transition-colors"
+							>
+								Tableau de bord
+							</a>
+							<button
+								onClick={handleLogout}
+								className="inline-flex items-center justify-center rounded-lg border border-white/30 px-5 py-2.5 text-base font-medium hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-lightBlue/50 transition-colors"
+							>
+								Déconnexion
+							</button>
 						</>
 					) : (
-						<a href="/admin" className="admin-btn">Connexion Admin</a>
+						<a
+							href="/admin"
+							className="inline-flex items-center justify-center rounded-lg border-2 border-white px-5 py-2.5 text-base font-semibold text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-lightBlue/50 transition-colors"
+						>
+							Connexion Admin
+						</a>
 					)}
 				</div>
 			</div>
+
+			{/* Mobile panel */}
+			{isMobileMenuOpen && (
+				<div className="md:hidden border-t border-white/20 navbar-gradient text-white">
+					<div className="px-4 py-4">
+						<div className="flex flex-col gap-3">
+							<a href="/" className="py-2.5 text-lg font-medium hover:text-lightBlue transition-colors">
+								Accueil
+							</a>
+
+							{/* Dropdown mobile (accordéon) */}
+							<details className="group">
+								<summary className="flex cursor-pointer list-none items-center justify-between py-2.5 text-lg font-medium hover:text-lightBlue transition-colors">
+									<span>Ateliers</span>
+									<svg
+										className="h-4 w-4 transition-transform group-open:rotate-180"
+										viewBox="0 0 20 20"
+										fill="currentColor"
+										aria-hidden="true"
+									>
+										<path d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 10.94l3.71-3.71a.75.75 0 1 1 1.06 1.06l-4.24 4.24a.75.75 0 0 1-1.06 0L5.21 8.29a.75.75 0 0 1 .02-1.08z" />
+									</svg>
+								</summary>
+								<div className="mt-1 ml-3 flex flex-col gap-1">
+									<a href="/coloration" className="rounded-lg px-3 py-2.5 text-base hover:bg-white/10 transition-colors">
+										Coloration de graphe
+									</a>
+									<a href="/arbre-couvrant" className="rounded-lg px-3 py-2.5 text-base hover:bg-white/10 transition-colors">
+										Arbre Couvrant
+									</a>
+									<a href="/railway-maze" className="rounded-lg px-3 py-2.5 text-base hover:bg-white/10 transition-colors">
+										Labyrinthe Voyageur
+									</a>
+								</div>
+							</details>
+
+							<div className="pt-3 border-t border-white/20">
+								{isAuthenticated ? (
+									<div className="flex flex-col gap-2.5">
+										<a
+											href="/admin"
+											className="inline-flex items-center justify-center rounded-lg border border-white/30 px-5 py-2.5 text-base font-medium hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-lightBlue/50 transition-colors"
+										>
+											Tableau de bord
+										</a>
+										<button
+											onClick={handleLogout}
+											className="inline-flex w-full items-center justify-center rounded-lg border border-white/30 px-5 py-2.5 text-base font-medium hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-lightBlue/50 transition-colors"
+										>
+											Déconnexion
+										</button>
+									</div>
+								) : (
+									<a
+										href="/admin"
+										className="inline-flex w-full items-center justify-center rounded-lg border-2 border-white px-5 py-2.5 text-base font-semibold text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-lightBlue/50 transition-colors"
+									>
+										Connexion Admin
+									</a>
+								)}
+							</div>
+						</div>
+					</div>
+				</div>
+			)}
 		</nav>
 	);
 };
 
-export default Navbar; 
+export default Navbar;

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import config from '../../config';
-import '../../styles/Admin/Workshops.css';
+// ❌ supprimé : import '../../styles/Admin/Workshops.css';
 
 const Workshops = () => {
     const [workshopConfig, setWorkshopConfig] = useState({
@@ -168,141 +168,187 @@ const Workshops = () => {
 
     if (loading && !workshopId) {
         return (
-            <div className="workshops">
-                <div className="admin-loading-state">Chargement de la configuration...</div>
+            <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 md:px-8 py-10">
+                <section className="rounded-2xl bg-white p-8 shadow-sm">
+                    <div className="flex justify-center items-center min-h-[200px] flex-col gap-4">
+                        <div className="w-8 h-8 border-4 border-blue/30 border-t-blue rounded-full animate-spin"></div>
+                        <p className="text-xl text-darkBlue font-medium">Chargement de la configuration...</p>
+                    </div>
+                </section>
             </div>
         );
     }
 
     return (
-        <div className="workshops">
-            <header className="workshops-header">
-                <h1>Gestion des Ateliers</h1>
-                <div className="admin-header-actions">
+        <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 md:px-8 py-10">
+            {/* En-tête */}
+            <section className="rounded-2xl bg-white p-8 shadow-sm mb-10">
+                <div className="flex justify-between items-center mb-6 flex-col sm:flex-row gap-4">
+                    <div>
+                        <h1 className="text-darkBlue mb-3 text-3xl md:text-4xl font-bold tracking-wide drop-shadow-sm">
+                            Configuration des Ateliers
+                        </h1>
+                        <p className="text-astro leading-relaxed">
+                            Gérez la disponibilité des ateliers selon les environnements de déploiement.
+                        </p>
+                    </div>
                     <button 
-                        className="admin-btn admin-btn-primary" 
+                        className="inline-flex items-center justify-center rounded-xl bg-green px-6 py-3 font-semibold text-white shadow transition hover:bg-green-hover focus:outline-none focus:ring-2 focus:ring-green/40 disabled:opacity-60 disabled:cursor-not-allowed" 
                         onClick={saveSettings}
                         disabled={loading}
                     >
-                        {loading ? 'Sauvegarde...' : 'Sauvegarder'}
+                        {loading ? (
+                            <>
+                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
+                                Sauvegarde...
+                            </>
+                        ) : (
+                            <>💾 Sauvegarder</>
+                        )}
                     </button>
                 </div>
-            </header>
 
-            <main className="workshops-content">
+                {/* Messages d'état */}
                 {error && (
-                    <div className="admin-error-message">
-                        {error}
+                    <div className="flex items-center gap-4 p-6 bg-red/10 border border-red/20 rounded-xl mb-6">
+                        <div className="text-3xl">⚠️</div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-red mb-1">Erreur</h3>
+                            <p className="text-red/80">{error}</p>
+                        </div>
                     </div>
                 )}
 
                 {success && (
-                    <div className="admin-success-message">
-                        {success}
+                    <div className="flex items-center gap-4 p-6 bg-green/10 border border-green/20 rounded-xl mb-6">
+                        <div className="text-3xl">✅</div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-green mb-1">Succès</h3>
+                            <p className="text-green/80">{success}</p>
+                        </div>
                     </div>
                 )}
+            </section>
 
-                <div className="admin-workshops-grid">
+            {/* Configuration des ateliers */}
+            <section className="rounded-2xl bg-white p-8 shadow-sm mb-10">
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                     {Object.entries(workshopInfo).map(([key, info]) => {
                         const config = workshopConfig[key];
                         const isEnabled = isWorkshopEnabled(key);
                         
+                        // Icônes pour chaque atelier
+                        const workshopIcons = {
+                            coloring: '🎨',
+                            spanningTree: '🌳',
+                            railwayMaze: '🚂'
+                        };
+                        
                         return (
-                            <div key={key} className="admin-workshop-card">
-                                <div className="admin-workshop-header">
-                                    <h3>{info.name}</h3>
-                                    <div className="admin-workshop-status">
-                                        <span className={`admin-status-badge ${isEnabled ? 'enabled' : 'disabled'}`}>
-                                            {isEnabled ? 'Activé' : 'Désactivé'}
-                                        </span>
+                            <div key={key} className="group flex flex-col gap-4 rounded-2xl border border-grey bg-gray-50 p-6 shadow-sm transition hover:shadow-md">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="text-3xl">{workshopIcons[key]}</div>
+                                        <h3 className="text-lg font-semibold text-darkBlue">{info.name}</h3>
                                     </div>
+                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                        isEnabled 
+                                            ? 'bg-green/10 text-green' 
+                                            : 'bg-red/10 text-red'
+                                    }`}>
+                                        {isEnabled ? 'Activé' : 'Désactivé'}
+                                    </span>
                                 </div>
 
-                                <div className="admin-workshop-description">
-                                    <p>{info.description}</p>
+                                <p className="text-sm text-astro/80 leading-relaxed">{info.description}</p>
+
+                                <div className="space-y-3">
+                                    <h4 className="font-semibold text-darkBlue text-sm">Environnements :</h4>
+                                    
+                                    <label className="flex items-center gap-3 p-3 bg-white rounded-xl border border-grey cursor-pointer hover:bg-blue/5 transition">
+                                        <input
+                                            type="checkbox"
+                                            checked={config.development}
+                                            onChange={() => toggleEnvironment(key, 'development')}
+                                            className="w-4 h-4 text-blue border-2 border-grey rounded focus:ring-2 focus:ring-blue/20"
+                                        />
+                                        <span className="text-lg">🔧</span>
+                                        <div className="flex-1">
+                                            <div className="font-medium text-darkBlue">Développement</div>
+                                            <div className="text-xs text-astro/60">Visible en mode dev</div>
+                                        </div>
+                                    </label>
+
+                                    <label className="flex items-center gap-3 p-3 bg-white rounded-xl border border-grey cursor-pointer hover:bg-blue/5 transition">
+                                        <input
+                                            type="checkbox"
+                                            checked={config.production}
+                                            onChange={() => toggleEnvironment(key, 'production')}
+                                            className="w-4 h-4 text-blue border-2 border-grey rounded focus:ring-2 focus:ring-blue/20"
+                                        />
+                                        <span className="text-lg">🚀</span>
+                                        <div className="flex-1">
+                                            <div className="font-medium text-darkBlue">Production</div>
+                                            <div className="text-xs text-astro/60">Visible en mode prod</div>
+                                        </div>
+                                    </label>
                                 </div>
 
-                                <div className="admin-workshop-controls">
-                                    <div className="admin-control-group">
-                                        <label className="admin-control-label">Environnements disponibles</label>
-                                        <div className="admin-environment-selector">
-                                            <div className="admin-environment-option">
-                                                <label className="admin-environment-checkbox">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={config.development}
-                                                        onChange={() => toggleEnvironment(key, 'development')}
-                                                    />
-                                                    <span className="admin-environment-icon">🔧</span>
-                                                    <span className="admin-environment-label">
-                                                        <strong>Développement</strong>
-                                                        <small>Visible en dev</small>
-                                                    </span>
-                                                </label>
-                                            </div>
-                                            <div className="admin-environment-option">
-                                                <label className="admin-environment-checkbox">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={config.production}
-                                                        onChange={() => toggleEnvironment(key, 'production')}
-                                                    />
-                                                    <span className="admin-environment-icon">🚀</span>
-                                                    <span className="admin-environment-label">
-                                                        <strong>Production</strong>
-                                                        <small>Visible en prod</small>
-                                                    </span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="admin-workshop-status-info">
-                                        <div className="admin-status-summary">
-                                            {config.production && config.development ? (
-                                                <span className="admin-status-text">✅ Disponible partout</span>
-                                            ) : config.production ? (
-                                                <span className="admin-status-text">🚀 Production uniquement</span>
-                                            ) : config.development ? (
-                                                <span className="admin-status-text">🔧 Développement uniquement</span>
-                                            ) : (
-                                                <span className="admin-status-text">❌ Non disponible</span>
-                                            )}
-                                        </div>
-                                    </div>
+                                <div className="mt-4 p-3 bg-white rounded-xl border border-grey text-center">
+                                    {config.production && config.development ? (
+                                        <span className="text-sm font-medium text-green">✅ Disponible partout</span>
+                                    ) : config.production ? (
+                                        <span className="text-sm font-medium text-blue">🚀 Production uniquement</span>
+                                    ) : config.development ? (
+                                        <span className="text-sm font-medium text-yellow">🔧 Développement uniquement</span>
+                                    ) : (
+                                        <span className="text-sm font-medium text-red">❌ Non disponible</span>
+                                    )}
                                 </div>
                             </div>
                         );
                     })}
                 </div>
+            </section>
 
-                <div className="admin-workshops-info">
-                    <h3>Informations sur les environnements</h3>
-                    <div className="admin-info-grid">
-                        <div className="admin-info-card">
-                            <div className="admin-info-icon">🔧</div>
-                            <div className="admin-info-content">
-                                <h4>Environnement Développement</h4>
-                                <p>L'atelier sera visible et accessible uniquement quand l'application est lancée en mode développement (NODE_ENV=development).</p>
-                            </div>
+            {/* Informations sur les environnements */}
+            <section className="rounded-2xl bg-white p-8 shadow-sm">
+
+                <h2 className="mb-6 text-2xl font-semibold text-darkBlue">Guide des Environnements</h2>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="flex items-center gap-4 rounded-xl border border-grey bg-gray-50 p-4">
+                        <div className="text-4xl">🔧</div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-darkBlue mb-1">Développement</h3>
+                            <p className="text-sm text-astro/80 leading-relaxed">
+                                Visible uniquement en mode développement (NODE_ENV=development)
+                            </p>
                         </div>
-                        <div className="admin-info-card">
-                            <div className="admin-info-icon">🚀</div>
-                            <div className="admin-info-content">
-                                <h4>Environnement Production</h4>
-                                <p>L'atelier sera visible et accessible uniquement quand l'application est lancée en mode production (NODE_ENV=production).</p>
-                            </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 rounded-xl border border-grey bg-gray-50 p-4">
+                        <div className="text-4xl">🚀</div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-darkBlue mb-1">Production</h3>
+                            <p className="text-sm text-astro/80 leading-relaxed">
+                                Visible uniquement en mode production (NODE_ENV=production)
+                            </p>
                         </div>
-                        <div className="admin-info-card">
-                            <div className="admin-info-icon">✅</div>
-                            <div className="admin-info-content">
-                                <h4>Les deux environnements</h4>
-                                <p>Si les deux environnements sont activés, l'atelier sera visible et accessible dans tous les environnements.</p>
-                            </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 rounded-xl border border-grey bg-gray-50 p-4">
+                        <div className="text-4xl">✅</div>
+                        <div>
+                            <h3 className="text-lg font-semibold text-darkBlue mb-1">Les deux</h3>
+                            <p className="text-sm text-astro/80 leading-relaxed">
+                                Visible dans tous les environnements si les deux sont activés
+                            </p>
                         </div>
                     </div>
                 </div>
-            </main>
+            </section>
         </div>
     );
 };

@@ -1,15 +1,13 @@
 // Imports
+import { Hono } from 'hono';
 import * as controller from '@/controllers/workshop.controller';
 
-import { Router } from 'express';
+const workshopRoute = new Hono();
 
-const router = Router();
+workshopRoute.get('/', controller.getWorkshops);
+workshopRoute.get('/:id', controller.getWorkshop);
+workshopRoute.post('/', controller.addWorkshop);
+workshopRoute.put('/:id', controller.editWorkshop);
+workshopRoute.delete('/:id', controller.deleteWorkshop);
 
-router.get('/', controller.getWorkshops);
-router.get('/:id', controller.getWorkshop);
-router.post('/', controller.addWorkshop);
-router.put('/:id', controller.editWorkshop);
-router.delete('/:id', controller.deleteWorkshop);
-
-// Export
-export default router;
+export default workshopRoute;

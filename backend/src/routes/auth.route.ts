@@ -1,10 +1,9 @@
 // Imports
+import { Hono } from 'hono';
 import * as controller from '@/controllers/auth.controller';
 
-import { Router } from 'express';
+const authRoute = new Hono();
 
-const router = Router();
+authRoute.post('/login', controller.login);
 
-router.post('/login', controller.login);
-
-export default router; 
+export default authRoute;

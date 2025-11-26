@@ -1,7 +1,7 @@
 {
-  "name": "backend",
-  "version": "1.0.0",
-  "description": "",
+  "name": "graphlab-backend-v2",
+  "version": "2.0.0",
+  "description": "GraphLab Backend V2 with Hono",
   "main": "dist/server.js",
   "type": "module",
   "author": "Megitsune",
@@ -11,31 +11,28 @@
     "build": "tsc && tsc-alias",
     "build:install": "npm i && tsc && tsc-alias",
     "dev": "tsx watch src/server.ts",
-    "update": "ncu -u && npm install",
-    "test": "jest",
-    "migrate": "tsx src/__migrations__/migrateGraphs.ts"
+    "update": "ncu -u && npm install"
   },
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "chalk": "^5.4.1",
+    "hono": "^4.9.9",
+    "@hono/node-server": "^1.19.5",
+    "bcrypt": "^6.0.0",
+    "chalk": "^5.6.2",
     "cors": "^2.8.5",
-    "dotenv": "^16.5.0",
-    "express": "^5.1.0",
+    "dotenv": "^17.2.3",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.13.2",
-    "tsc-alias": "^1.8.15",
-    "zod": "^3.24.3"
+    "mongoose": "^8.18.3",
+    "tsc-alias": "^1.8.16",
+    "zod": "^4.1.11",
+    "@hono/zod-validator": "^0.7.3"
   },
   "devDependencies": {
-    "@types/bcrypt": "^5.0.2",
-    "@types/cors": "^2.8.17",
-    "@types/express": "^5.0.1",
-    "@types/jest": "^30.0.0",
-    "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^22.14.1",
-    "jest": "^30.0.4",
-    "npm-check-updates": "^17.1.18",
-    "ts-jest": "^29.4.0",
-    "tsx": "^4.19.3"
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.6.0",
+    "npm-check-updates": "^19.0.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.2"
   }
 }

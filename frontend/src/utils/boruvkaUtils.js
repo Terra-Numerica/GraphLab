@@ -114,7 +114,7 @@ export const boruvkaAlgorithm = (nodes, edges) => {
                 steps.push({
                     action: 'select_edge',
                     edge: edge,
-                    explanation: `On sélectionne l'arête de poids minimal (${edge.data.weight}) pour relier la composante ${componentId} à une autre. Cette arête est ajoutée à l'arbre couvrant, ce qui fusionne les deux composantes.`
+                    explanation: `On sélectionne l'arête de poids minimal (${edge.data.weight}) pour relier la composante ${componentId} à une autre composante. Cette arête est ajoutée à l'arbre couvrant, ce qui fusionne les deux composantes.`
                 });
                 union(parent, rank, source, target);
                 numComponents--;
@@ -129,7 +129,7 @@ export const boruvkaAlgorithm = (nodes, edges) => {
 
     steps.push({
         action: 'end',
-        explanation: "Fin de l'algorithme de Boruvka : toutes les composantes sont maintenant connectées. L'arbre couvrant de poids minimal a été construit."
+        explanation: "Fin de l'algorithme de Boruvka : il n'y a maintenant qu'une seule composante. L'arbre couvrant de poids minimal a été construit."
     });
 
     return steps;

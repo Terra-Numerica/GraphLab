@@ -1,20 +1,11 @@
-declare global {
-	namespace NodeJS {
-		interface ProcessEnv {
-			// Server
-			PORT: string;
-
-			// Database
-			MONGODB_URL: string;
-
-			// Environment
-			NODE_ENV: "development" | "production";
-
-			// Render.com
-			FRONTEND_URL: string;
-			BACKEND_URL: string;
-		}
-	}
+declare namespace NodeJS {
+  interface ProcessEnv {
+    PORT: string;
+    MONGODB_URL: string;
+    NODE_ENV: 'development' | 'production' | 'test';
+    JWT_SECRET: string;
+    DISCORD_URL?: string;
+    BACKEND_URL?: string;
+    FRONTEND_URL?: string;
+  }
 }
-
-export { };

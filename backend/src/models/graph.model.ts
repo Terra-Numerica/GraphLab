@@ -211,18 +211,20 @@ graphSchema.pre('save', function (next) {
 	}
 
 	// Vérifier que les nœuds référencés dans les arêtes existent
-	const nodeIds = new Set(this.data.nodes.map((node: Node) => node.data.id));
-	const edgesValid = this.data.edges.every((edge: Edge) =>
-		nodeIds.has(edge.data.source) && nodeIds.has(edge.data.target)
-	);
+	if (this.data && this.data.nodes && this.data.edges) {
+		const nodeIds = new Set(this.data.nodes.map((node: Node) => node.data.id));
+		const edgesValid = this.data.edges.every((edge: Edge) =>
+			nodeIds.has(edge.data.source) && nodeIds.has(edge.data.target)
+		);
 
-	if (!edgesValid) {
-		next(new Error("Les arêtes référencent des nœuds qui n'existent pas"));
-	}
+		if (!edgesValid) {
+			next(new Error("Les arêtes référencent des nœuds qui n'existent pas"));
+		}
 
-	// Vérifier que le graphe n'est pas vide
-	if (this.data.nodes.length === 0) {
-		next(new Error('Le graphe doit contenir au moins un nœud'));
+		// Vérifier que le graphe n'est pas vide
+		if (this.data.nodes.length === 0) {
+			next(new Error('Le graphe doit contenir au moins un nœud'));
+		}
 	}
 
 	next();
