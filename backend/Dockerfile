@@ -25,10 +25,18 @@ FROM node:alpine AS production
 
 WORKDIR /app
 
+ENV APP_USER=graphlab
+
 COPY --from=backend-build /backend/dist ./dist
 COPY --from=backend-build /backend/package.json ./
 COPY --from=backend-build /backend/public ./public
 
 RUN npm install --omit=dev
+
+RUN addgroup -S $APP_USER && adduser -S $APP_USER -G $APP_USER
+
+RUN chown -R $APP_USER:$APP_USER /app
+
+USER $APP_USER
 
 CMD ["npm", "run", "start"]
