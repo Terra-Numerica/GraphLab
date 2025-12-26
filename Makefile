@@ -11,8 +11,8 @@ VERSION?=$$(git describe --long | tr -d 'v' | cut -d- -f 1-2 | sed 's/-0$$//')$(
 
 # --- Configuration ---
 APP_ID=graphlab
-VERSION := $(shell npm pkg get version | sed "s/\"//g")
-IMAGE_NAME = registry.gitlab.com/terra-numerica/$(APP_ID)
+VERSION?=$(shell npm pkg get version | sed "s/\"//g")
+IMAGE_NAME=registry.gitlab.com/terra-numerica/$(APP_ID)
 
 # Chemins sur le serveur
 SERVER_BACKEND_PATH  = /srv/$(APP_ID)/
