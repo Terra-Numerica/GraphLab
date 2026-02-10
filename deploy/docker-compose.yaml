@@ -1,8 +1,8 @@
 services:
   graphlab:
     build:
-      context: .
-      dockerfile: ./backend/Dockerfile
+      context: ..
+      dockerfile: app/backend/docker/Dockerfile
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.graphlab.tls=true"
@@ -19,7 +19,20 @@ services:
       - ./.env:/app/.env
     networks:
       - traefik
+  mongo:
+    image: mongo:7
+    container_name: graphlab-db
+    restart: unless-stopped
+    volumes:
+      - graphlab-db:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: graphlab
+    ports:
+      - "27017:27017" # optionnel, utile pour debug avec MongoDB Compass
 
 networks:
   traefik:
     external: true
+
+volumes:
+  graphlab-db:

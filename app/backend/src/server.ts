@@ -1,4 +1,5 @@
 // Imports
+import "dotenv/config";
 import { connectDatabase } from "@/base/Database";
 import { checkConfig } from "@/utils/config";
 
@@ -7,7 +8,6 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
-import "dotenv/config";
 
 // Routes
 import graphRoute from "@/routes/graph.route";

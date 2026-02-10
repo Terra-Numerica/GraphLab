@@ -31,7 +31,7 @@ CSI_PROMPT = \033[36m
 # Commande par défaut : Aide
 .PHONY: help
 help: 				
-	@echo -e "\n$(CSI_HIGH)--- Application Sensibilisation Vidéo (v$(VERSION)) ---$(CSI_RESET)\n"
+	@echo -e "\n$(CSI_HIGH)--- Application GraphLab (v$(VERSION)) ---$(CSI_RESET)\n"
 	echo -e "Targets disponibles:\n"
 	egrep -h '\s##\s' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  $(CSI_PROMPT) %-20s$(CSI_RESET) %s\n", $$1, $$2}' \
@@ -95,20 +95,20 @@ release: build deploy update	## Construit, déploie et met à jour le service (c
 .PHONY: app-up
 app-up:					## Démarre l'application en local (docker-compose)
 	@echo "--- Démarrage du docker-compose en local ---"
-	cd deploy && docker compose -p appvideo up -d
+	cd deploy && docker compose -p graphlab up -d
 
 .PHONY: app-down
 app-down:				## Arrête l'application en local (docker-compose)
 	@echo "--- Arrêt du docker-compose local ---"
-	cd deploy && docker compose -p appvideo down
+	cd deploy && docker compose -p graphlab down
 
 .PHONY: app-logs
 app-logs:				## Affiche les logs de l'application en local (docker-compose)
 	@echo "--- Affichage des logs du backend ---"
-	cd deploy && docker compose -p appvideo logs -f backend	
+	cd deploy && docker compose -p graphlab logs -f backend	
 
 .PHONY: app-ps 
 app-ps:					## Affiche les conteneurs de l'application en local (docker-compose)	
 	@echo "--- Conteneurs du backend ---"
-	cd deploy && docker compose -p appvideo ps
+	cd deploy && docker compose -p graphlab ps
 

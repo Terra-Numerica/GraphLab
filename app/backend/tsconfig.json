@@ -22,6 +22,9 @@
     },
     "types": ["node"]
   },
+  "tsc-alias": {
+    "resolveFullPaths": true
+  },
   "include": [
     "src/**/*",
     "types/**/*"
