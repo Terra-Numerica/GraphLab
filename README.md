@@ -2,6 +2,14 @@
 
 Jeu éducatif de coloration de graphes adapté du projet Scratch original.
 
+---
+
+## 🌐 Version en ligne
+Vous pouvez tester le jeu directement dans votre navigateur ici :  
+👉 **[https://terra-numerica.github.io/GraphLab/](https://terra-numerica.github.io/GraphLab/)**
+
+---
+
 ## 🚀 Démarrage rapide
 
 ### 1️⃣ Extraction
