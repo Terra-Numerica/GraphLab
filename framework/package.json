@@ -1,0 +1,33 @@
+{
+  "name": "frameworkthreejs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "setup": "npm run setupDirectory && npm run addStyle && npm run move && npm run remove3D",
+    "setup3D": "npm run setupDirectory && npm run addStyle && npm run move",
+    "setupDirectory": "mkdir src\\css src\\js src\\models src\\textures framework\\css framework\\js framework\\textures",
+    "addStyle": " (echo body { & type tab.txt & echo background-color: white; & type tab.txt & echo margin : 0; & echo })> framework\\css\\style.css",
+    "move": "move framework.js framework\\js\\framework.js && move CTABanner.js framework\\js\\CTABanner.js && move armoire.js framework\\js\\armoire.js && move products.js framework\\js\\products.js  && move modal.js framework\\js\\modal.js && move createScene.js framework\\js\\createScene.js && move table.js framework\\js\\table.js && move roof.jpg framework\\textures\\roof.jpg && move wall.jpg framework\\textures\\wall.jpg && move wood_floor.jpg framework\\textures\\wood_floor.jpg && move main.js src\\js\\main.js && move BannerStyle.css framework\\css\\BannerStyle.css  && move ModalStyle.css framework\\css\\ModalStyle.css",
+    "remove3D": "echo '' > framework\\js\\framework.js && echo '' > framework\\js\\createScene.js && echo '' > framework\\js\\table.js ",
+    "initialState": "move framework\\js\\framework.js framework.js  && move framework\\js\\armoire.js armoire.js && move framework\\js\\products.js products.js && move framework\\js\\modal.js modal.js && move framework\\js\\CTABanner.js CTABanner.js && move framework\\js\\createScene.js createScene.js && move framework\\js\\table.js table.js && move framework\\textures\\roof.jpg roof.jpg && move framework\\textures\\wall.jpg wall.jpg && move framework\\textures\\wood_floor.jpg wood_floor.jpg && move src\\js\\main.js main.js && move framework\\css\\BannerStyle.css BannerStyle.css && move framework\\css\\ModalStyle.css ModalStyle.css && move framework\\css\\style.css style.css && npm run checkAndDelete && npm run updateDoc",
+    "checkAndDelete": "dir framework /s && npm run delete",
+    "delete": "if exist src rmdir /s /q src && if exist node_modules rmdir /s /q node_modules && (if exist framework (echo Suppression du dossier framework... && rd /s /q framework || (echo Echec de la suppression automatique. Tentative avec méthode alternative... && del /f /s /q framework\\*.* && rd /s /q framework))) && if exist package-lock.json del package-lock.json",
+    "updateDoc": "documentation build framework.js --shallow -f md -o DOCUMENTATION.md && documentation build CTABanner.js -f md -o DOCUMENTATION_BANNER.md && documentation build modal.js --shallow -f md -o DOCUMENTATION_MODAL.md",
+    "deploy": "npm run setupDirectory && npm run addStyle && npm run move && npm run install_three && npm run moveDocumentation",
+    "moveDocumentation": "move DOCUMENTATION.md framework\\DOCUMENTATION.md && move DOCUMENTATION_MODAL.md framework\\DOCUMENTATION_MODAL.md  && move DOCUMENTATION_BANNER.md framework\\DOCUMENTATION_BANNER.md && move .gitignore framework\\.gitignore && move CHANGELOG.md framework\\CHANGELOG.md && move README.md framework\\README.md && move tab.txt framework\\tab.txt && move package.json framework\\package.json"
+  },
+  "keywords": [
+    "three.js",
+    "3D",
+    "web",
+    "application"
+  ],
+  "author": "Kishan Turpin <kishan.turpin@gmail.com>, Dylan Malaussena <dylan.malaussena@hotmail.fr>",
+  "license": "ISC",
+  "description": "This is a Three.js framework for creating 3D web application for TerraNumerica.",
+  "dependencies": {
+    "documentation": "^14.0.3",
+    "three": "^0.169.0"
+  }
+}

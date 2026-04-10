@@ -1,0 +1,158 @@
+/* Styles pour le jeu de coloration de graphes */
+
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#game-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+
+#color-palette {
+    position: absolute;
+    top: 80px;
+    left: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 100;
+}
+
+#color-palette h3 {
+    color: #4ade80;
+    margin: 0 0 15px 0;
+    font-size: 18px;
+}
+
+.color-button {
+    width: 50px;
+    height: 50px;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 10px 5px;
+    transition: all 0.3s;
+    display: inline-block;
+}
+
+.color-button:hover {
+    transform: scale(1.1);
+    border-color: white;
+}
+
+.color-button.active {
+    border-color: #4ade80;
+    box-shadow: 0 0 15px rgba(74, 222, 128, 0.5);
+}
+
+#game-info {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    min-width: 200px;
+    z-index: 100;
+}
+
+#game-info h3 {
+    color: #4ade80;
+    margin: 0 0 15px 0;
+    font-size: 18px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    font-size: 14px;
+}
+
+.info-label {
+    color: #94a3b8;
+}
+
+.info-value {
+    color: #fbbf24;
+    font-weight: bold;
+}
+
+#controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px 25px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 100;
+}
+
+.game-button {
+    background: #4ade80;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 5px;
+    transition: all 0.3s;
+}
+
+.game-button:hover {
+    background: #22c55e;
+    transform: scale(1.05);
+}
+
+.game-button:disabled {
+    background: #666;
+    cursor: not-allowed;
+    transform: scale(1);
+}
+
+#victory-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.95);
+    padding: 40px 60px;
+    border-radius: 15px;
+    text-align: center;
+    color: white;
+    display: none;
+    z-index: 200;
+}
+
+#victory-message.show {
+    display: block;
+}
+
+#victory-message h2 {
+    color: #4ade80;
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+#instructions {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 20px;
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    text-align: center;
+    z-index: 100;
+}
