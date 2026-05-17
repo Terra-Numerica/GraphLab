@@ -1,6 +1,10 @@
 # Surcharge pour le déploiement derrière Traefik (serveur Terra Numerica).
 # Usage : docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d
 services:
+  mongo-init:
+    volumes:
+      - ${BACKUP_SSH_KEY_PATH}:/run/secrets/backup_ssh_key:ro
+
   graphlab:
     labels:
       - "traefik.enable=true"

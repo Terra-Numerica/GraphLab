@@ -31,7 +31,9 @@ services:
       - graphlab-internal
 
   mongo-init:
-    image: mongo:7
+    build:
+      context: ..
+      dockerfile: scripts/Dockerfile.mongo-init
     container_name: graphlab-mongo-init
     restart: "no"
     depends_on:
@@ -40,14 +42,17 @@ services:
     environment:
       MONGO_HOST: mongo
       DB_NAME: graphlab
-      BACKUP_DIR: /backups/mongodb
       GRAPHS_JSON: /data/graphs.json
       FORCE_INIT: ${FORCE_INIT:-0}
+      BACKUP_REMOTE_HOST: ${BACKUP_REMOTE_HOST:-}
+      BACKUP_REMOTE_USER: ${BACKUP_REMOTE_USER:-}
+      BACKUP_REMOTE_PATH: ${BACKUP_REMOTE_PATH:-}
+      BACKUP_SSH_STRICT: ${BACKUP_SSH_STRICT:-accept-new}
+    env_file:
+      - path: .env
+        required: false
     volumes:
-      - ${BACKUP_DIR:-./backups/mongodb}:/backups/mongodb:ro
       - ./graphs.json:/data/graphs.json:ro
-      - ../scripts/init-mongo.sh:/scripts/init-mongo.sh:ro
-    entrypoint: ["bash", "/scripts/init-mongo.sh"]
     networks:
       - graphlab-internal
 
