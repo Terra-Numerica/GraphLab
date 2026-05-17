@@ -3,22 +3,54 @@ services:
     build:
       context: ..
       dockerfile: app/backend/docker/Dockerfile
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.graphlab.tls=true"
-      - "traefik.http.routers.graphlab.service=graphlab-service"
-      - "traefik.http.routers.graphlab.entrypoints=web,websecure"
-      - "traefik.http.routers.graphlab.middlewares=graphlab-stripprefix"
-      - "traefik.http.routers.graphlab.rule=Host(`portail.terra-numerica.org`) && PathPrefix(`/graphlab`)"
-      - "traefik.http.services.graphlab-service.loadbalancer.server.port=3000"
-      - "traefik.http.middlewares.graphlab-stripprefix.stripprefix.prefixes=/graphlab"
-    env_file:
-      - .env
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3000/api}
+    container_name: graphlab-app
     restart: unless-stopped
-    volumes:
-      - ./.env:/app/.env
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      PORT: "3000"
+      NODE_ENV: production
+      MONGODB_URL: ${MONGODB_URL:-mongodb://mongo:27017/graphlab}
+    env_file:
+      - path: .env
+        required: false
+    depends_on:
+      mongo:
+        condition: service_healthy
+      mongo-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     networks:
-      - traefik
+      - graphlab-internal
+
+  mongo-init:
+    image: mongo:7
+    container_name: graphlab-mongo-init
+    restart: "no"
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      MONGO_HOST: mongo
+      DB_NAME: graphlab
+      BACKUP_DIR: /backups/mongodb
+      GRAPHS_JSON: /data/graphs.json
+      FORCE_INIT: ${FORCE_INIT:-0}
+    volumes:
+      - ${BACKUP_DIR:-./backups/mongodb}:/backups/mongodb:ro
+      - ./graphs.json:/data/graphs.json:ro
+      - ../scripts/init-mongo.sh:/scripts/init-mongo.sh:ro
+    entrypoint: ["bash", "/scripts/init-mongo.sh"]
+    networks:
+      - graphlab-internal
+
   mongo:
     image: mongo:7
     container_name: graphlab-db
@@ -28,11 +60,19 @@ services:
     environment:
       MONGO_INITDB_DATABASE: graphlab
     ports:
-      - "27017:27017" # optionnel, utile pour debug avec MongoDB Compass
+      - "${MONGO_PORT:-27017}:27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - graphlab-internal
 
 networks:
-  traefik:
-    external: true
+  graphlab-internal:
+    driver: bridge
 
 volumes:
   graphlab-db:

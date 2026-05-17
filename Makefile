@@ -63,7 +63,7 @@ install:						## Installation des dépendances de dev
 .PHONY: build
 build:							## Construit l'image Docker (tag: $(VERSION))
 	@echo "--- Construction de l'image Docker v$(VERSION) ---"
-	docker build -t $(IMAGE_NAME):${VERSION} -t $(IMAGE_NAME):latest -f backend/docker/Dockerfile .
+	docker build -t $(IMAGE_NAME):${VERSION} -t $(IMAGE_NAME):latest --build-arg VITE_API_URL=$${VITE_API_URL:-http://localhost:3000/api} -f app/backend/docker/Dockerfile .
 
 .PHONY: image
 image: build
@@ -80,22 +80,22 @@ push: publish
 .PHONY: deploy
 deploy: check-env build			## Déploiement sur le serveur 
 	@echo "# Copie des fichiers de configuration du stack"
-	rsync -avz ./deploy/docker-compose.yaml ./deploy/.env $(SSH_USER)@$(SSH_HOST):$(SERVER_BACKEND_PATH)
+	rsync -avz ./deploy/docker-compose.yaml ./deploy/docker-compose.prod.yaml ./deploy/.env ./deploy/graphs.json ./scripts/ $(SSH_USER)@$(SSH_HOST):$(SERVER_BACKEND_PATH)
 	
 
 .PHONY: update-service
 update-service: check-env		## Mise à jour du service backend sur le serveur
 	@echo "--- Mise à jour du service ---"
-	ssh $(SSH_USER)@$(SSH_HOST) "cd $(SERVER_BACKEND_PATH) && docker-compose pull && docker-compose up -d"
+	ssh $(SSH_USER)@$(SSH_HOST) "cd $(SERVER_BACKEND_PATH) && docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d --build"
 
 .PHONY: release
 release: build deploy update	## Construit, déploie et met à jour le service (commande globale)
 	@echo "--- Mise en production terminée avec succès ! ---"
 
 .PHONY: app-up
-app-up:					## Démarre l'application en local (docker-compose)
+app-up:					## Démarre l'application en local (docker-compose + MongoDB)
 	@echo "--- Démarrage du docker-compose en local ---"
-	cd deploy && docker compose -p graphlab up -d
+	cd deploy && docker compose -p graphlab up -d --build
 
 .PHONY: app-down
 app-down:				## Arrête l'application en local (docker-compose)
@@ -105,10 +105,18 @@ app-down:				## Arrête l'application en local (docker-compose)
 .PHONY: app-logs
 app-logs:				## Affiche les logs de l'application en local (docker-compose)
 	@echo "--- Affichage des logs du backend ---"
-	cd deploy && docker compose -p graphlab logs -f backend	
+	cd deploy && docker compose -p graphlab logs -f graphlab
 
 .PHONY: app-ps 
 app-ps:					## Affiche les conteneurs de l'application en local (docker-compose)	
 	@echo "--- Conteneurs du backend ---"
 	cd deploy && docker compose -p graphlab ps
+
+.PHONY: backup-mongo
+backup-mongo:				## Sauvegarde MongoDB (script scripts/backup-mongo.sh)
+	BACKUP_DIR=./deploy/backups/mongodb bash ./scripts/backup-mongo.sh
+
+.PHONY: restore-mongo
+restore-mongo:				## Restaure la dernière sauvegarde MongoDB
+	BACKUP_DIR=./deploy/backups/mongodb bash ./scripts/restore-mongo.sh
 

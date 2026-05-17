@@ -1,26 +1,30 @@
 #!/bin/bash
+set -euo pipefail
 
 # =-=-=-= CONFIG =-=-=-=
-CONTAINER_NAME="graphlab-db"
-DB_NAME="graphlab"
-BACKUP_DIR="/srv/graphlab/backups/mongodb"
+CONTAINER_NAME="${CONTAINER_NAME:-graphlab-db}"
+DB_NAME="${DB_NAME:-graphlab}"
+BACKUP_DIR="${BACKUP_DIR:-/srv/graphlab/backups/mongodb}"
+RETENTION_DAYS="${RETENTION_DAYS:-30}"
 DATE=$(date +"%Y-%m-%d_%H-%M-%S")
-TMP_DIR="/tmp/mongo-backup-$DATE"
-RETENTION_DAYS=30
+CONTAINER_TMP="/tmp/mongo-backup-$DATE"
+HOST_TMP=$(mktemp -d)
 
-# =-=-=-= BACKUP =-=-=-=
-mkdir -p "$TMP_DIR"
+trap 'rm -rf "$HOST_TMP"' EXIT
 
-echo "📦 Dump MongoDB..."
-docker exec "$CONTAINER_NAME" mongodump --db "$DB_NAME" --out "$TMP_DIR"
+mkdir -p "$BACKUP_DIR"
 
-echo "🗜 Compression..."
-tar -czf "$BACKUP_DIR/mongodb_$DATE.tar.gz" -C "$TMP_DIR" .
+echo "Dump MongoDB ($DB_NAME)..."
+docker exec "$CONTAINER_NAME" mongodump --db "$DB_NAME" --out "$CONTAINER_TMP"
 
-echo "🧹 Cleaning temp files..."
-rm -rf "$TMP_DIR"
+echo "Copie du dump depuis le conteneur..."
+docker cp "${CONTAINER_NAME}:${CONTAINER_TMP}" "$HOST_TMP/dump"
+docker exec "$CONTAINER_NAME" rm -rf "$CONTAINER_TMP"
 
-echo "🧽 Removing backups older than $RETENTION_DAYS days..."
-find "$BACKUP_DIR" -type f -name "*.tar.gz" -mtime +$RETENTION_DAYS -delete
+echo "Compression..."
+tar -czf "$BACKUP_DIR/mongodb_$DATE.tar.gz" -C "$HOST_TMP/dump" .
 
-echo "✅ Backup completed: mongodb_$DATE.tar.gz"
+echo "Suppression des sauvegardes de plus de $RETENTION_DAYS jours..."
+find "$BACKUP_DIR" -type f -name "mongodb_*.tar.gz" -mtime +"$RETENTION_DAYS" -delete
+
+echo "Sauvegarde terminée : $BACKUP_DIR/mongodb_$DATE.tar.gz"

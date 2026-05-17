@@ -21,6 +21,11 @@ try {
     await checkConfig();
     Logger.success("Configuration is valid");
 
+    // Initialize Database Connection
+    Logger.info("Connecting to the database...");
+    await connectDatabase();
+    Logger.success("Connected to the database");
+
     // Initialize Hono
     const app = new Hono();
 
@@ -31,46 +36,39 @@ try {
         allowHeaders: ["Content-Type", "Authorization"]
     }));
 
+    // API routes (before static files in production)
+    app.route("/api/graph", graphRoute);
+    app.route("/api/auth", authRoute);
+    app.route("/api/workshop", workshopRoute);
+
+    app.get('/health', (c) => {
+        return c.json({ status: 'ok', timestamp: new Date().toISOString() });
+    });
+
     if (process.env.NODE_ENV === "production") {
         app.use("*", serveStatic({
             root: "./public/"
         }));
 
-        app.use("/*", serveStatic({
+        app.get("*", serveStatic({
             root: "./public/",
             path: "index.html"
         }));
-    }
-
-    // Initialize Database Connection
-    Logger.info("Connecting to the database...");
-    await connectDatabase();
-    Logger.success("Connected to the database");
-
-    // Use Routes
-    app.route("/api/graph", graphRoute);
-    app.route("/api/auth", authRoute);
-    app.route("/api/workshop", workshopRoute);
-
-    // home endpoint
-    app.get('/', (c) => {
-        return c.json({
-            message: 'GraphLab Backend',
-            version: '2.0.0',
-            endpoints: {
-                home: '/',
-                health: '/health',
-                graph: '/api/graph',
-                auth: '/api/auth',
-                workshop: '/api/workshop',
-            }
+    } else {
+        app.get('/', (c) => {
+            return c.json({
+                message: 'GraphLab Backend',
+                version: '2.0.0',
+                endpoints: {
+                    home: '/',
+                    health: '/health',
+                    graph: '/api/graph',
+                    auth: '/api/auth',
+                    workshop: '/api/workshop',
+                }
+            });
         });
-    });
-
-    // Health check endpoint
-    app.get('/health', (c) => {
-        return c.json({ status: 'ok', timestamp: new Date().toISOString() });
-    });
+    }
 
     // Get port from environment or default to 3000
     const port = parseInt(process.env.PORT || '3000');
