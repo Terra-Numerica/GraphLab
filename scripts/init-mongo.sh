@@ -36,9 +36,9 @@ has_graph_data() {
 
 find_latest_backup() {
 	if [ ! -d "$BACKUP_DIR" ]; then
-		return 1
+		return 0
 	fi
-	ls -t "${BACKUP_DIR}"/mongodb_*.tar.gz 2>/dev/null | head -n 1 || true
+	ls -t "${BACKUP_DIR}"/mongodb_*.tar.gz 2>/dev/null | head -n 1
 }
 
 restore_from_backup() {
@@ -99,8 +99,8 @@ main() {
 		log "FORCE_INIT=1 : réinitialisation demandée"
 	fi
 
-	local latest_backup
-	latest_backup=$(find_latest_backup)
+	local latest_backup=""
+	latest_backup="$(find_latest_backup || true)"
 
 	if [ -n "$latest_backup" ]; then
 		restore_from_backup "$latest_backup"
