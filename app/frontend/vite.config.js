@@ -14,5 +14,5 @@ export default defineConfig({
     port: process.env.PORT,
     allowedHosts: ['graphlab-xbs3.onrender.com'],
   },
-  base: '/',
+  base: '/graphlab/',
 })
