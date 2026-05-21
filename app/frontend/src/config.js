@@ -4,6 +4,5 @@ const config = {
 };
 
 console.log('env: ', import.meta.env);
-console.log(config);
 
-export default config; 
+export default config;
