@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { assetUrl } from '@/lib/paths';
 
 const TutorialPopup = ({ onClose, onComplete, steps }) => {
     const [currentStep, setCurrentStep] = useState(0);
@@ -92,7 +93,7 @@ const TutorialPopup = ({ onClose, onComplete, steps }) => {
                 <div className="flex flex-col items-start gap-6 md:flex-row">
                     {step.image && (
                         <img
-                            src={step.image}
+                            src={assetUrl(step.image)}
                             alt={step.title}
                             className="w-full max-h-72 rounded-xl border border-grey object-contain shadow md:w-1/2"
                         />

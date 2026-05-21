@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { appBasename } from '@/lib/paths';
 import useWorkshopConfig from './hooks/useWorkshopConfig';
 // import { useState, useEffect } from 'react';
 
@@ -120,7 +121,7 @@ function App() {
 	// }
 
 	return (
-		<BrowserRouter>
+		<BrowserRouter basename={appBasename}>
 			<Routes>
 				{/* Route spécifique pour AlgoPage avec fullWidth */}
 				<Route path="/arbre-couvrant/:algo/:graphId" element={

@@ -9,6 +9,7 @@ services:
       dockerfile: app/backend/docker/Dockerfile
       args:
         VITE_API_URL: ${VITE_API_URL:-http://localhost:3000/api}
+        VITE_BASE_PATH: ${VITE_BASE_PATH:-}
     ports:
       - "${PORT:-3000}:3000"
     labels:

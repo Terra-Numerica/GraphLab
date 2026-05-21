@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import useWorkshopConfig from '../../hooks/useWorkshopConfig';
+import { assetUrl } from '@/lib/paths';
 
 // ❌ plus besoin : import '../../styles/pages/Home.css';
 
@@ -39,7 +40,7 @@ const Home = () => {
                     <div className="graphs-examples grid grid-cols-1 gap-6 sm:grid-cols-3 pt-4">
                         <div className="graph-example flex flex-col items-center gap-3 rounded-xl border border-grey bg-gray-50 p-4">
                             <img
-                                src="/metro-paris.png"
+                                src={assetUrl('metro-paris.png')}
                                 alt="Plan du métro parisien"
                                 className="graph-image-small h-40 w-auto object-contain rounded-lg shadow"
                             />
@@ -48,7 +49,7 @@ const Home = () => {
 
                         <div className="graph-example flex flex-col items-center gap-3 rounded-xl border border-grey bg-gray-50 p-4">
                             <img
-                                src="/graphe.png"
+                                src={assetUrl('graphe.png')}
                                 alt="Graphe général"
                                 className="graph-image-small h-40 w-auto object-contain rounded-lg shadow"
                             />
@@ -57,7 +58,7 @@ const Home = () => {
 
                         <div className="graph-example flex flex-col items-center gap-3 rounded-xl border border-grey bg-gray-50 p-4">
                             <img
-                                src="/reseau-social.png"
+                                src={assetUrl('reseau-social.png')}
                                 alt="Réseau social"
                                 className="graph-image-small h-40 w-auto object-contain rounded-lg shadow"
                             />

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { assetUrl } from '@/lib/paths';
+
 const MobileWarning = () => {
     return (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-darkBlue p-5">
@@ -9,7 +11,7 @@ const MobileWarning = () => {
                     Désolé, GraphLab n'est pas encore optimisé pour les appareils mobiles.
                     Veuillez utiliser un ordinateur pour une meilleure expérience.
                 </p>
-                <img src="/logo_tn.png" alt="Terra Numerica Logo" className="max-w-[150px] h-auto mx-auto" />
+                <img src={assetUrl('logo_tn.png')} alt="Terra Numerica Logo" className="max-w-[150px] h-auto mx-auto" />
             </div>
         </div>
     );

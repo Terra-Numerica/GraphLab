@@ -1,4 +1,5 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { assetUrl } from '@/lib/paths';
 import { useState, useEffect } from 'react';
 
 const AdminLayout = ({ children }) => {
@@ -28,10 +29,10 @@ const AdminLayout = ({ children }) => {
                 <div className="mx-auto flex max-w-screen-2xl items-center justify-between px-4 py-3 sm:px-6 md:px-8 md:py-4">
                     {/* Logo à gauche */}
                     <div className="flex items-center gap-2">
-                        <a href="/" className="flex items-center gap-2">
+                        <Link to="/" className="flex items-center gap-2">
                             <span className="text-lg font-semibold text-white">GraphLab par</span>
-                            <img src="/logo_tn.png" alt="Terra Numerica Logo" className="h-10 w-auto" />
-                        </a>
+                            <img src={assetUrl('logo_tn.png')} alt="Terra Numerica Logo" className="h-10 w-auto" />
+                        </Link>
                         <span className="ml-4 px-3 py-1 bg-white/20 rounded-full text-sm font-medium">Admin</span>
                     </div>
 
@@ -59,12 +60,12 @@ const AdminLayout = ({ children }) => {
 
                     {/* Actions à droite */}
                     <div className="flex items-center gap-3">
-                        <a
-                            href="/"
+                        <Link
+                            to="/"
                             className="inline-flex items-center justify-center rounded-lg border border-white/30 px-5 py-2.5 text-base font-medium hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-lightBlue/50 transition-colors"
                         >
                             Retour au site
-                        </a>
+                        </Link>
                         <button
                             onClick={handleLogout}
                             className="inline-flex items-center justify-center rounded-lg border border-white/30 px-5 py-2.5 text-base font-medium hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-lightBlue/50 transition-colors"

@@ -66,7 +66,10 @@ install:						## Installation des dépendances de dev
 .PHONY: build
 build:							## Construit l'image Docker (tag: $(IMAGE_REF))
 	@echo "--- Construction de l'image Docker $(IMAGE_REF) ---"
-	docker build -t $(IMAGE_REF) -t $(IMAGE_REGISTRY)/$(IMAGE_NAME):latest --build-arg VITE_API_URL=$${VITE_API_URL:-http://localhost:3000/api} -f app/backend/docker/Dockerfile .
+	docker build -t $(IMAGE_REF) -t $(IMAGE_REGISTRY)/$(IMAGE_NAME):latest \
+		--build-arg VITE_API_URL=$${VITE_API_URL:-http://localhost:3000/api} \
+		--build-arg VITE_BASE_PATH=$${VITE_BASE_PATH:-graphlab} \
+		-f app/backend/docker/Dockerfile .
 
 .PHONY: image
 image: build

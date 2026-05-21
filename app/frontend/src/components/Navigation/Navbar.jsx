@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { assetUrl } from '@/lib/paths';
 
 const Navbar = () => {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -47,17 +48,17 @@ const Navbar = () => {
 						<span className={`block h-0.5 w-5 bg-white transition-all ${isMobileMenuOpen ? 'opacity-0' : 'mb-1.5'}`}></span>
 						<span className={`block h-0.5 w-5 bg-white transition-all ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></span>
 					</button>
-					<a href="/" className="flex items-center gap-1.5">
+					<Link to="/" className="flex items-center gap-1.5">
 						<span className="text-base font-semibold text-white">GraphLab par</span>
-						<img src="/logo_tn.png" alt="Terra Numerica Logo" className="h-7 w-auto" />
-					</a>
+						<img src={assetUrl('logo_tn.png')} alt="Terra Numerica Logo" className="h-7 w-auto" />
+					</Link>
 				</div>
 
 				{/* Desktop: Left Nav */}
 				<div className="hidden md:flex md:items-center md:gap-6">
-					<a href="/" className="text-lg font-medium hover:text-lightBlue transition-colors">
+					<Link to="/" className="text-lg font-medium hover:text-lightBlue transition-colors">
 						Accueil
-					</a>
+					</Link>
 
 					{/* Dropdown (hover desktop) - avec zone de transition invisible */}
 					<div className="relative group">
@@ -83,15 +84,15 @@ const Navbar = () => {
 						{/* Dropdown Menu */}
 						<div className="absolute left-0 top-full pt-2 w-56 opacity-0 pointer-events-none translate-y-1 transition-all group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto">
 							<div className="rounded-xl border border-grey/30 bg-white text-astro shadow-lg">
-								<a href="/coloration" className="block rounded-lg px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors">
+								<Link to="/coloration" className="block rounded-lg px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors">
 									Coloration de graphe
-								</a>
-								<a href="/arbre-couvrant" className="block rounded-lg px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors">
+								</Link>
+								<Link to="/arbre-couvrant" className="block rounded-lg px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors">
 									Arbre Couvrant
-								</a>
-								<a href="/railway-maze" className="block rounded-lg px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors">
+								</Link>
+								<Link to="/railway-maze" className="block rounded-lg px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors">
 									Labyrinthe Voyageur
-								</a>
+								</Link>
 							</div>
 						</div>
 					</div>
@@ -99,22 +100,22 @@ const Navbar = () => {
 
 				{/* Desktop: Center Logo */}
 				<div className="hidden md:flex md:absolute md:left-1/2 md:-translate-x-1/2">
-					<a href="/" className="flex items-center gap-2">
+					<Link to="/" className="flex items-center gap-2">
 						<span className="text-lg font-semibold text-white">GraphLab par</span>
-						<img src="/logo_tn.png" alt="Terra Numerica Logo" className="h-10 w-auto" />
-					</a>
+						<img src={assetUrl('logo_tn.png')} alt="Terra Numerica Logo" className="h-10 w-auto" />
+					</Link>
 				</div>
 
 				{/* Desktop: Right actions */}
 				<div className="hidden md:flex md:items-center md:gap-3">
 					{isAuthenticated ? (
 						<>
-							<a
-								href="/admin"
+							<Link
+								to="/admin"
 								className="inline-flex items-center justify-center rounded-lg border border-white/30 px-5 py-2.5 text-base font-medium hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-lightBlue/50 transition-colors"
 							>
 								Tableau de bord
-							</a>
+							</Link>
 							<button
 								onClick={handleLogout}
 								className="inline-flex items-center justify-center rounded-lg border border-white/30 px-5 py-2.5 text-base font-medium hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-lightBlue/50 transition-colors"
@@ -123,12 +124,12 @@ const Navbar = () => {
 							</button>
 						</>
 					) : (
-						<a
-							href="/admin"
+						<Link
+							to="/admin"
 							className="inline-flex items-center justify-center rounded-lg border-2 border-white px-5 py-2.5 text-base font-semibold text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-lightBlue/50 transition-colors"
 						>
 							Connexion Admin
-						</a>
+						</Link>
 					)}
 				</div>
 			</div>
@@ -138,9 +139,9 @@ const Navbar = () => {
 				<div className="md:hidden border-t border-white/20 navbar-gradient text-white">
 					<div className="px-4 py-4">
 						<div className="flex flex-col gap-3">
-							<a href="/" className="py-2.5 text-lg font-medium hover:text-lightBlue transition-colors">
+							<Link to="/" className="py-2.5 text-lg font-medium hover:text-lightBlue transition-colors">
 								Accueil
-							</a>
+							</Link>
 
 							{/* Dropdown mobile (accordéon) */}
 							<details className="group">
@@ -156,27 +157,27 @@ const Navbar = () => {
 									</svg>
 								</summary>
 								<div className="mt-1 ml-3 flex flex-col gap-1">
-									<a href="/coloration" className="rounded-lg px-3 py-2.5 text-base hover:bg-white/10 transition-colors">
+									<Link to="/coloration" className="rounded-lg px-3 py-2.5 text-base hover:bg-white/10 transition-colors">
 										Coloration de graphe
-									</a>
-									<a href="/arbre-couvrant" className="rounded-lg px-3 py-2.5 text-base hover:bg-white/10 transition-colors">
+									</Link>
+									<Link to="/arbre-couvrant" className="rounded-lg px-3 py-2.5 text-base hover:bg-white/10 transition-colors">
 										Arbre Couvrant
-									</a>
-									<a href="/railway-maze" className="rounded-lg px-3 py-2.5 text-base hover:bg-white/10 transition-colors">
+									</Link>
+									<Link to="/railway-maze" className="rounded-lg px-3 py-2.5 text-base hover:bg-white/10 transition-colors">
 										Labyrinthe Voyageur
-									</a>
+									</Link>
 								</div>
 							</details>
 
 							<div className="pt-3 border-t border-white/20">
 								{isAuthenticated ? (
 									<div className="flex flex-col gap-2.5">
-										<a
-											href="/admin"
+										<Link
+											to="/admin"
 											className="inline-flex items-center justify-center rounded-lg border border-white/30 px-5 py-2.5 text-base font-medium hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-lightBlue/50 transition-colors"
 										>
 											Tableau de bord
-										</a>
+										</Link>
 										<button
 											onClick={handleLogout}
 											className="inline-flex w-full items-center justify-center rounded-lg border border-white/30 px-5 py-2.5 text-base font-medium hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-lightBlue/50 transition-colors"
@@ -185,12 +186,12 @@ const Navbar = () => {
 										</button>
 									</div>
 								) : (
-									<a
-										href="/admin"
+									<Link
+										to="/admin"
 										className="inline-flex w-full items-center justify-center rounded-lg border-2 border-white px-5 py-2.5 text-base font-semibold text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-lightBlue/50 transition-colors"
 									>
 										Connexion Admin
-									</a>
+									</Link>
 								)}
 							</div>
 						</div>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { assetUrl } from '@/lib/paths';
 // ❌ supprimé : import '../../styles/Admin/Login.css';
 import config from '../../config';
 
@@ -49,7 +50,7 @@ const Login = () => {
                 <div className="text-center mb-8">
                     <div className="flex items-center justify-center gap-2 mb-4">
                         <span className="text-2xl font-semibold text-white drop-shadow-lg">GraphLab par</span>
-                        <img src="/logo_tn.png" alt="Terra Numerica Logo" className="h-8 w-auto drop-shadow-lg" />
+                        <img src={assetUrl('logo_tn.png')} alt="Terra Numerica Logo" className="h-8 w-auto drop-shadow-lg" />
                     </div>
                     <div className="px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-sm font-medium text-white border border-white/30 inline-block">
                         Panel Administrateur
@@ -128,12 +129,12 @@ const Login = () => {
 
                     {/* Lien retour */}
                     <div className="text-center mt-6 pt-6 border-t border-grey">
-                        <a 
-                            href="/" 
+                        <Link
+                            to="/"
                             className="inline-flex items-center gap-2 text-blue hover:text-blue-hover transition-colors font-medium"
                         >
                             ← Retour au site principal
-                        </a>
+                        </Link>
                     </div>
                 </section>
             </div>
