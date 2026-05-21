@@ -1,5 +1,7 @@
 # GraphLab
 
+Donc : mongoimport --db graphlab --collection graphs --file graphs.json --jsonArray
+
 GraphLab est une plateforme éducative interactive pour l'apprentissage des graphes, développée par Terra Numerica.
 
 ## 🎯 Objectif
