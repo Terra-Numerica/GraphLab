@@ -16,10 +16,6 @@ services:
     networks: !override
       internal: {}
 
-  mongo-init:
-    volumes: !override
-      - ./graphs.json:/data/graphs.json:ro
-
   mongo:
     ports:
       - "${MONGO_PORT:-27017}:27017"

@@ -12,8 +12,6 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
-      mongo-init:
-        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 10s
@@ -32,30 +30,6 @@ services:
     networks:
       - internal
       - traefik
-
-  mongo-init:
-    build:
-      context: ..
-      dockerfile: scripts/Dockerfile.mongo-init
-    container_name: ${APP_ID:-graphlab}-mongo-init
-    restart: "no"
-    depends_on:
-      mongo:
-        condition: service_healthy
-    environment:
-      MONGO_HOST: mongo
-      DB_NAME: ${DB_NAME:-${APP_ID:-graphlab}}
-      GRAPHS_JSON: /data/graphs.json
-      FORCE_INIT: ${FORCE_INIT:-0}
-      BACKUP_REMOTE_HOST: ${BACKUP_REMOTE_HOST:-}
-      BACKUP_REMOTE_USER: ${BACKUP_REMOTE_USER:-}
-      BACKUP_REMOTE_PATH: ${BACKUP_REMOTE_PATH:-}
-      BACKUP_SSH_STRICT: ${BACKUP_SSH_STRICT:-accept-new}
-    volumes:
-      - ./graphs.json:/data/graphs.json:ro
-      - ${BACKUP_SSH_KEY_PATH:-/dev/null}:/run/secrets/backup_ssh_key:ro
-    networks:
-      - internal
 
   mongo:
     image: mongo:7

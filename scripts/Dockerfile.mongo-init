@@ -1,8 +1,0 @@
-FROM mongo:7
-
-WORKDIR /scripts
-
-COPY scripts/init-mongo.sh ./init-mongo.sh
-RUN chmod +x init-mongo.sh
-
-ENTRYPOINT ["./init-mongo.sh"]

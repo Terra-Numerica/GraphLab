@@ -74,13 +74,13 @@ docker compose up -d --build
 
 ### Initialisation MongoDB
 
-Au démarrage, le conteneur `mongo-init` exécute `scripts/init-mongo.sh` :
+Au premier lancement, une fois MongoDB démarré (`make app-up`), importer les graphes par défaut depuis la machine hôte :
 
-1. Si la collection `graphs` contient déjà des données → rien n’est fait (sauf `FORCE_INIT=1`).
-2. Sinon, restauration de la dernière archive `mongodb_*.tar.gz` trouvée dans `BACKUP_DIR` (défaut conteneur : `/backups/mongodb`).
-3. Sinon, import de `deploy/graphs.json`.
+```bash
+bash scripts/init-mongo.sh
+```
 
-En local, sans serveur de backups distant, laissez `BACKUP_REMOTE_HOST` vide dans `deploy/.env` : l’import depuis `graphs.json` est utilisé au premier lancement.
+Le script copie `deploy/graphs.json` dans `/tmp` du conteneur `${APP_ID}-db` puis lance `mongoimport` (`docker cp` + `docker exec`).
 
 ### Sauvegardes MongoDB
 
