@@ -2,15 +2,14 @@
 FROM node:22-alpine AS frontend-build
 WORKDIR /frontend
 
-ARG VITE_API_URL=http://localhost:3000/api
-ARG VITE_BASE_PATH=graphlab
-ENV VITE_API_URL=${VITE_API_URL}
-ENV VITE_BASE_PATH=${VITE_BASE_PATH}
+# production → app/frontend/.env.production (URL portail + /graphlab)
+# development → app/frontend/.env.development (localhost)
+ARG BUILD_MODE=production
 
 COPY app/frontend/package.json ./
 RUN npm install
 COPY app/frontend ./
-RUN npm run build
+RUN npm run build -- --mode "${BUILD_MODE}"
 
 # ---------- BACKEND (Hono) ----------
 FROM node:22-alpine AS backend-build
