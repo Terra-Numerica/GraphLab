@@ -6,11 +6,6 @@ services:
     container_name: ${APP_ID:-graphlab}-app
     restart: unless-stopped
     pull_policy: always
-    build:
-      context: ..
-      dockerfile: app/backend/docker/Dockerfile
-      args:
-        BUILD_MODE: production
     environment:
       PORT: "3000"
       NODE_ENV: production
