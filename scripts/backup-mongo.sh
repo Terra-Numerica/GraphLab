@@ -2,9 +2,10 @@
 set -euo pipefail
 
 # =-=-=-= CONFIG =-=-=-=
-CONTAINER_NAME="${CONTAINER_NAME:-graphlab-db}"
-DB_NAME="${DB_NAME:-graphlab}"
-BACKUP_DIR="${BACKUP_DIR:-/srv/graphlab/backups/mongodb}"
+APP_ID="${APP_ID:-graphlab}"
+CONTAINER_NAME="${CONTAINER_NAME:-${APP_ID}-db}"
+DB_NAME="${DB_NAME:-${APP_ID}}"
+BACKUP_DIR="${BACKUP_DIR:-/srv/${APP_ID}/backups/mongodb}"
 RETENTION_DAYS="${RETENTION_DAYS:-30}"
 DATE=$(date +"%Y-%m-%d_%H-%M-%S")
 CONTAINER_TMP="/tmp/mongo-backup-$DATE"

@@ -1,0 +1,21 @@
+# Surcharge développement local (prod → dev).
+# Usage : docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up -d --build
+services:
+  app:
+    build:
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3000/api}
+    ports:
+      - "${PORT:-3000}:3000"
+    labels:
+      - "traefik.enable=false"
+    networks: !override
+      internal: {}
+
+  mongo-init:
+    volumes: !override
+      - ./graphs.json:/data/graphs.json:ro
+
+  mongo:
+    ports:
+      - "${MONGO_PORT:-27017}:27017"

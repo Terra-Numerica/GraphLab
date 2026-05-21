@@ -40,14 +40,17 @@ Le projet est divisé en deux parties principales :
 
 ### Prérequis en production (Terra Numerica) :
 - accès SSH au serveur, réseau Docker `traefik` existant, clé SSH pour les sauvegardes distantes
-- `deploy/docker-compose.yaml` — stack de base
-- `deploy/docker-compose.prod.yaml` — surcharge Traefik (production)
+- `deploy/docker-compose.yaml` — stack par défaut (production, Traefik, pas de ports exposés)
 
 ### Déploiement local
 
+La config de base est orientée production ; le développement local ajoute une surcharge :
+
+- `deploy/docker-compose.dev.yaml` — ports locaux, API `localhost`, Traefik désactivé
+
 ```bash
 cp deploy/.env.example deploy/.env
-# Ajuster VITE_API_URL si besoin (défaut : http://localhost:3000/api)
+# Ajuster VITE_API_URL si besoin (défaut en dev : http://localhost:3000/api)
 
 make app-up      # build + démarrage
 make app-ps      # état des conteneurs
@@ -57,9 +60,16 @@ make app-down    # arrêt
 
 L’application est accessible sur [http://localhost:3000](http://localhost:3000) (port modifiable via `PORT` dans `deploy/.env`).
 
-Pour un démarrage :
+Équivalent manuel depuis `deploy/` :
+
 ```bash
-   docker compose -f docker-compose.yaml -f docker-compose.prod.yaml up -d --build
+docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up -d --build
+```
+
+Sur le serveur, sans surcharge :
+
+```bash
+docker compose up -d --build
 ```
 
 ### Initialisation MongoDB
@@ -76,7 +86,7 @@ En local, sans serveur de backups distant, laissez `BACKUP_REMOTE_HOST` vide dan
 
 Le script `scripts/backup-mongo.sh` :
 
-- effectue un `mongodump` du conteneur `graphlab-db` ;
+- effectue un `mongodump` du conteneur `${APP_ID}-db` (défaut : `graphlab-db`) ;
 - compresse le dump en `mongodb_YYYY-MM-DD_HH-MM-SS.tar.gz` ;
 - supprime les archives plus anciennes que `RETENTION_DAYS`.
 
@@ -90,7 +100,7 @@ make restore-mongo   # restaure la dernière archive
 Planifier une sauvegarde quotidienne sur le serveur (par exemple : 2h du matin) en ajoutant un cron :
 
 ```cron
-0 2 * * * BACKUP_DIR=/srv/graphlab/backups/mongodb RETENTION_DAYS=30 /bin/bash /srv/graphlab/backup-mongo.sh >> /var/log/graphlab-mongo-backup.log 2>&1
+0 2 * * * APP_ID=graphlab BACKUP_DIR=/srv/graphlab/backups/mongodb RETENTION_DAYS=30 /bin/bash /srv/graphlab/backup-mongo.sh >> /var/log/graphlab-mongo-backup.log 2>&1
 ```
 
 ## 📝 Licence

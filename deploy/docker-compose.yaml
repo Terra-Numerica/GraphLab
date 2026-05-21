@@ -1,18 +1,17 @@
+# Stack par défaut (production). Usage : docker compose up -d --build
 services:
-  graphlab:
+  app:
     build:
       context: ..
       dockerfile: app/backend/docker/Dockerfile
       args:
-        VITE_API_URL: ${VITE_API_URL:-http://localhost:3000/api}
-    container_name: graphlab-app
+        VITE_API_URL: ${VITE_API_URL}
+    container_name: ${APP_ID:-graphlab}-app
     restart: unless-stopped
-    ports:
-      - "${PORT:-3000}:3000"
     environment:
       PORT: "3000"
       NODE_ENV: production
-      MONGODB_URL: ${MONGODB_URL:-mongodb://mongo:27017/graphlab}
+      MONGODB_URL: ${MONGODB_URL:-mongodb://mongo:27017/${APP_ID:-graphlab}}
     env_file:
       - path: .env
         required: false
@@ -27,21 +26,31 @@ services:
       timeout: 5s
       retries: 5
       start_period: 30s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${APP_ID:-graphlab}.tls=true"
+      - "traefik.http.routers.${APP_ID:-graphlab}.service=${APP_ID:-graphlab}-service"
+      - "traefik.http.routers.${APP_ID:-graphlab}.entrypoints=web,websecure"
+      - "traefik.http.routers.${APP_ID:-graphlab}.middlewares=${APP_ID:-graphlab}-stripprefix"
+      - "traefik.http.routers.${APP_ID:-graphlab}.rule=Host(`portail.terra-numerica.org`) && PathPrefix(`/${APP_ID:-graphlab}`)"
+      - "traefik.http.services.${APP_ID:-graphlab}-service.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.${APP_ID:-graphlab}-stripprefix.stripprefix.prefixes=/${APP_ID:-graphlab}"
     networks:
-      - graphlab-internal
+      - internal
+      - traefik
 
   mongo-init:
     build:
       context: ..
       dockerfile: scripts/Dockerfile.mongo-init
-    container_name: graphlab-mongo-init
+    container_name: ${APP_ID:-graphlab}-mongo-init
     restart: "no"
     depends_on:
       mongo:
         condition: service_healthy
     environment:
       MONGO_HOST: mongo
-      DB_NAME: graphlab
+      DB_NAME: ${DB_NAME:-${APP_ID:-graphlab}}
       GRAPHS_JSON: /data/graphs.json
       FORCE_INIT: ${FORCE_INIT:-0}
       BACKUP_REMOTE_HOST: ${BACKUP_REMOTE_HOST:-}
@@ -53,19 +62,18 @@ services:
         required: false
     volumes:
       - ./graphs.json:/data/graphs.json:ro
+      - ${BACKUP_SSH_KEY_PATH:-/dev/null}:/run/secrets/backup_ssh_key:ro
     networks:
-      - graphlab-internal
+      - internal
 
   mongo:
     image: mongo:7
-    container_name: graphlab-db
+    container_name: ${APP_ID:-graphlab}-db
     restart: unless-stopped
     volumes:
-      - graphlab-db:/data/db
+      - db-data:/data/db
     environment:
-      MONGO_INITDB_DATABASE: graphlab
-    ports:
-      - "${MONGO_PORT:-27017}:27017"
+      MONGO_INITDB_DATABASE: ${DB_NAME:-${APP_ID:-graphlab}}
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 5s
@@ -73,11 +81,13 @@ services:
       retries: 10
       start_period: 10s
     networks:
-      - graphlab-internal
+      - internal
 
 networks:
-  graphlab-internal:
+  internal:
     driver: bridge
+  traefik:
+    external: true
 
 volumes:
-  graphlab-db:
+  db-data:

@@ -6,9 +6,10 @@ set -euo pipefail
 #   ./scripts/restore-mongo.sh
 #   ./scripts/restore-mongo.sh /chemin/vers/mongodb_2025-01-01_12-00-00.tar.gz
 
-CONTAINER_NAME="${CONTAINER_NAME:-graphlab-db}"
-DB_NAME="${DB_NAME:-graphlab}"
-BACKUP_DIR="${BACKUP_DIR:-/srv/graphlab/backups/mongodb}"
+APP_ID="${APP_ID:-graphlab}"
+CONTAINER_NAME="${CONTAINER_NAME:-${APP_ID}-db}"
+DB_NAME="${DB_NAME:-${APP_ID}}"
+BACKUP_DIR="${BACKUP_DIR:-/srv/${APP_ID}/backups/mongodb}"
 
 ARCHIVE="${1:-}"
 
