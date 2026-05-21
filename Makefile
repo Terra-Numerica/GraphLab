@@ -9,7 +9,6 @@ IMAGE_NAME=registry.gitlab.com/terra-numerica/$(APP_ID)
 BRANCH_SUFFIX?=$$(echo "-"$$(git branch --show-current) | sed 's/-develop//' | sed 's!/!_!g')
 LATEST=latest$(BRANCH_SUFFIX)
 VERSION?=$$(git describe --long | tr -d 'v' | cut -d- -f 1-2 | sed 's/-0$$//')$(BRANCH_SUFFIX)
-VERSION?=$(shell npm pkg get version | sed "s/\"//g")
 
 # Chemins sur le serveur
 SERVER_BACKEND_PATH  = /srv/$(APP_ID)/
