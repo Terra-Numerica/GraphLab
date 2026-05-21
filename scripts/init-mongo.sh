@@ -13,3 +13,4 @@ docker exec "$CONTAINER_NAME" mongoimport \
 	--collection=graphs \
 	--jsonArray \
 	--file="/tmp/graphs.json"
+docker exec "$CONTAINER_NAME" rm -f /tmp/graphs.json
