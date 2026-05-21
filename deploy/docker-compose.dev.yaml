@@ -1,8 +1,12 @@
-# Surcharge développement local (prod → dev).
+# Surcharge développement local (prod → dev) : build local + ports.
 # Usage : docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up -d --build
 services:
   app:
+    image: ${IMAGE_REGISTRY}/${IMAGE_NAME}:${IMAGE_VERSION}
+    pull_policy: build
     build:
+      context: ..
+      dockerfile: app/backend/docker/Dockerfile
       args:
         VITE_API_URL: ${VITE_API_URL:-http://localhost:3000/api}
     ports:

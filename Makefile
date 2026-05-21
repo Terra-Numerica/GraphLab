@@ -6,7 +6,10 @@ SHELL = /bin/bash
 
 APP_ID ?= graphlab
 -include deploy/.env
-IMAGE_NAME=registry.gitlab.com/terra-numerica/$(APP_ID)
+IMAGE_REGISTRY ?= registry.gitlab.com/terra-numerica
+IMAGE_NAME ?= graphlab
+IMAGE_VERSION ?= latest
+IMAGE_REF = $(IMAGE_REGISTRY)/$(IMAGE_NAME):$(IMAGE_VERSION)
 BRANCH_SUFFIX?=$$(echo "-"$$(git branch --show-current) | sed 's/-develop//' | sed 's!/!_!g')
 LATEST=latest$(BRANCH_SUFFIX)
 VERSION?=$$(git describe --long | tr -d 'v' | cut -d- -f 1-2 | sed 's/-0$$//')$(BRANCH_SUFFIX)
@@ -61,24 +64,24 @@ install:						## Installation des dépendances de dev
 	(cd backend && npm install)
 
 .PHONY: build
-build:							## Construit l'image Docker (tag: $(VERSION))
-	@echo "--- Construction de l'image Docker v$(VERSION) ---"
-	docker build -t $(IMAGE_NAME):${VERSION} -t $(IMAGE_NAME):latest --build-arg VITE_API_URL=$${VITE_API_URL:-http://localhost:3000/api} -f app/backend/docker/Dockerfile .
+build:							## Construit l'image Docker (tag: $(IMAGE_REF))
+	@echo "--- Construction de l'image Docker $(IMAGE_REF) ---"
+	docker build -t $(IMAGE_REF) -t $(IMAGE_REGISTRY)/$(IMAGE_NAME):latest --build-arg VITE_API_URL=$${VITE_API_URL:-http://localhost:3000/api} -f app/backend/docker/Dockerfile .
 
 .PHONY: image
 image: build
 
 .PHONY: publish
 publish: build					## Publication de l'image Docker sur le repo GitLab
-	@echo "--- Publication sur GitLab ---"
-	docker push $(IMAGE_NAME):$(VERSION)
-	docker push $(IMAGE_NAME):latest
+	@echo "--- Publication sur GitLab ($(IMAGE_REF)) ---"
+	docker push $(IMAGE_REF)
+	docker push $(IMAGE_REGISTRY)/$(IMAGE_NAME):latest
 
 .PHONY: push
 push: publish
 
 .PHONY: deploy
-deploy: check-env build			## Déploiement sur le serveur 
+deploy: check-env publish			## Déploiement sur le serveur (compose + .env, image publiée)
 	@echo "# Copie des fichiers de configuration du stack"
 	rsync -avz ./deploy/docker-compose.yaml ./deploy/.env ./deploy/graphs.json ./scripts/ $(SSH_USER)@$(SSH_HOST):$(SERVER_BACKEND_PATH)
 	
@@ -86,10 +89,10 @@ deploy: check-env build			## Déploiement sur le serveur
 .PHONY: update-service
 update-service: check-env		## Mise à jour du service backend sur le serveur
 	@echo "--- Mise à jour du service ---"
-	ssh $(SSH_USER)@$(SSH_HOST) "cd $(SERVER_BACKEND_PATH) && docker compose -p $(APP_ID) up -d --build"
+	ssh $(SSH_USER)@$(SSH_HOST) "cd $(SERVER_BACKEND_PATH) && docker compose -p $(APP_ID) pull app && docker compose -p $(APP_ID) up -d"
 
 .PHONY: release
-release: build deploy update	## Construit, déploie et met à jour le service (commande globale)
+release: deploy update-service	## Publie, déploie et met à jour le service (commande globale)
 	@echo "--- Mise en production terminée avec succès ! ---"
 
 .PHONY: app-up

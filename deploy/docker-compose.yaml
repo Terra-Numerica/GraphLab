@@ -1,13 +1,10 @@
-# Stack par défaut (production). Usage : docker compose up -d --build
+# Stack par défaut (production). Usage : docker compose pull && docker compose up -d
 services:
   app:
-    build:
-      context: ..
-      dockerfile: app/backend/docker/Dockerfile
-      args:
-        VITE_API_URL: ${VITE_API_URL}
+    image: ${IMAGE_REGISTRY}/${IMAGE_NAME}:${IMAGE_VERSION}
     container_name: ${APP_ID:-graphlab}-app
     restart: unless-stopped
+    pull_policy: always
     environment:
       PORT: "3000"
       NODE_ENV: production
