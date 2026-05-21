@@ -1,5 +1,5 @@
 # ---------- FRONTEND (Vite) ----------
-FROM node:22-alpine AS frontend-build
+FROM node:22.18.0-alpine AS frontend-build
 WORKDIR /frontend
 
 # production → app/frontend/.env.production (URL portail + /graphlab)
@@ -12,7 +12,7 @@ COPY app/frontend ./
 RUN npm run build -- --mode "${BUILD_MODE}"
 
 # ---------- BACKEND (Hono) ----------
-FROM node:22-alpine AS backend-build
+FROM node:22.18.0-alpine AS backend-build
 WORKDIR /backend
 
 COPY app/backend/package.json ./
@@ -24,7 +24,7 @@ COPY --from=frontend-build /frontend/dist ./public
 RUN npm run build
 
 # ---------- PRODUCTION ----------
-FROM node:22-alpine AS production
+FROM node:22.18.0-alpine AS production
 
 WORKDIR /app
 
