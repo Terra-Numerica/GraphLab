@@ -3,9 +3,9 @@ SHELL = /bin/bash
 .ONESHELL:
 
 -include .secrets.mk
+include deploy/.env
 
 APP_ID ?= graphlab
--include deploy/.env
 IMAGE_REGISTRY ?= registry.gitlab.com/terra-numerica
 IMAGE_NAME ?= graphlab
 IMAGE_VERSION ?= latest
@@ -122,4 +122,3 @@ backup-mongo:				## Sauvegarde MongoDB (script scripts/backup-mongo.sh)
 .PHONY: restore-mongo
 restore-mongo:				## Restaure la dernière sauvegarde MongoDB
 	APP_ID=$(APP_ID) BACKUP_DIR=./deploy/backups/mongodb bash ./scripts/restore-mongo.sh
-
