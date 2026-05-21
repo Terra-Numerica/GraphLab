@@ -9,9 +9,6 @@ services:
       PORT: "3000"
       NODE_ENV: production
       MONGODB_URL: ${MONGODB_URL:-mongodb://mongo:27017/${APP_ID:-graphlab}}
-    env_file:
-      - path: .env
-        required: false
     depends_on:
       mongo:
         condition: service_healthy
@@ -54,9 +51,6 @@ services:
       BACKUP_REMOTE_USER: ${BACKUP_REMOTE_USER:-}
       BACKUP_REMOTE_PATH: ${BACKUP_REMOTE_PATH:-}
       BACKUP_SSH_STRICT: ${BACKUP_SSH_STRICT:-accept-new}
-    env_file:
-      - path: .env
-        required: false
     volumes:
       - ./graphs.json:/data/graphs.json:ro
       - ${BACKUP_SSH_KEY_PATH:-/dev/null}:/run/secrets/backup_ssh_key:ro
