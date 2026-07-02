@@ -9,10 +9,11 @@ services:
     environment:
       PORT: "3000"
       NODE_ENV: production
-      MONGODB_URL: ${MONGODB_URL:-mongodb://mongo:27017/${APP_ID:-graphlab}}
-    depends_on:
-      mongo:
-        condition: service_healthy
+      DATA_DIR: /app/data
+      ADMIN_USERNAME: ${ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+    volumes:
+      - app-data:/app/data
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 10s
@@ -32,23 +33,6 @@ services:
       - internal
       - traefik
 
-  mongo:
-    image: mongo:7
-    container_name: ${APP_ID:-graphlab}-db
-    restart: unless-stopped
-    volumes:
-      - db-data:/data/db
-    environment:
-      MONGO_INITDB_DATABASE: ${DB_NAME:-${APP_ID:-graphlab}}
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-      start_period: 10s
-    networks:
-      - internal
-
 networks:
   internal:
     driver: bridge
@@ -56,4 +40,4 @@ networks:
     external: true
 
 volumes:
-  db-data:
+  app-data:
