@@ -1,6 +1,6 @@
 // Imports
-import WorkshopModel from '@/models/workshop.model';
 import { z } from 'zod';
+import * as workshopStore from '@/storage/workshopStore';
 
 // Validation schemas
 const workshopSchema = z.object({
@@ -20,7 +20,7 @@ const workshopSchema = z.object({
 
 export const getWorkshops = async (c: any) => {
 	try {
-		const workshops = await WorkshopModel.find().sort({ createdAt: 1 });
+		const workshops = await workshopStore.findAllWorkshops();
 		return c.json(workshops);
 	} catch (error: any) {
 		console.error('Error fetching workshops:', error);
@@ -31,7 +31,7 @@ export const getWorkshops = async (c: any) => {
 export const getWorkshop = async (c: any) => {
 	try {
 		const { id } = c.req.param();
-		const workshop = await WorkshopModel.findById(id);
+		const workshop = await workshopStore.findWorkshopById(id);
 		
 		if (!workshop) {
 			return c.json({ message: 'Workshop not found' }, 404);
@@ -48,11 +48,9 @@ export const addWorkshop = async (c: any) => {
 	try {
 		const body = await c.req.json();
 		
-		// Validate input
 		const validatedData = workshopSchema.parse(body);
 		
-		const workshop = new WorkshopModel(validatedData);
-		await workshop.save();
+		const workshop = await workshopStore.createWorkshop(validatedData);
 		
 		return c.json(workshop, 201);
 	} catch (error: any) {
@@ -71,10 +69,9 @@ export const editWorkshop = async (c: any) => {
 		const { id } = c.req.param();
 		const body = await c.req.json();
 		
-		// Validate input
 		const validatedData = workshopSchema.parse(body);
 		
-		const updatedWorkshop = await WorkshopModel.findByIdAndUpdate(id, validatedData, { new: true });
+		const updatedWorkshop = await workshopStore.updateWorkshop(id, validatedData);
 		
 		if (!updatedWorkshop) {
 			return c.json({ message: 'Workshop not found' }, 404);
@@ -96,9 +93,9 @@ export const deleteWorkshop = async (c: any) => {
 	try {
 		const { id } = c.req.param();
 		
-		const deletedWorkshop = await WorkshopModel.findByIdAndDelete(id);
+		const deleted = await workshopStore.deleteWorkshop(id);
 		
-		if (!deletedWorkshop) {
+		if (!deleted) {
 			return c.json({ message: 'Workshop not found' }, 404);
 		}
 		

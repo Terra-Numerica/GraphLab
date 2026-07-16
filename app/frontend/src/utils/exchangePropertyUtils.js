@@ -11,7 +11,6 @@
  *    components = liste des composantes pour affichage "(n1,n2) ~ (n3) ~ ..."
  */
 export const exchangePropertyAlgorithm = (nodes, edges, order = 'CROISSANT') => {
-    // ---------- helpers
     const key = (e) => {
         const a = e.data.source, b = e.data.target;
         return a < b ? `${a}|${b}` : `${b}|${a}`;
@@ -19,7 +18,7 @@ export const exchangePropertyAlgorithm = (nodes, edges, order = 'CROISSANT') => 
 
     const clone = (arr) => arr.map(e => ({ ...e, data: { ...e.data } }));
 
-    const shuffle = (arr) => { // Fisher–Yates
+    const shuffle = (arr) => {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -31,7 +30,6 @@ export const exchangePropertyAlgorithm = (nodes, edges, order = 'CROISSANT') => 
         if (order === 'ALEATOIRE') { shuffle(a); return a; }
         a.sort((e1, e2) => {
             if (e1.data.weight === e2.data.weight) {
-                // tri secondaire stable pour reproductibilité
                 return key(e1) < key(e2) ? -1 : 1;
             }
             return order === 'CROISSANT'
@@ -41,14 +39,12 @@ export const exchangePropertyAlgorithm = (nodes, edges, order = 'CROISSANT') => 
         return a;
     };
 
-    // --- adjacence de la forêt courante (uniquement arêtes conservées)
-    const adj = new Map(); // nodeId -> [{to, edge}]
+    const adj = new Map();
     const addAdj = (a, b, e) => { if (!adj.has(a)) adj.set(a, []); adj.get(a).push({ to: b, edge: e }); };
     const rmAdj = (a, b, ek) => { if (!adj.has(a)) return; adj.set(a, adj.get(a).filter(({ to, edge }) => !(to === b && key(edge) === ek))); };
     const addForest = (e) => { addAdj(e.data.source, e.data.target, e); addAdj(e.data.target, e.data.source, e); };
     const rmForest = (e) => { const k = key(e); rmAdj(e.data.source, e.data.target, k); rmAdj(e.data.target, e.data.source, k); };
 
-    // --- composantes connexes pour affichage
     const components = () => {
         const ids = nodes.map(n => n.data.id);
         const seen = new Set();
@@ -69,7 +65,6 @@ export const exchangePropertyAlgorithm = (nodes, edges, order = 'CROISSANT') => 
         return out.sort((A, B) => A[0].localeCompare(B[0]));
     };
 
-    // --- chemin u→v dans la forêt courante (DFS), renvoie la liste d'ARÊTES
     const pathEdges = (u, v) => {
         const stack = [[u]];
         const parent = new Map([[u, { p: null, pe: null }]]);
@@ -88,7 +83,6 @@ export const exchangePropertyAlgorithm = (nodes, edges, order = 'CROISSANT') => 
         return path;
     };
 
-    // ---------- état de l'algo
     const steps = [];
     const kept = new Set();
     const discarded = new Set();
@@ -113,7 +107,6 @@ export const exchangePropertyAlgorithm = (nodes, edges, order = 'CROISSANT') => 
         explanation: `Ordre de traitement des arêtes : ${listOrderStr}.`
     });
 
-    // ---------- boucle principale : on traite TOUTES les arêtes
     for (const e of ordered) {
         const k = key(e);
 
@@ -131,7 +124,6 @@ export const exchangePropertyAlgorithm = (nodes, edges, order = 'CROISSANT') => 
         const path = pathEdges(u, v);
 
         if (!path) {
-            // Pas de cycle → on garde e et on fusionne deux composantes
             addForest(e);
             kept.add(k);
             compCount -= 1;
@@ -146,7 +138,6 @@ export const exchangePropertyAlgorithm = (nodes, edges, order = 'CROISSANT') => 
                 explanation: `Aucun cycle créé : on réduit à ${compCount} composantes, l'arête est conservée.`
             });
 
-            // on note la première fois où on atteint un arbre, mais on CONTINUE
             if (!treeReached && kept.size === nodes.length - 1) {
                 treeReached = true;
                 steps.push({
@@ -159,7 +150,6 @@ export const exchangePropertyAlgorithm = (nodes, edges, order = 'CROISSANT') => 
                 });
             }
         } else {
-            // Cycle → appliquer la propriété d'échange
             steps.push({
                 action: 'cycle',
                 edge: e,
@@ -173,7 +163,6 @@ export const exchangePropertyAlgorithm = (nodes, edges, order = 'CROISSANT') => 
 
             const maxOnPath = Math.max(...path.map(pe => pe.data.weight));
 
-            // Politique pédagogique : si w(e) est >= au max du chemin, on rejette e (on veut "voir" l'échange/rejet).
             if (e.data.weight >= maxOnPath) {
                 discarded.add(k);
                 steps.push({
@@ -186,7 +175,6 @@ export const exchangePropertyAlgorithm = (nodes, edges, order = 'CROISSANT') => 
                     explanation: `On retire ${e.data.source}-${e.data.target} qui est de poids ${e.data.weight} (poids le plus élevé du cycle).`
                 });
             } else {
-                // retirer une arête maximale du chemin (la première rencontrée)
                 const toRemove = path.find(pe => pe.data.weight === maxOnPath);
                 rmForest(toRemove);
                 kept.delete(key(toRemove));
@@ -198,7 +186,7 @@ export const exchangePropertyAlgorithm = (nodes, edges, order = 'CROISSANT') => 
                     action: 'exchange',
                     add: e,
                     remove: toRemove,
-                    componentCount: compCount, // inchangé
+                    componentCount: compCount,
                     keptEdges: edges.filter(x => kept.has(key(x))),
                     discardedEdges: edges.filter(x => discarded.has(key(x))),
                     components: components(),
@@ -208,7 +196,6 @@ export const exchangePropertyAlgorithm = (nodes, edges, order = 'CROISSANT') => 
         }
     }
 
-    // --- fin : toutes les arêtes ont été traitées
     if (kept.size < nodes.length - 1) {
         steps.push({
             action: 'stop',

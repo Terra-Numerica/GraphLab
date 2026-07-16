@@ -130,7 +130,6 @@ const GraphDisplay = ({ graphData, cyRef, onSelectEdge }) => {
                 {
                     selector: 'edge.selected',
                     style: {
-                        // Une couleur plus flashy et pas rouge
                         'line-color': '#00AAFF',
                         'width': 6
                     }

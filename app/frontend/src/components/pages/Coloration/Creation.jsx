@@ -9,8 +9,6 @@ import TimerDisplay from '../../common/TimerDisplay';
 import RulesPopup from '../../common/RulesPopup';
 import GraphDisplay from './GraphDisplay';
 
-// ❌ supprimé : import '../../../styles/pages/Coloration/ColorationStyles.css';
-
 const Creation = () => {
     const navigate = useNavigate();
     const cyRef = useRef(null);

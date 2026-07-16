@@ -3,8 +3,6 @@ import cytoscape from 'cytoscape';
 import config from '../../config';
 import { colors } from '../../utils/colorPalette';
 
-// ❌ supprimé : import '../../styles/Admin/GraphEditor.css';
-
 const GraphEditor = ({ graphId = null, onClose }) => {
     const [graphData, setGraphData] = useState({
         name: '',
@@ -22,8 +20,8 @@ const GraphEditor = ({ graphId = null, onClose }) => {
             spanningTree: {
                 enabled: false,
                 difficulty: 'Facile',
-                weightType: 'predefined', // predefined, random, unit
-                algorithmType: 'all' // all, prim, kruskal, boruvka
+                weightType: 'predefined',
+                algorithmType: 'all'
             },
             railwayMaze: {
                 enabled: false,
@@ -50,12 +48,9 @@ const GraphEditor = ({ graphId = null, onClose }) => {
         }
     }, [graphId]);
 
-    // Gérer le scroll du body quand le modal est ouvert
     useEffect(() => {
-        // Empêcher le scroll du body
         document.body.classList.add('modal-open');
         
-        // Nettoyer quand le composant est démonté
         return () => {
             document.body.classList.remove('modal-open');
         };
@@ -70,24 +65,20 @@ const GraphEditor = ({ graphId = null, onClose }) => {
             }
             const data = await response.json();
             
-            // Adapter la structure pour les graphes existants
             const optimalCount = data.workshopData?.coloring?.optimalCount || 0;
             const colorNames = ['Rouge', 'Bleu', 'Vert', 'Jaune', 'Orange', 'Violet', 'Rose', 'Vert lime', 'Gris foncé', 'Marron', 'Cyan clair', 'Orange vif', 'Vert néon', 'Bleu clair'];
             
-            // Fonction pour convertir un code hex en nom de couleur
             const hexToColorName = (hex) => {
                 const index = colors.indexOf(hex);
                 return index !== -1 ? colorNames[index] : null;
             };
             
-            // Nettoyer les tabletCounts pour ne garder que les couleurs correspondant à optimalCount
             const cleanedTabletCounts = {};
             if (optimalCount > 0) {
                 for (let i = 0; i < optimalCount; i++) {
                     const colorName = colorNames[i] || `Couleur ${i + 1}`;
                     const colorHex = colors[i];
                     
-                    // Chercher la valeur soit par nom de couleur, soit par code hex
                     let count = 0;
                     if (data.workshopData?.coloring?.tabletCounts) {
                         count = data.workshopData.coloring.tabletCounts[colorName] || 
@@ -98,7 +89,6 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                 }
             }
             
-            // S'assurer que les nœuds ont toutes les propriétés requises
             const validatedNodes = (data.data?.nodes || []).map(node => ({
                 data: {
                     id: node.data?.id || '',
@@ -211,7 +201,6 @@ const GraphEditor = ({ graphId = null, onClose }) => {
             boxSelectionEnabled: false
         });
 
-        // Gestion des clics sur les nœuds pour créer des arêtes
         cy.on('tap', 'node', (evt) => {
             const node = evt.target;
             if (selectedNodeRef.current) {
@@ -227,7 +216,6 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                             controlPointDistance: 0
                         }
                     };
-                    // Ajouter l'arête directement à Cytoscape
                     cyRef.current.add({
                         data: {
                             id: newEdge.data.id,
@@ -253,12 +241,10 @@ const GraphEditor = ({ graphId = null, onClose }) => {
             }
         });
 
-        // Clic droit pour supprimer
         cy.on('cxttap', 'node, edge', (evt) => {
             evt.preventDefault();
             const element = evt.target;
             if (element.isNode()) {
-                // Supprimer le nœud et ses arêtes de Cytoscape
                 element.remove();
                 
                 setGraphData(prev => ({
@@ -271,7 +257,6 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                     }
                 }));
             } else if (element.isEdge()) {
-                // Supprimer l'arête de Cytoscape
                 element.remove();
                 
                 setGraphData(prev => ({
@@ -284,7 +269,6 @@ const GraphEditor = ({ graphId = null, onClose }) => {
             }
         });
 
-        // Clic sur le fond pour désélectionner
         cy.on('tap', (evt) => {
             if (evt.target === cy) {
                 if (selectedNodeRef.current) {
@@ -327,7 +311,6 @@ const GraphEditor = ({ graphId = null, onClose }) => {
             classes: ''
         };
         
-        // Ajouter le nœud directement à Cytoscape
         cyRef.current.add({
             group: 'nodes',
             data: {
@@ -337,7 +320,6 @@ const GraphEditor = ({ graphId = null, onClose }) => {
             position: newNode.position
         });
         
-        // Mettre à jour le state
         setGraphData(prev => ({
             ...prev,
             data: {
@@ -370,7 +352,6 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                 spacingFactor: 1.5
             };
             cyRef.current.layout(layoutOptions).run();
-            // Mettre à jour les positions dans l'état
             const nodes = cyRef.current.nodes().map(node => ({
                 group: 'nodes',
                 data: node.data(),
@@ -386,7 +367,6 @@ const GraphEditor = ({ graphId = null, onClose }) => {
         }
     };
 
-    // Gestion des ateliers
     const toggleWorkshop = (workshopName) => {
         setGraphData(prev => ({
             ...prev,
@@ -413,17 +393,15 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                 }
             };
 
-            // Si on change le nombre optimal de couleurs, auto-compléter les compteurs
             if (workshopName === 'coloring' && field === 'optimalCount') {
                 const optimalCount = parseInt(value) || 0;
                 const availableColors = colors.slice(0, optimalCount);
                 const colorNames = ['Rouge', 'Bleu', 'Vert', 'Jaune', 'Orange', 'Violet', 'Rose', 'Vert lime', 'Gris foncé', 'Marron', 'Cyan clair', 'Orange vif', 'Vert néon', 'Bleu clair'];
                 
-                // Auto-compléter avec des valeurs par défaut
                 const autoTabletCounts = {};
                 availableColors.forEach((_, index) => {
                     const colorName = colorNames[index] || `Couleur ${index + 1}`;
-                    autoTabletCounts[colorName] = 0; // Valeur par défaut
+                    autoTabletCounts[colorName] = 0;
                 });
                 
                 newData.workshopData.coloring.tabletCounts = autoTabletCounts;
@@ -438,15 +416,12 @@ const GraphEditor = ({ graphId = null, onClose }) => {
         const maxNodes = graphData.data.nodes.length;
         const currentCount = graphData.workshopData.coloring.tabletCounts[color] || 0;
         
-        // Calculer le total actuel des autres couleurs (sans la couleur modifiée)
         const otherColorsTotal = Object.entries(graphData.workshopData.coloring.tabletCounts || {})
             .filter(([colorName]) => colorName !== color)
             .reduce((sum, [, val]) => sum + (val || 0), 0);
         
-        // Calculer le maximum possible pour cette couleur
         const maxForThisColor = Math.max(0, maxNodes - otherColorsTotal);
         
-        // Limiter le nombre de pastilles
         const limitedCount = Math.min(newCount, maxForThisColor);
         
         setGraphData(prev => ({
@@ -464,9 +439,7 @@ const GraphEditor = ({ graphId = null, onClose }) => {
         }));
     };
 
-    // Calculer le total des pastilles
     const getTotalTablets = () => {
-        // Ne compter que les couleurs actuellement affichées
         const availableColors = getAvailableColors();
         const colorNames = ['Rouge', 'Bleu', 'Vert', 'Jaune', 'Orange', 'Violet', 'Rose', 'Vert lime', 'Gris foncé', 'Marron', 'Cyan clair', 'Orange vif', 'Vert néon', 'Bleu clair'];
         
@@ -479,13 +452,11 @@ const GraphEditor = ({ graphId = null, onClose }) => {
         return total;
     };
 
-    // Obtenir les couleurs disponibles selon le nombre optimal
     const getAvailableColors = () => {
         const optimalCount = graphData.workshopData.coloring.optimalCount || 0;
         return colors.slice(0, optimalCount);
     };
 
-    // Sauvegarder les positions des nœuds depuis Cytoscape
     const saveNodePositions = () => {
         if (cyRef.current) {
             const updatedNodes = graphData.data.nodes.map(node => {
@@ -510,9 +481,7 @@ const GraphEditor = ({ graphId = null, onClose }) => {
         }
     };
 
-    // Gérer le changement d'onglet
     const handleTabChange = (newTab) => {
-        // Sauvegarder les positions avant de changer d'onglet
         if (activeTab === 'graph') {
             saveNodePositions();
         }
@@ -525,14 +494,10 @@ const GraphEditor = ({ graphId = null, onClose }) => {
         try {
             setLoading(true);
             
-            // Sauvegarder les positions avant l'envoi
             if (activeTab === 'graph') {
                 saveNodePositions();
             }
             
-            // Validation côté frontend selon le modèle de base de données
-            
-            // Validation du nom (requis, 2-50 caractères)
             if (!graphData.name || graphData.name.trim().length < 2) {
                 setError('Le nom du graphe doit contenir au moins 2 caractères.');
                 setLoading(false);
@@ -545,7 +510,6 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                 return;
             }
             
-            // Validation du graphe (au moins un nœud)
             if (!graphData.data.nodes || graphData.data.nodes.length === 0) {
                 setError('Le graphe doit contenir au moins un nœud.');
                 setLoading(false);
@@ -560,7 +524,6 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                     return;
                 }
                 
-                // Vérifier que tous les compteurs sont des entiers positifs
                 const tabletCounts = graphData.workshopData.coloring.tabletCounts || {};
                 const invalidCounts = Object.entries(tabletCounts).filter(([_, count]) => 
                     typeof count !== 'number' || count < 0 || !Number.isInteger(count)
@@ -573,23 +536,16 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                 }
             }
             
-            // Nettoyer les données avant l'envoi
             const cleanedData = {
                 name: graphData.name,
                 data: graphData.data,
                 workshopData: {}
             };
 
-            // Ajouter seulement les ateliers activés selon le modèle de base de données
-            
-            // Coloration - respecter la validation du modèle
             if (graphData.workshopData.coloring.enabled) {
                 const optimalCount = graphData.workshopData.coloring.optimalCount || 0;
                 
-                // Le modèle exige optimalCount >= 1, mais nous permettons 0
-                // Si optimalCount = 0, on ne sauvegarde pas l'atelier
                 if (optimalCount >= 1) {
-                    // Convertir les noms de couleurs en codes hex pour la sauvegarde
                     const colorNames = ['Rouge', 'Bleu', 'Vert', 'Jaune', 'Orange', 'Violet', 'Rose', 'Vert lime', 'Gris foncé', 'Marron', 'Cyan clair', 'Orange vif', 'Vert néon', 'Bleu clair'];
                     const hexTabletCounts = {};
                     
@@ -609,14 +565,12 @@ const GraphEditor = ({ graphId = null, onClose }) => {
                 }
             }
 
-            // SpanningTree - selon le modèle, seul 'enabled' est défini
             if (graphData.workshopData.spanningTree.enabled) {
                 cleanedData.workshopData.spanningTree = {
                     enabled: true
                 };
             }
 
-            // RailwayMaze - selon le modèle, seul 'enabled' est défini
             if (graphData.workshopData.railwayMaze.enabled) {
                 cleanedData.workshopData.railwayMaze = {
                     enabled: true
@@ -687,7 +641,6 @@ const GraphEditor = ({ graphId = null, onClose }) => {
 
     const handleOverlayClick = (e) => {
         if (e.target === e.currentTarget) {
-            // Sauvegarder les positions avant de fermer
             if (activeTab === 'graph') {
                 saveNodePositions();
             }
@@ -696,7 +649,6 @@ const GraphEditor = ({ graphId = null, onClose }) => {
     };
 
     const handleClose = () => {
-        // Sauvegarder les positions avant de fermer
         if (activeTab === 'graph') {
             saveNodePositions();
         }

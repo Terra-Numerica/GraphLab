@@ -9,7 +9,6 @@ import RulesPopup from '../../common/RulesPopup';
 import GraphDisplay from './PenroseGraphDisplay.jsx';
 import TimerDisplay from '../../common/TimerDisplay.jsx';
 
-// ❌ supprimé : import '../../../styles/pages/RailwayMaze/RailwayMazeStyles.css';
 
 const GraphDisplayMemo = memo(GraphDisplay);
 
@@ -87,7 +86,6 @@ const Penrose = () => {
         }
     }, []);
 
-    //Affiche un message au joueur à la fin du jeu (différents si path optimal)
     const handleFinDuJeu = () => {
         stop();
         const sol = algoBFS()
@@ -101,8 +99,6 @@ const Penrose = () => {
         });
     }
 
-    //Récupère l'ID de la node suivante et
-    //à partir de la node de depart (currentNode) memorise la couleur "d'arrivée" actuelle
     const handleNextNode = useCallback((nodeID) => {
         if (!currentGraph || !currentNode) return;
         const clickedNode = currentGraph.data.nodes.find(node => node.data.id === nodeID);
@@ -155,15 +151,12 @@ const Penrose = () => {
         
         initGame(currentGraph);
         
-        // Reset timer
         reset();
         start();
         
-        // Clear any validation popup
         setValidationPopup(null);
     }, [currentGraph, initGame, reset, start]);
 
-    //Récupère la précédente node du path et l'utilise pour récupérer la couleur d'arrivée correcte après l'undo
     const handleUndo = () => {
         if (path && path.length > 1) {
             const prevNodeId = path[path.length - 2];
@@ -332,8 +325,6 @@ const Penrose = () => {
         setValidationPopup(null);
     }
 
-    //Réagit au changement de currentNode et calcule les nodes selectables
-    // pour rajouter les classes adaptées aux différents nodes
     useEffect(() => {
         if (!currentGraph || !currentNode) return;
         const newSelectableNodeIds = new Set();

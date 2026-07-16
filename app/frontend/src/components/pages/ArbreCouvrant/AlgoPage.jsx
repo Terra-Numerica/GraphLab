@@ -92,9 +92,7 @@ const AlgoPage = () => {
 
   const config = algoConfig[algo];
 
-  // Fonction pour détecter les composantes connectées
   const findConnectedComponents = useCallback((edges, nodes) => {
-    // Créer la liste d'adjacence
     const adjacencyList = {};
     nodes.forEach(node => {
       adjacencyList[node.data.id] = [];
@@ -119,7 +117,6 @@ const AlgoPage = () => {
       }
     };
     
-    // Trouver toutes les composantes connectées
     for (const node of nodes) {
       if (!visited.has(node.data.id)) {
         const component = [];
@@ -131,18 +128,15 @@ const AlgoPage = () => {
     return components;
   }, []);
 
-  // Fonction pour formater les composantes selon le nouveau format
   const formatComponents = useCallback((components, nodes) => {
     if (components.length === 0) return '';
     
-    // Trier les composantes : d'abord les composantes connectées (taille > 1), puis les isolées (taille = 1)
     const sortedComponents = [...components].sort((a, b) => {
-      if (a.length > 1 && b.length === 1) return -1; // Composantes connectées en premier
-      if (a.length === 1 && b.length > 1) return 1;  // Composantes isolées en dernier
-      return a.length - b.length; // Sinon trier par taille
+      if (a.length > 1 && b.length === 1) return -1;
+      if (a.length === 1 && b.length > 1) return 1;
+      return a.length - b.length;
     });
     
-    // Convertir chaque composante en format (N1, N2, ...)
     const formattedComponents = sortedComponents.map(component => {
       const nodeLabels = component.map(nodeId => {
         const node = nodes.find(n => n.data.id === nodeId);
@@ -170,7 +164,6 @@ const AlgoPage = () => {
     }
   }, [graph, graphId]);
 
-  // Calculer les composantes connectées basées sur les arêtes sélectionnées
   useEffect(() => {
     if (graph && graph.data) {
       const components = findConnectedComponents(selectedEdges, graph.data.nodes);
@@ -178,7 +171,6 @@ const AlgoPage = () => {
     }
   }, [graph, selectedEdges, findConnectedComponents]);
 
-  // Callback pour recevoir les arêtes sélectionnées depuis AlgoVisualization
   const handleSelectedEdgesChange = useCallback((edges) => {
     setSelectedEdges(edges);
   }, []);

@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import TutorialPopup from '../../common/TutorialPopup';
-// ❌ plus besoin : import '../../../styles/pages/RailwayMaze/RailwayMazeStyles.css';
 
 const RailwayMazeMain = () => {
     const navigate = useNavigate();

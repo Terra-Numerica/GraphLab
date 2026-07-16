@@ -9,8 +9,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useTimer } from '../../../hooks/useTimer';
 import { useNavigate } from 'react-router-dom';
 
-// ❌ plus besoin : import '../../../styles/pages/Coloration/ColorationStyles.css';
-
 const Libre = () => {
     const [graphs, setGraphs] = useState({
         tresFacile: [],

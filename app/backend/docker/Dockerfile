@@ -35,6 +35,7 @@ ENV PORT=3000
 COPY --from=backend-build /backend/dist ./dist
 COPY --from=backend-build /backend/package.json ./
 COPY --from=backend-build /backend/public ./public
+COPY app/backend/data ./data
 
 RUN npm install --omit=dev
 

@@ -11,7 +11,6 @@ const TutorialPopup = ({ onClose, onComplete, steps }) => {
 
     const step = useMemo(() => steps[currentStep] ?? {}, [steps, currentStep]);
 
-    // Fermeture via ESC
     useEffect(() => {
         const onKeyDown = (e) => {
             if (e.key === 'Escape') onClose?.();
@@ -22,7 +21,6 @@ const TutorialPopup = ({ onClose, onComplete, steps }) => {
         return () => window.removeEventListener('keydown', onKeyDown);
     }, [currentStep]);
 
-    // Focus initial sur le bouton principal
     useEffect(() => {
         nextBtnRef.current?.focus();
     }, [currentStep]);
@@ -39,7 +37,6 @@ const TutorialPopup = ({ onClose, onComplete, steps }) => {
         if (currentStep > 0) setCurrentStep((s) => s - 1);
     };
 
-    // Couleurs pour le badge d'état
     const statusMap = {
         yes: { cls: 'bg-green/15 text-green', symbol: '✓', label: 'Correct' },
         no: { cls: 'bg-red/15 text-red', symbol: '✗', label: 'Incorrect' },
@@ -47,7 +44,6 @@ const TutorialPopup = ({ onClose, onComplete, steps }) => {
     };
     const status = statusMap[step.status] || null;
 
-    // Empêche la fermeture quand on clique dans le panneau
     const stop = (e) => e.stopPropagation();
 
     return (
@@ -101,7 +97,6 @@ const TutorialPopup = ({ onClose, onComplete, steps }) => {
                     <div className="w-full md:w-1/2">
                         <p
                             className="text-astro leading-relaxed"
-                            // le contenu contient des <br /> déjà
                             dangerouslySetInnerHTML={{ __html: step.description || '' }}
                         />
                     </div>

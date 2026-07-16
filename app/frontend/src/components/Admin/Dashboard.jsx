@@ -2,8 +2,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// ❌ supprimé : import '../../styles/Admin/Dashboard.css';
-
 const Dashboard = () => {
     const navigate = useNavigate();
 

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import config from '../../config';
-// ❌ supprimé : import '../../styles/Admin/Workshops.css';
 
 const Workshops = () => {
     const [workshopConfig, setWorkshopConfig] = useState({
@@ -60,7 +59,6 @@ const Workshops = () => {
             const workshops = await response.json();
             
             if (workshops.length > 0) {
-                // Prendre le premier workshop (configuration globale)
                 const config = workshops[0];
                 setWorkshopId(config._id);
                 setWorkshopConfig({
@@ -105,7 +103,6 @@ const Workshops = () => {
             const token = sessionStorage.getItem('jwt');
             
             if (workshopId) {
-                // Mettre à jour la configuration existante
                 const response = await fetch(`${config.apiUrl}/workshop/${workshopId}`, {
                     method: 'PUT',
                     headers: {
@@ -119,7 +116,6 @@ const Workshops = () => {
                     throw new Error('Erreur lors de la mise à jour');
                 }
             } else {
-                // Créer une nouvelle configuration
                 const response = await fetch(`${config.apiUrl}/workshop`, {
                     method: 'POST',
                     headers: {
@@ -238,7 +234,6 @@ const Workshops = () => {
                         const config = workshopConfig[key];
                         const isEnabled = isWorkshopEnabled(key);
                         
-                        // Icônes pour chaque atelier
                         const workshopIcons = {
                             coloring: '🎨',
                             spanningTree: '🌳',
@@ -312,7 +307,6 @@ const Workshops = () => {
                 </div>
             </section>
 
-            {/* Informations sur les environnements */}
             <section className="rounded-2xl bg-white p-8 shadow-sm">
 
                 <h2 className="mb-6 text-2xl font-semibold text-darkBlue">Guide des Environnements</h2>

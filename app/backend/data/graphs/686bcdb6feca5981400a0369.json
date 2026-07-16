@@ -1,0 +1,710 @@
+{
+  "_id": "686bcdb6feca5981400a0369",
+  "name": "Jeu 42",
+  "data": {
+    "nodes": [
+      {
+        "data": {
+          "id": "n1",
+          "label": ""
+        },
+        "position": {
+          "x": 314.0881928546596,
+          "y": 309.02980063093463
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n2",
+          "label": ""
+        },
+        "position": {
+          "x": 155.27343320583742,
+          "y": 465.16878366356394
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "cc",
+          "label": ""
+        },
+        "position": {
+          "x": 224.66226814315067,
+          "y": 414.4076518467346
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n4",
+          "label": ""
+        },
+        "position": {
+          "x": 63.992099741353556,
+          "y": 323.1843993404953
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": [
+          "A"
+        ]
+      },
+      {
+        "data": {
+          "id": "n5",
+          "label": ""
+        },
+        "position": {
+          "x": 249.03357015793756,
+          "y": 224.12617964624013
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n6",
+          "label": ""
+        },
+        "position": {
+          "x": 304.89862994255844,
+          "y": 376.8606237642532
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n7",
+          "label": ""
+        },
+        "position": {
+          "x": 357.37315377490773,
+          "y": 251.92829520648849
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n8",
+          "label": ""
+        },
+        "position": {
+          "x": 371.5716830256165,
+          "y": 181.4065464642602
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n9",
+          "label": ""
+        },
+        "position": {
+          "x": 449.824662653326,
+          "y": 268.89327507055657
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n10",
+          "label": ""
+        },
+        "position": {
+          "x": 378.55809150738077,
+          "y": 375.25784569703626
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n11",
+          "label": ""
+        },
+        "position": {
+          "x": 459.02702643158466,
+          "y": 402.1046938443909
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n12",
+          "label": ""
+        },
+        "position": {
+          "x": 518.2800518904228,
+          "y": 382.20583834211294
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n13",
+          "label": ""
+        },
+        "position": {
+          "x": 410.8113054030208,
+          "y": 328.81513818454664
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n14",
+          "label": ""
+        },
+        "position": {
+          "x": 485.7783561346773,
+          "y": 316.1017304838596
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n15",
+          "label": ""
+        },
+        "position": {
+          "x": 488.1474956228958,
+          "y": 183.41695574071858
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n16",
+          "label": ""
+        },
+        "position": {
+          "x": 518.2528937276704,
+          "y": 239.5750137537545
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n17",
+          "label": ""
+        },
+        "position": {
+          "x": 551.3063973847148,
+          "y": 276.62861905187856
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n18",
+          "label": ""
+        },
+        "position": {
+          "x": 573.7361753981792,
+          "y": 330.66405059119637
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n19",
+          "label": ""
+        },
+        "position": {
+          "x": 586.5765503665865,
+          "y": 191.78170033324858
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n20",
+          "label": ""
+        },
+        "position": {
+          "x": 672.1628212160418,
+          "y": 218.81708034834614
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": ""
+      },
+      {
+        "data": {
+          "id": "n21",
+          "label": ""
+        },
+        "position": {
+          "x": 674.7710136026672,
+          "y": 320.2105281037014
+        },
+        "group": "nodes",
+        "removed": false,
+        "selected": false,
+        "selectable": true,
+        "locked": false,
+        "grabbable": true,
+        "pannable": true,
+        "classes": [
+          "B"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "data": {
+          "source": "n4",
+          "target": "n5",
+          "id": "47a18451-5c98-46ab-859f-0a803107aabe"
+        },
+        "classes": [
+          "RB"
+        ]
+      },
+      {
+        "data": {
+          "source": "n4",
+          "target": "n2",
+          "id": "4820ed6c-7506-476a-8153-490ff9c2bff1"
+        },
+        "classes": [
+          "RB",
+          "bezier"
+        ]
+      },
+      {
+        "data": {
+          "source": "n2",
+          "target": "cc",
+          "id": "d94a7c46-92aa-4d71-822e-00ad5846abff"
+        },
+        "classes": [
+          "RB"
+        ]
+      },
+      {
+        "data": {
+          "source": "cc",
+          "target": "n6",
+          "id": "6fc763d4-9b60-408b-a9ef-6c90e56600ba"
+        },
+        "classes": [
+          "RR"
+        ]
+      },
+      {
+        "data": {
+          "source": "n4",
+          "target": "cc",
+          "id": "8153038a-c737-4e3b-9488-98fb54ab6593"
+        },
+        "classes": [
+          "BR"
+        ]
+      },
+      {
+        "data": {
+          "source": "n6",
+          "target": "n1",
+          "id": "3b1fba84-7627-4087-9b62-f2965fe46884"
+        },
+        "classes": [
+          "BR"
+        ]
+      },
+      {
+        "data": {
+          "source": "n4",
+          "target": "n1",
+          "id": "3da34ec8-63d4-4297-8883-fcf5e8da876b"
+        },
+        "classes": [
+          "BR"
+        ]
+      },
+      {
+        "data": {
+          "source": "n5",
+          "target": "n7",
+          "id": "0d72dba0-e7e0-499e-b2b9-d83ea85cadb6"
+        },
+        "classes": [
+          "RB"
+        ]
+      },
+      {
+        "data": {
+          "source": "n5",
+          "target": "n8",
+          "id": "cd5bb0c8-beaa-429a-bfdd-684d8063d489"
+        },
+        "classes": [
+          "BR"
+        ]
+      },
+      {
+        "data": {
+          "source": "n1",
+          "target": "n7",
+          "id": "e0c351c8-578e-4487-95c4-3d325cf24107"
+        },
+        "classes": [
+          "BB"
+        ]
+      },
+      {
+        "data": {
+          "source": "n7",
+          "target": "n9",
+          "id": "8c742b92-4d07-42e5-ac43-8cdf69122b45"
+        },
+        "classes": [
+          "RB"
+        ]
+      },
+      {
+        "data": {
+          "source": "n8",
+          "target": "n9",
+          "id": "e0dfc7e2-a258-406a-967e-643305662e39"
+        },
+        "classes": [
+          "BB"
+        ]
+      },
+      {
+        "data": {
+          "source": "n2",
+          "target": "n11",
+          "id": "98fdf8db-c4fa-4d2f-9523-be54a199ad8c"
+        },
+        "classes": [
+          "RB"
+        ]
+      },
+      {
+        "data": {
+          "source": "n6",
+          "target": "n10",
+          "id": "a6e5e57a-c66f-4427-8350-e37c1cf6f2d5"
+        },
+        "classes": [
+          "BR"
+        ]
+      },
+      {
+        "data": {
+          "source": "n10",
+          "target": "n11",
+          "id": "391299e2-2034-4704-8b3f-a23c9cdb762c"
+        },
+        "classes": [
+          "BR"
+        ]
+      },
+      {
+        "data": {
+          "source": "n11",
+          "target": "n12",
+          "id": "6c964b61-d190-47f8-a526-1ee53e813d21"
+        },
+        "classes": [
+          "BR"
+        ]
+      },
+      {
+        "data": {
+          "source": "n10",
+          "target": "n13",
+          "id": "5d1489b5-46e8-4df5-9cc7-8a543556bf7c"
+        },
+        "classes": [
+          "BR"
+        ]
+      },
+      {
+        "data": {
+          "source": "n9",
+          "target": "n13",
+          "id": "3821a6cc-b97e-46a0-9870-839cdabf2826"
+        },
+        "classes": [
+          "RB"
+        ]
+      },
+      {
+        "data": {
+          "source": "n13",
+          "target": "n14",
+          "id": "013e92e7-5f01-417c-b808-8f2c50c8838a"
+        },
+        "classes": [
+          "BR"
+        ]
+      },
+      {
+        "data": {
+          "source": "n8",
+          "target": "n15",
+          "id": "a859c9c8-99b9-4d42-94ae-f02cb3b83001"
+        },
+        "classes": [
+          "BR"
+        ]
+      },
+      {
+        "data": {
+          "source": "n12",
+          "target": "n14",
+          "id": "31267392-1b60-4f66-80d9-57635d1d7619"
+        },
+        "classes": [
+          "BB"
+        ]
+      },
+      {
+        "data": {
+          "source": "n14",
+          "target": "n16",
+          "id": "78e006ab-3a7e-44cd-a8d0-33d36f138c96"
+        },
+        "classes": [
+          "BR"
+        ]
+      },
+      {
+        "data": {
+          "source": "n15",
+          "target": "n16",
+          "id": "4453c8c5-e45f-4082-8cac-123ac074bce6"
+        },
+        "classes": [
+          "BB"
+        ]
+      },
+      {
+        "data": {
+          "source": "n16",
+          "target": "n17",
+          "id": "4ee37e34-4cff-4d12-b218-c0ff429ac159"
+        },
+        "classes": [
+          "RR"
+        ]
+      },
+      {
+        "data": {
+          "source": "n15",
+          "target": "n19",
+          "id": "4d361eb4-178a-480a-8cc4-a23962c4d7fb"
+        },
+        "classes": [
+          "BB"
+        ]
+      },
+      {
+        "data": {
+          "source": "n19",
+          "target": "n17",
+          "id": "a807fff1-8fc8-4354-9561-711cf1fae8de"
+        },
+        "classes": [
+          "RB"
+        ]
+      },
+      {
+        "data": {
+          "source": "n17",
+          "target": "n18",
+          "id": "9f914710-647a-489b-90a3-576a44cab68a"
+        },
+        "classes": [
+          "BR"
+        ]
+      },
+      {
+        "data": {
+          "source": "n18",
+          "target": "n12",
+          "id": "b1c10698-1fbc-4499-ba6b-2249eb8bbb65"
+        },
+        "classes": [
+          "BB"
+        ]
+      },
+      {
+        "data": {
+          "source": "n19",
+          "target": "n20",
+          "id": "8eaa4a87-3aaa-4643-9e08-672c93c12aef"
+        },
+        "classes": [
+          "BR"
+        ]
+      },
+      {
+        "data": {
+          "source": "n20",
+          "target": "n18",
+          "id": "b942cfa4-87e4-4715-a774-3d888dad3b08"
+        },
+        "classes": [
+          "BB"
+        ]
+      },
+      {
+        "data": {
+          "source": "n20",
+          "target": "n21",
+          "id": "c84b3aba-b1d0-4f46-bfc2-c6720bab2ec5"
+        },
+        "classes": [
+          "BR"
+        ]
+      }
+    ]
+  },
+  "createdAt": "2025-07-07T13:37:58.386Z",
+  "updatedAt": "2025-09-12T10:22:18.430Z",
+  "workshopData": {
+    "railwayMaze": {
+      "enabled": true
+    }
+  }
+}

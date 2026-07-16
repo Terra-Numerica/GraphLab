@@ -10,8 +10,6 @@ import RulesPopup from '../../common/RulesPopup';
 import GraphDisplay from './GraphDisplay';
 import config from '../../../config';
 
-// ❌ supprimé : import '../../../styles/pages/ArbreCouvrant/ArbreCouvrantStyles.css';
-
 const CostDisplay = memo(({ currentCost, optimalCost }) => {
     return (
         <div className="text-xl font-semibold text-gray-700 ml-auto bg-gray-50 py-3 px-4 rounded-lg shadow-sm">
@@ -270,7 +268,6 @@ const Try = () => {
         const selectedIds = Array.from(selectedEdges);
         const selectedEdgesData = edges.filter(edge => selectedIds.includes(edge.data.id));
 
-        // Vérifier d'abord s'il y a un cycle
         const cycleDetected = detectCycle(selectedEdgesData, nodes);
         if (cycleDetected) {
             setValidationPopup({

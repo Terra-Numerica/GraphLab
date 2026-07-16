@@ -24,7 +24,7 @@ export const primAlgorithm = (nodes, edges) => {
 
     const visited = Array(nodeCount).fill(false);
     const steps = [];
-    const componentColor = '#4ECDC4'; // Couleur de la composante en construction
+    const componentColor = '#4ECDC4';
 
     visited[0] = true;
     steps.push({
@@ -61,7 +61,6 @@ export const primAlgorithm = (nodes, edges) => {
             (e.data.source === targetId && e.data.target === sourceId)
         );
 
-        // Ajouter le nouveau nœud à la liste des nœuds visités
         visited[minJ] = true;
         const visitedNodes = [];
         for (let i = 0; i < nodeCount; i++) {

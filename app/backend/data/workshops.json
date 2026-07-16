@@ -1,0 +1,19 @@
+[
+  {
+    "_id": "68d15696b9f68de585e1d0a2",
+    "coloring": {
+      "production": true,
+      "development": true
+    },
+    "spanningTree": {
+      "production": true,
+      "development": true
+    },
+    "railwayMaze": {
+      "production": true,
+      "development": true
+    },
+    "createdAt": "2025-09-22T14:00:54.956Z",
+    "updatedAt": "2025-10-28T13:04:00.671Z"
+  }
+]

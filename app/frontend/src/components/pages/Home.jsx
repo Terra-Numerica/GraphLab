@@ -2,8 +2,6 @@ import { Link } from 'react-router-dom';
 import useWorkshopConfig from '../../hooks/useWorkshopConfig';
 import { assetUrl } from '@/lib/paths';
 
-// ❌ plus besoin : import '../../styles/pages/Home.css';
-
 const Home = () => {
     const { isWorkshopAvailable, loading } = useWorkshopConfig();
 

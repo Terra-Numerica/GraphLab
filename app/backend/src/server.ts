@@ -1,6 +1,6 @@
 // Imports
 import "dotenv/config";
-import { connectDatabase } from "@/base/Database";
+import { initStorage } from "@/storage/initStorage";
 import { checkConfig } from "@/utils/config";
 
 import Logger from "@/base/Logger";
@@ -21,10 +21,10 @@ try {
     await checkConfig();
     Logger.success("Configuration is valid");
 
-    // Initialize Database Connection
-    Logger.info("Connecting to the database...");
-    await connectDatabase();
-    Logger.success("Connected to the database");
+    // Initialize local storage
+    Logger.info("Initializing local storage...");
+    await initStorage();
+    Logger.success("Local storage is ready");
 
     // Initialize Hono
     const app = new Hono();

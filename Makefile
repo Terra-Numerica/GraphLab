@@ -85,7 +85,7 @@ push: publish
 .PHONY: deploy
 deploy: check-env publish			## Déploiement sur le serveur (compose + .env, image publiée)
 	@echo "# Copie des fichiers de configuration du stack"
-	rsync -avz ./deploy/docker-compose.yaml ./deploy/.env ./deploy/graphs.json ./scripts/ $(SSH_USER)@$(SSH_HOST):$(SERVER_BACKEND_PATH)
+	rsync -avz ./deploy/docker-compose.yaml ./deploy/.env ./scripts/ $(SSH_USER)@$(SSH_HOST):$(SERVER_BACKEND_PATH)
 	
 
 .PHONY: update-service
@@ -98,7 +98,7 @@ release: deploy update-service	## Publie, déploie et met à jour le service (co
 	@echo "--- Mise en production terminée avec succès ! ---"
 
 .PHONY: app-up
-app-up:					## Démarre l'application en local (docker-compose + MongoDB)
+app-up:					## Démarre l'application en local (docker-compose)
 	@echo "--- Démarrage du docker-compose en local ---"
 	cd deploy && docker compose $(COMPOSE_DEV) -p $(APP_ID) up -d --build
 
@@ -117,10 +117,10 @@ app-ps:					## Affiche les conteneurs de l'application en local (docker-compose)
 	@echo "--- Conteneurs du backend ---"
 	cd deploy && docker compose $(COMPOSE_DEV) -p $(APP_ID) ps
 
-.PHONY: backup-mongo
-backup-mongo:				## Sauvegarde MongoDB (script scripts/backup-mongo.sh)
-	APP_ID=$(APP_ID) BACKUP_DIR=./deploy/backups/mongodb bash ./scripts/backup-mongo.sh
+.PHONY: backup-data
+backup-data:				## Sauvegarde des données JSON (script scripts/backup-data.sh)
+	APP_ID=$(APP_ID) BACKUP_DIR=./deploy/backups/data bash ./scripts/backup-data.sh
 
-.PHONY: restore-mongo
-restore-mongo:				## Restaure la dernière sauvegarde MongoDB
-	APP_ID=$(APP_ID) BACKUP_DIR=./deploy/backups/mongodb bash ./scripts/restore-mongo.sh
+.PHONY: restore-data
+restore-data:				## Restaure la dernière sauvegarde JSON
+	APP_ID=$(APP_ID) BACKUP_DIR=./deploy/backups/data bash ./scripts/restore-data.sh

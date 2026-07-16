@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { assetUrl } from '@/lib/paths';
-// ❌ supprimé : import '../../styles/Admin/Login.css';
 import config from '../../config';
 
 const Login = () => {

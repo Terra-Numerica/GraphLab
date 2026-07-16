@@ -16,7 +16,6 @@ export const exchangePropertyAlgorithm = (nodes, edges) => {
     const steps = [];
     const componentColor = '#4ECDC4';
 
-    // Indexation
     const nodeToIndex = {};
     const indexToNode = {};
     nodes.forEach((node, index) => {
@@ -93,7 +92,6 @@ export const exchangePropertyAlgorithm = (nodes, edges) => {
         return best;
     };
 
-    // Chemin u->v dans l’arbre courant
     const pathEdgeIdsInTree = (u, v) => {
         const stack = [u];
         const parent = new Map([[u, null]]);
@@ -136,7 +134,6 @@ export const exchangePropertyAlgorithm = (nodes, edges) => {
             }
         }
 
-        // Retirer l’arête choisie
         inTree.delete(toRemove.data.id);
         const idx = treeEdges.findIndex(e => e.data.id === toRemove.data.id);
         if (idx >= 0) treeEdges.splice(idx, 1);
@@ -144,7 +141,6 @@ export const exchangePropertyAlgorithm = (nodes, edges) => {
         adj.set(remU, (adj.get(remU) || []).filter(x => x.eid !== toRemove.data.id));
         adj.set(remV, (adj.get(remV) || []).filter(x => x.eid !== toRemove.data.id));
 
-        // Étape unique "exchange"
         pushExchangeStep(
             edgeAdded,
             toRemove,
@@ -152,12 +148,10 @@ export const exchangePropertyAlgorithm = (nodes, edges) => {
         On retire immédiatement l'arête la plus lourde du cycle : ${toRemove.data.source}-${toRemove.data.target} (poids ${toRemove.data.weight}).`
         );
 
-        // Résultat
         pushResultStep(`Après l'échange, l'arbre reste valide et sans cycle.`);
         return true;
     };
 
-    // --- Start ---
     const startId = indexToNode[0];
     visited.add(startId);
     steps.push({
@@ -168,7 +162,6 @@ export const exchangePropertyAlgorithm = (nodes, edges) => {
         explanation: `On commence par le sommet ${startId}.`
     });
 
-    // --- Deux premières arêtes façon Prim ---
     for (let k = 0; k < Math.min(2, nodeCount - 1); k++) {
         const best = findMinCrossEdge();
         if (!best) break;
@@ -184,7 +177,6 @@ export const exchangePropertyAlgorithm = (nodes, edges) => {
         );
     }
 
-    // --- Forcer un cycle ---
     const internal = findLightestInternalNonTreeEdge();
     if (internal) {
         inTree.add(internal.data.id);
@@ -193,7 +185,6 @@ export const exchangePropertyAlgorithm = (nodes, edges) => {
         applyExchangeAfterAddingEdge(internal);
     }
 
-    // --- Continuer façon Prim jusqu’à couvrir tous les sommets ---
     while (treeEdges.length < nodeCount - 1) {
         const best = findMinCrossEdge();
         if (!best) break;
@@ -209,7 +200,6 @@ export const exchangePropertyAlgorithm = (nodes, edges) => {
         );
     }
 
-    // --- Tentative finale (arête hors-arbre) ---
     const extra = findLightestInternalNonTreeEdge();
     if (extra) {
         inTree.add(extra.data.id);
@@ -218,7 +208,6 @@ export const exchangePropertyAlgorithm = (nodes, edges) => {
         applyExchangeAfterAddingEdge(extra);
     }
 
-    // --- End ---
     steps.push({
         action: 'end',
         componentColor,

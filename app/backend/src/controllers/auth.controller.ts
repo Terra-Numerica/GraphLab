@@ -1,9 +1,7 @@
 // Imports
 import { generateToken } from '@/utils/jwt';
+import { getAdminConfig, validateAdminCredentials } from '@/utils/authConfig';
 import { z } from 'zod';
-
-import Admin from '@/models/admin.model';
-import bcrypt from 'bcrypt';
 
 // Validation schemas
 const loginSchema = z.object({
@@ -15,28 +13,18 @@ export const login = async (c: any) => {
     try {
         const body = await c.req.json();
         
-        // Validate input
         const { username, password } = loginSchema.parse(body);
 
-        // Find admin by username
-        const admin = await Admin.findOne({ username });
-        if (!admin) {
-            return c.json({ message: 'Identifiant invalide' }, 401);
+        if (!validateAdminCredentials(username, password)) {
+            return c.json({ message: 'Identifiant ou mot de passe invalide' }, 401);
         }
 
-        // Check password
-        const isValidPassword = await bcrypt.compare(password, admin.password || '');
-        if (!isValidPassword) {
-            return c.json({ message: 'Mot de passe invalide' }, 401);
-        }
-
-        // Generate JWT token
-        const token = generateToken(admin._id.toString());
+        const admin = getAdminConfig();
+        const token = generateToken(admin.username);
 
         return c.json({
             token,
             user: {
-                id: admin._id,
                 username: admin.username,
                 role: 'admin'
             }

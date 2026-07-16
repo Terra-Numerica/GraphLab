@@ -1,6 +1,6 @@
 // Imports
-import GraphModel from '@/models/graph.model';
 import { z } from 'zod';
+import * as graphStore from '@/storage/graphStore';
 
 // Validation schemas
 const graphSchema = z.object({
@@ -27,7 +27,7 @@ const graphSchema = z.object({
 
 export const getGraphs = async (c: any) => {
 	try {
-		const graphs = await GraphModel.find().sort({ createdAt: 1 });
+		const graphs = await graphStore.findAllGraphs();
 		return c.json(graphs);
 	} catch (error: any) {
 		console.error('Error fetching graphs:', error);
@@ -38,7 +38,7 @@ export const getGraphs = async (c: any) => {
 export const getGraph = async (c: any) => {
 	try {
 		const { id } = c.req.param();
-		const graph = await GraphModel.findById(id);
+		const graph = await graphStore.findGraphById(id);
 		
 		if (!graph) {
 			return c.json({ message: 'Graph not found' }, 404);
@@ -55,11 +55,9 @@ export const addGraph = async (c: any) => {
 	try {
 		const body = await c.req.json();
 		
-		// Validate input
 		const validatedData = graphSchema.parse(body);
 		
-		const graph = new GraphModel(validatedData);
-		await graph.save();
+		const graph = await graphStore.createGraph(validatedData);
 		
 		return c.json(graph, 201);
 	} catch (error: any) {
@@ -78,10 +76,9 @@ export const editGraph = async (c: any) => {
 		const { id } = c.req.param();
 		const body = await c.req.json();
 		
-		// Validate input
 		const validatedData = graphSchema.parse(body);
 		
-		const updatedGraph = await GraphModel.findByIdAndUpdate(id, validatedData, { new: true });
+		const updatedGraph = await graphStore.updateGraph(id, validatedData);
 		
 		if (!updatedGraph) {
 			return c.json({ message: 'Graph not found' }, 404);
@@ -103,9 +100,9 @@ export const deleteGraph = async (c: any) => {
 	try {
 		const { id } = c.req.param();
 		
-		const deletedGraph = await GraphModel.findByIdAndDelete(id);
+		const deleted = await graphStore.deleteGraph(id);
 		
-		if (!deletedGraph) {
+		if (!deleted) {
 			return c.json({ message: 'Graph not found' }, 404);
 		}
 		

@@ -2,8 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import TutorialPopup from '../../common/TutorialPopup';
 
-// ❌ plus besoin : import '../../../styles/pages/ArbreCouvrant/ArbreCouvrantStyles.css';
-
 const Main = () => {
     const navigate = useNavigate();
     const [showTutorial, setShowTutorial] = useState(false);

@@ -10,8 +10,6 @@ import GraphDisplay from './GraphDisplay';
 import { useFetchGraphs, useFetchGraph } from '../../../hooks/useFetchGraphs';
 import { useTimer } from '../../../hooks/useTimer';
 
-// ❌ supprimé : import '../../../styles/pages/Coloration/ColorationStyles.css';
-
 const Defi = () => {
     const [graphs, setGraphs] = useState({
         tresFacile: [],

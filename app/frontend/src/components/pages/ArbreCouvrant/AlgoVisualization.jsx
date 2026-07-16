@@ -6,8 +6,6 @@ import { useState, useCallback, useEffect } from 'react';
 import { getDarkerColor, getLighterColor } from '../../../utils/colorUtils';
 import ValidationPopup from '../../common/ValidationPopup';
 
-// ❌ supprimé : import '../../../styles/pages/ArbreCouvrant/ArbreCouvrantStyles.css';
-
 const algoMap = {
     prim: {
         algorithm: primAlgorithm,

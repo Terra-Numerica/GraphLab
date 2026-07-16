@@ -1,5 +1,3 @@
-// ❌ plus besoin : import '../../styles/Navigation/Footer.css';
-
 const Footer = () => {
   return (
     <footer className="mt-12 border-t border-darkBlue navbar-gradient text-white text-sm sm:text-base">

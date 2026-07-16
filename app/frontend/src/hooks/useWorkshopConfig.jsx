@@ -17,7 +17,6 @@ const useWorkshopConfig = () => {
                 }
                 
                 const data = await response.json();
-                // Prendre le premier workshop (configuration globale)
                 setWorkshopConfig(data[0] || null);
             } catch (err) {
                 setError(err.message);
@@ -30,7 +29,6 @@ const useWorkshopConfig = () => {
         fetchWorkshopConfig();
     }, []);
 
-    // Fonction pour vérifier si un workshop est disponible dans l'environnement actuel
     const isWorkshopAvailable = (workshopType) => {
         if (!workshopConfig) return false;
 
@@ -43,12 +41,10 @@ const useWorkshopConfig = () => {
         const workshop = workshopConfig[workshopType];
         if (!workshop) return false;
         
-        // Si les deux environnements sont activés, on affiche toujours
         if (workshop.production && workshop.development) {
             return true;
         }
         
-        // Sinon, on vérifie l'environnement actuel
         if (isProduction && workshop.production) {
             return true;
         }

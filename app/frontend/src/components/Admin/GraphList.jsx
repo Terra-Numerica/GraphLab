@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react';
 import config from '../../config';
 import GraphEditor from './GraphEditor';
 
-// ❌ supprimé : import '../../styles/Admin/GraphList.css';
-
 const GRAPHS_PER_PAGE = 12;
 
 const GraphList = () => {
