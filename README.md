@@ -63,10 +63,14 @@ ADMIN_PASSWORD=...
 cp deploy/.env.example deploy/.env
 # Ajuster VITE_API_URL si besoin (défaut en dev : http://localhost:3000/api)
 
-make app-up      # build + démarrage
-make app-ps      # état des conteneurs
-make app-logs    # logs de l'application
-make app-down    # arrêt
+make app-up-dev  # build + démarrage (mode dev, port 3000 exposé)
+make app-ps-dev  # état des conteneurs
+make app-logs-dev # logs de l'application
+make app-down-dev # arrêt
+
+# Mode prod local (image registry, Traefik, sans port exposé) :
+make app-up
+make app-down
 ```
 
 L'application est accessible sur [http://localhost:3000](http://localhost:3000).
