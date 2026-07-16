@@ -2,87 +2,104 @@
 
 GraphLab est une plateforme éducative interactive pour l'apprentissage des graphes, développée par Terra Numerica.
 
-## 🎯 Objectif
+## Objectif
 
 GraphLab vise à rendre l'apprentissage des graphes plus accessible et interactif grâce à des visualisations dynamiques et des exercices pratiques.
 
-## 🚀 Fonctionnalités Principales
+## Fonctionnalités principales
 
-### Coloration de Graphes
+### Coloration de graphes
 - Mode défi avec des graphes prédéfinis et des pastilles limitées
 - Mode libre avec des graphes prédéfinis et des pastilles illimitées
 - Mode création pour concevoir vos propres graphes
 - Visualisation interactive et validation en temps réel
 
-### Arbre Couvrant
+### Arbre couvrant
 - Mode interactif avec des graphes de différentes tailles
-- Visualisation des algorithmes de Prim, Kruskal et Boruvka
+- Visualisation des algorithmes de Prim, Kruskal, Boruvka et propriété d'échange
 - Comparaison avec les solutions optimales
 - Exercices pratiques avec différents types de poids
 
-## 🏗️ Architecture
+## Architecture
 
 Le projet est divisé en deux parties principales :
 
 ### Frontend
-- Application React moderne
-- Interface utilisateur interactive
+- Application React (Vite)
 - Visualisation des graphes avec Cytoscape.js
-- Design responsive et intuitif
+- Design responsive
 
 ### Backend
-- API RESTful avec Express
-- Base de données MongoDB
+- API REST avec Hono (TypeScript)
+- Stockage local JSON sur le filesystem (`app/backend/data/`)
+- Un fichier JSON par graphe, plus `workshops.json`
+- Authentification admin via variables d'environnement (`ADMIN_USERNAME`, `ADMIN_PASSWORD`)
 - Sécurisation avec JWT
 - Validation des données avec Zod
 
-## 🛠️ Tech Stack
+## Développement local
 
-### Frontend
-- React 19
-- Vite 6
-- Cytoscape.js
-- React Router DOM 7
+```bash
+npm run dev:install   # installe et démarre backend + frontend
+```
 
-### Backend
-- Node.js
-- Express 5
-- TypeScript
-- MongoDB avec Mongoose
+Variables backend (`app/backend/.env`) :
 
-## 🚀 Installation
+```
+DATA_DIR=./data
+ADMIN_USERNAME=Megitsune
+ADMIN_PASSWORD=...
+```
 
-1. **Cloner le repository**
-   ```bash
-   git clone [URL_DU_REPO]
-   ```
+## Déploiement
 
-2. **Installer les dépendances**
-   ```bash
-   # Frontend
-   cd frontend
-   npm install
+### Prérequis en production (Terra Numerica)
+- accès SSH au serveur, réseau Docker `traefik` existant, clé SSH pour les sauvegardes distantes
+- `deploy/docker-compose.yaml` — stack par défaut (production, Traefik, pas de ports exposés)
 
-   # Backend
-   cd backend
-   npm install
-   ```
+### Déploiement local (Docker)
 
-3. **Configurer l'environnement**
-   - Créer un fichier `.env` dans le dossier backend
-   - Configurer les variables d'environnement nécessaires
+```bash
+cp deploy/.env.example deploy/.env
+# Ajuster VITE_API_URL si besoin (défaut en dev : http://localhost:3000/api)
 
-4. **Démarrer l'application**
-   ```bash
-   # Backend
-   cd backend
-   npm run dev
+make app-up      # build + démarrage
+make app-ps      # état des conteneurs
+make app-logs    # logs de l'application
+make app-down    # arrêt
+```
 
-   # Frontend
-   cd frontend
-   npm run dev
-   ```
+L'application est accessible sur [http://localhost:3000](http://localhost:3000).
 
-## 📝 Licence
+Les données sont persistées dans le volume Docker `app-data` (monté sur `/app/data`).
 
-Ce projet fait partie de la plateforme GraphLab propulsé par Terra Numerica. 
+### Migration depuis MongoDB (one-shot)
+
+```bash
+MONGODB_URL="mongodb+srv://..." npx tsx scripts/migrate-from-mongo.ts
+```
+
+Sans MongoDB, conversion depuis une archive JSON :
+
+```bash
+npx tsx scripts/migrate-from-mongo.ts --from-graphs-json chemin/vers/graphs.json
+```
+
+### Sauvegardes des données JSON
+
+```bash
+make backup-data
+make restore-data   # restaure la dernière archive
+```
+
+Le script `scripts/backup-data.sh` archive le répertoire `/app/data` du conteneur.
+
+### Cron des sauvegardes (production)
+
+```cron
+0 2 * * * APP_ID=graphlab BACKUP_DIR=/srv/graphlab/backups/data RETENTION_DAYS=30 /bin/bash /srv/graphlab/backup-data.sh >> /var/log/graphlab-data-backup.log 2>&1
+```
+
+## Licence
+
+Ce projet fait partie de la plateforme GraphLab propulsée par Terra Numerica.

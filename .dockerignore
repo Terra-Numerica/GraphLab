@@ -1,0 +1,10 @@
+.git
+**/.git
+**/node_modules
+**/dist
+**/.env
+**/.env.*
+!app/frontend/.env.production
+!app/frontend/.env.development
+*.md
+deploy/.env

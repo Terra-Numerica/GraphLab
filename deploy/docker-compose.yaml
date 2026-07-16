@@ -1,0 +1,43 @@
+# Stack par défaut (production). Usage : docker compose pull && docker compose up -d
+# Build image prod : docker compose build  (lit app/frontend/.env.production via BUILD_MODE)
+services:
+  app:
+    image: ${IMAGE_REGISTRY}/${IMAGE_NAME}:${IMAGE_VERSION}
+    container_name: ${APP_ID:-graphlab}-app
+    restart: unless-stopped
+    pull_policy: always
+    environment:
+      PORT: "3000"
+      NODE_ENV: production
+      DATA_DIR: /app/data
+      ADMIN_USERNAME: ${ADMIN_USERNAME}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+    volumes:
+      - app-data:/app/data
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${APP_ID:-graphlab}.tls=true"
+      - "traefik.http.routers.${APP_ID:-graphlab}.service=${APP_ID:-graphlab}-service"
+      - "traefik.http.routers.${APP_ID:-graphlab}.entrypoints=web,websecure"
+      - "traefik.http.routers.${APP_ID:-graphlab}.middlewares=${APP_ID:-graphlab}-stripprefix"
+      - "traefik.http.routers.${APP_ID:-graphlab}.rule=Host(`portail.terra-numerica.org`) && PathPrefix(`/${APP_ID:-graphlab}`)"
+      - "traefik.http.services.${APP_ID:-graphlab}-service.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.${APP_ID:-graphlab}-stripprefix.stripprefix.prefixes=/${APP_ID:-graphlab}"
+    networks:
+      - internal
+      - traefik
+
+networks:
+  internal:
+    driver: bridge
+  traefik:
+    external: true
+
+volumes:
+  app-data:

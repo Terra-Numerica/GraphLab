@@ -1,0 +1,16 @@
+# Surcharge développement local : build en mode development + ports.
+# Usage : docker compose -f docker-compose.yaml -f docker-compose.dev.yaml up -d --build
+services:
+  app:
+    pull_policy: build
+    build:
+      context: ..
+      dockerfile: app/backend/docker/Dockerfile
+      args:
+        BUILD_MODE: development
+    ports:
+      - "${PORT:-3000}:3000"
+    labels:
+      - "traefik.enable=false"
+    networks: !override
+      internal: {}
